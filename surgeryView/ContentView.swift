@@ -11,7 +11,9 @@ import RealityKitContent
 
 struct ContentView: View {
 
-    @State private var enlarge = false
+    @State private var moveContent = false
+    @State private var showContent = true
+    @State private var translationOffset: Float = 0.0
     @State private var showImmersiveSpace = false
     @State private var immersiveSpaceIsShown = false
 
@@ -23,48 +25,34 @@ struct ContentView: View {
             RealityView { content in
                 // Add the initial RealityKit content
                 if let scene = try? await Entity(named: "Scene", in: realityKitContentBundle) {
+
                     content.add(scene)
+                    content.add(scene.clone(recursive: true))
+
                 }
             } update: { content in
                 // Update the RealityKit content when SwiftUI state changes
                 if let scene = content.entities.first {
-                    let uniformScale: Float = enlarge ? 1.4 : 1.0
-                    scene.transform.scale = [uniformScale, uniformScale, uniformScale]
+                    let translation: Float = moveContent ? -0.3 : 0.3
+                    scene.transform.translation = [translation, 0,0]
+                    scene.isEnabled = showContent
                 }
             }
             .gesture(TapGesture().targetedToAnyEntity().onEnded { _ in
-                enlarge.toggle()
+                moveContent.toggle()
             })
 
             VStack (spacing: 12) {
-                Toggle("Enlarge RealityView Content", isOn: $enlarge)
+                Toggle("Move Content", isOn: $moveContent)
                     .font(.title)
 
-                Toggle("Show ImmersiveSpace", isOn: $showImmersiveSpace)
+                Toggle("Show Content", isOn: $showContent)
                     .font(.title)
             }
             .frame(width: 360)
             .padding(36)
             .glassBackgroundEffect()
 
-        }
-        .onChange(of: showImmersiveSpace) { _, newValue in
-            Task {
-                if newValue {
-                    switch await openImmersiveSpace(id: "ImmersiveSpace") {
-                    case .opened:
-                        immersiveSpaceIsShown = true
-                    case .error, .userCancelled:
-                        fallthrough
-                    @unknown default:
-                        immersiveSpaceIsShown = false
-                        showImmersiveSpace = false
-                    }
-                } else if immersiveSpaceIsShown {
-                    await dismissImmersiveSpace()
-                    immersiveSpaceIsShown = false
-                }
-            }
         }
     }
 }
