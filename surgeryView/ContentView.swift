@@ -12,7 +12,6 @@ import RealityKitContent
 struct ContentView: View {
 
     @State private var moveContent = false
-    @State private var showContent = true
     @State private var translationOffset: Float = 0.0
     @State private var showImmersiveSpace = false
     @State private var immersiveSpaceIsShown = false
@@ -20,39 +19,27 @@ struct ContentView: View {
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
 
+    private var sampleObject = ModelEntity(mesh: .generateBox(size: 0.5, cornerRadius: 0.1), materials: [SimpleMaterial(color: .blue, isMetallic: true)])
+    @State private var entities: [Entity] = []
+
     var body: some View {
-        VStack {
-            RealityView { content in
-                // Add the initial RealityKit content
-                if let scene = try? await Entity(named: "Scene", in: realityKitContentBundle) {
-
-                    content.add(scene)
-                    content.add(scene.clone(recursive: true))
+        ZStack (alignment: .bottom) {
+            ModelManager(entities: entities)
+                .onAppear{
+                    entities = [sampleObject, ModelEntity(mesh: .generateSphere(radius: 0.2), materials: [PhysicallyBasedMaterial()])]
+                }
+            VStack {
+                Button {
+                    moveContent.toggle()
+                    sampleObject.transform.scale = moveContent ? [1.5, 1.5, 1.5] : [1, 1, 1]
+                } label: {
+                    Label("Toggle Size", systemImage: "arrow.up.left.and.arrow.down.right")
 
                 }
-            } update: { content in
-                // Update the RealityKit content when SwiftUI state changes
-                if let scene = content.entities.first {
-                    let translation: Float = moveContent ? -0.3 : 0.3
-                    scene.transform.translation = [translation, 0,0]
-                    scene.isEnabled = showContent
-                }
             }
-            .gesture(TapGesture().targetedToAnyEntity().onEnded { _ in
-                moveContent.toggle()
-            })
-
-            VStack (spacing: 12) {
-                Toggle("Move Content", isOn: $moveContent)
-                    .font(.title)
-
-                Toggle("Show Content", isOn: $showContent)
-                    .font(.title)
-            }
-            .frame(width: 360)
+            .frame(width: 360, alignment: .bottom)
             .padding(36)
             .glassBackgroundEffect()
-
         }
     }
 }
