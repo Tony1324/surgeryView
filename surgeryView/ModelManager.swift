@@ -16,23 +16,45 @@ struct ModelManager: View {
     var body: some View {
         ZStack(alignment: .leading) {
             RealityView { content in
+
+                let originAnchor = Entity()
+                originAnchor.name = "origin"
+                content.add(originAnchor)
                 for entity in entities {
-                    content.add(entity)
+                    let objectAnchor = Entity()
+                    objectAnchor.addChild(entity)
+                    originAnchor.addChild(objectAnchor)
                 }
             } update: { content in
-                for entity in entities {
-                    if content.entities.contains(entity) {continue}
-                    content.add(entity)
-                }
-                for entity in content.entities {
-                    if !entities.contains(entity) {
-                        content.remove(entity)
+                if let originAnchor = content.entities.first{
+                    for entity in entities {
+                        if originAnchor.children.contains(where: { $0.children.contains(entity)}) {continue}
+                        let objectAnchor = Entity()
+                        objectAnchor.addChild(entity)
+                        originAnchor.addChild(objectAnchor)
+                    }
+                    for entity in originAnchor.children {
+                        if !originAnchor.children.contains(where: { $0.children.contains(entity)}) {
+                            content.remove(entity)
+                        }
                     }
                 }
                 if let update {
                     update(content)
                 }
             }
+            .gesture(
+                SpatialTapGesture()
+                    .targetedToAnyEntity()
+                    .onChanged({ value in
+                        print("changed")
+                        value.entity.removeFromParent()
+                    })
+                    .onEnded({ value in
+                        print("tapped")
+                        value.entity.isEnabled.toggle()
+                    })
+            )
             VStack{
                 ForEach(entities){ entity in
                     Button {
@@ -52,5 +74,5 @@ struct ModelManager: View {
 }
 
 #Preview {
-    ModelManager(entities: [ModelEntity(mesh: .generateBox(size: 0.5))])
+    ModelManager(entities: [ModelEntity(mesh: .generateBox(size: 0.2),materials: [SimpleMaterial(color: .blue, isMetallic: false)])])
 }
