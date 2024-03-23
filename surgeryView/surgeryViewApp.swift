@@ -6,12 +6,34 @@
 //
 
 import SwiftUI
+import RealityKit
+
+
+
+extension Entity: Observable{
+
+}
+
+@Observable
+class ModelData: ObservableObject {
+    var images: [Entity]
+    var models: [Entity]
+
+    init(images: [Entity] = [], models: [Entity] = []) {
+        self.images = images
+        self.models = models
+    }
+}
 
 @main
 struct surgeryViewApp: App {
-    var body: some Scene {
+
+    @State private var modelData = ModelData(models: [ModelEntity(mesh: .generateBox(size: 0.5, cornerRadius: 0.1), materials: [SimpleMaterial(color: .blue, isMetallic: true)])])
+
+    var body: some SwiftUI.Scene {
         WindowGroup {
             ContentView()
+                .environment(modelData)
         }.windowStyle(.volumetric)
 
         ImmersiveSpace(id: "ImmersiveSpace") {

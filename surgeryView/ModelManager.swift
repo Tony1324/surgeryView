@@ -11,7 +11,7 @@ import RealityKitContent
 
 struct ModelManager: View {
     // custom content handling
-    var entities: [Entity]
+    @EnvironmentObject var modelData: ModelData
     var update: ((RealityViewContent) -> ())?
     var body: some View {
         ZStack(alignment: .leading) {
@@ -20,14 +20,14 @@ struct ModelManager: View {
                 let originAnchor = Entity()
                 originAnchor.name = "origin"
                 content.add(originAnchor)
-                for entity in entities {
+                for entity in modelData.models {
                     let objectAnchor = Entity()
                     objectAnchor.addChild(entity)
                     originAnchor.addChild(objectAnchor)
                 }
             } update: { content in
                 if let originAnchor = content.entities.first{
-                    for entity in entities {
+                    for entity in modelData.models {
                         if originAnchor.children.contains(where: { $0.children.contains(entity)}) {continue}
                         let objectAnchor = Entity()
                         objectAnchor.addChild(entity)
@@ -56,7 +56,7 @@ struct ModelManager: View {
                     })
             )
             VStack{
-                ForEach(entities){ entity in
+                ForEach(modelData.models){ entity in
                     Button {
                         entity.isEnabled.toggle()
                     } label: {
@@ -74,5 +74,6 @@ struct ModelManager: View {
 }
 
 #Preview {
-    ModelManager(entities: [ModelEntity(mesh: .generateBox(size: 0.2),materials: [SimpleMaterial(color: .blue, isMetallic: false)])])
+    ModelManager()
+        .environment(ModelData(models: [ModelEntity(mesh: .generateBox(size: 0.2),materials: [SimpleMaterial(color: .blue, isMetallic: false)])]))
 }

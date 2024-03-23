@@ -16,17 +16,14 @@ struct ContentView: View {
     @State private var showImmersiveSpace = false
     @State private var immersiveSpaceIsShown = false
 
-    @Environment(\.openImmersiveSpace) var openImmersiveSpace
-    @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
-
     private var sampleObject = ModelEntity(mesh: .generateBox(size: 0.5, cornerRadius: 0.1), materials: [SimpleMaterial(color: .blue, isMetallic: true)])
-    @State private var entities: [Entity] = []
+    @EnvironmentObject var ModelData: ModelData
 
     var body: some View {
         ZStack (alignment: .bottom) {
-            ModelManager(entities: entities)
+            ModelManager()
                 .onAppear{
-                    entities = [sampleObject, ModelEntity(mesh: .generateSphere(radius: 0.2), materials: [PhysicallyBasedMaterial()])]
+                    ModelData.models = [sampleObject, ModelEntity(mesh: .generateSphere(radius: 0.2), materials: [PhysicallyBasedMaterial()])]
                 }
             VStack {
                 Button {
