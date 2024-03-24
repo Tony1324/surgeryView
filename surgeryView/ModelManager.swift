@@ -55,19 +55,7 @@ struct ModelManager: View {
                         value.entity.isEnabled.toggle()
                     })
             )
-            VStack{
-                ForEach(modelData.models){ entity in
-                    Button {
-                        entity.isEnabled.toggle()
-                    } label: {
-                        Text("Toggle Entity")
-                    }
 
-                }
-            }
-            .frame(width: 200)
-            .padding()
-            .glassBackgroundEffect()
         }
 
     }

@@ -31,6 +31,13 @@ struct surgeryViewApp: App {
     @State private var modelData = ModelData(models: [ModelEntity(mesh: .generateBox(size: 0.5, cornerRadius: 0.1), materials: [SimpleMaterial(color: .blue, isMetallic: true)])])
 
     var body: some SwiftUI.Scene {
+        WindowGroup(id:"control-panel"){
+            ControlPanel()
+                .environment(modelData)
+        }
+        .defaultSize(CGSize(width: 250, height: 400))
+
+
         WindowGroup {
             ContentView()
                 .environment(modelData)

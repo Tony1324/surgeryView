@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B0054522BB07D8F004697EE /* ControlPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B0054512BB07D8E004697EE /* ControlPanel.swift */; };
 		1B11BFB72BA918B700E1DEB0 /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B11BFB62BA918B700E1DEB0 /* ModelManager.swift */; };
 		1B3F570C2B957BB700753CBB /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 1B3F570B2B957BB700753CBB /* RealityKitContent */; };
 		1B3F570E2B957BB700753CBB /* surgeryViewApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B3F570D2B957BB700753CBB /* surgeryViewApp.swift */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1B0054512BB07D8E004697EE /* ControlPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlPanel.swift; sourceTree = "<group>"; };
 		1B11BFB62BA918B700E1DEB0 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
 		1B3F57062B957BB700753CBB /* surgeryView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = surgeryView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B3F570A2B957BB700753CBB /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
@@ -61,6 +63,7 @@
 			isa = PBXGroup;
 			children = (
 				1B3F570D2B957BB700753CBB /* surgeryViewApp.swift */,
+				1B0054512BB07D8E004697EE /* ControlPanel.swift */,
 				1B3F570F2B957BB700753CBB /* ContentView.swift */,
 				1B11BFB62BA918B700E1DEB0 /* ModelManager.swift */,
 				1B3F57112B957BB700753CBB /* ImmersiveView.swift */,
@@ -161,6 +164,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1B3F57102B957BB700753CBB /* ContentView.swift in Sources */,
+				1B0054522BB07D8F004697EE /* ControlPanel.swift in Sources */,
 				1B11BFB72BA918B700E1DEB0 /* ModelManager.swift in Sources */,
 				1B3F570E2B957BB700753CBB /* surgeryViewApp.swift in Sources */,
 				1B3F57122B957BB700753CBB /* ImmersiveView.swift in Sources */,
