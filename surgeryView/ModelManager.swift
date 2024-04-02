@@ -11,30 +11,45 @@ import RealityKitContent
 
 struct ModelManager: View {
     // custom content handling
-    @EnvironmentObject var modelData: ModelData
+    @Environment(ModelData.self) var modelData
     var update: ((RealityViewContent) -> ())?
+    
+    func addEntity(content: RealityViewContent ,entity: Entity){
+        if let originAnchor = content.entities.first {
+            entity.components.set(InputTargetComponent())
+            entity.generateCollisionShapes(recursive: true)
+            originAnchor.addChild(entity)
+        }
+    }
+    
+    @State var dragStartLocation3d: Transform? = nil
+    
     var body: some View {
         ZStack(alignment: .leading) {
             RealityView { content in
 
-                let originAnchor = Entity()
+                let originAnchor = AnchorEntity(world: .zero)
                 originAnchor.name = "origin"
                 content.add(originAnchor)
                 for entity in modelData.models {
-                    let objectAnchor = Entity()
-                    objectAnchor.addChild(entity)
-                    originAnchor.addChild(objectAnchor)
+//                    let objectAnchor = Entity()
+//                    objectAnchor.addChild(entity)
+//                    originAnchor.addChild(objectAnchor)
+                    addEntity(content: content, entity: entity)
                 }
             } update: { content in
                 if let originAnchor = content.entities.first{
                     for entity in modelData.models {
-                        if originAnchor.children.contains(where: { $0.children.contains(entity)}) {continue}
-                        let objectAnchor = Entity()
-                        objectAnchor.addChild(entity)
-                        originAnchor.addChild(objectAnchor)
+                        if originAnchor.children.contains(entity) {
+                            continue
+                        }else{
+                            //                        let objectAnchor = Entity()
+                            //                        objectAnchor.addChild(entity)
+                            addEntity(content: content, entity: entity)
+                        }
                     }
                     for entity in originAnchor.children {
-                        if !originAnchor.children.contains(where: { $0.children.contains(entity)}) {
+                        if !modelData.models.contains(entity) {
                             content.remove(entity)
                         }
                     }
@@ -44,15 +59,17 @@ struct ModelManager: View {
                 }
             }
             .gesture(
-                SpatialTapGesture()
+                DragGesture()
                     .targetedToAnyEntity()
                     .onChanged({ value in
-                        print("changed")
-                        value.entity.removeFromParent()
+                        if dragStartLocation3d == nil {
+                            dragStartLocation3d = value.entity.transform
+                        }
+                        let translation = value.convert(value.translation3D, from: .local, to: .scene)
+                        value.entity.transform = dragStartLocation3d!.whenTranslatedBy(vector: Vector3D(translation))
                     })
-                    .onEnded({ value in
-                        print("tapped")
-                        value.entity.isEnabled.toggle()
+                    .onEnded({ _ in
+                        dragStartLocation3d = nil
                     })
             )
 
@@ -60,6 +77,18 @@ struct ModelManager: View {
 
     }
 }
+
+extension Transform {
+        func whenTranslatedBy (vector: Vector3D) -> Transform {
+            // Turn the vector translation into a transformation
+            let movement = Transform(translation: simd_float3(vector.vector))
+    
+            // Calculate the new transformation by matrix multiplication
+            let result = Transform(matrix: (movement.matrix * self.matrix))
+
+            return result
+        }
+    }
 
 #Preview {
     ModelManager()

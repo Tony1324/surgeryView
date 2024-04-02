@@ -15,7 +15,9 @@ extension Entity: Observable{
 }
 
 @Observable
-class ModelData: ObservableObject {
+class ModelData{
+    
+
     var images: [Entity]
     var models: [Entity]
 
@@ -28,7 +30,9 @@ class ModelData: ObservableObject {
 @main
 struct surgeryViewApp: App {
 
-    @State private var modelData = ModelData(models: [ModelEntity(mesh: .generateBox(size: 0.5, cornerRadius: 0.1), materials: [SimpleMaterial(color: .blue, isMetallic: true)])])
+    @State private var modelData = ModelData(models: [])
+
+    @State private var style: ImmersionStyle = .mixed
 
     var body: some SwiftUI.Scene {
         WindowGroup(id:"control-panel"){
@@ -37,14 +41,10 @@ struct surgeryViewApp: App {
         }
         .defaultSize(CGSize(width: 250, height: 400))
 
-
-        WindowGroup {
+        ImmersiveSpace(id: "3d-immersive") {
             ContentView()
                 .environment(modelData)
-        }.windowStyle(.volumetric)
-
-        ImmersiveSpace(id: "ImmersiveSpace") {
-            ImmersiveView()
         }
+        .immersionStyle(selection: $style, in: .mixed)
     }
 }

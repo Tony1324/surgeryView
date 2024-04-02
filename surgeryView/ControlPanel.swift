@@ -10,27 +10,46 @@ import RealityKit
 
 struct ControlPanel: View {
     @Environment(ModelData.self) var modelData: ModelData
-
+    @Environment(\.openWindow) var openWindow
+    @Environment(\.openImmersiveSpace) var openImmersiveSpace
     var body: some View {
         NavigationStack{
             VStack{
+                Button {
+                    Task{
+                        await openImmersiveSpace(id: "3d-immersive")
+                    }
+                } label: {
+                    Label("Open 3d Viewer ", systemImage: "move.3d")
+                }
+
                 List{
                     Section ("Models Visibility"){
                         ForEach(modelData.models){ entity in
-                            Toggle(isOn: Binding(get: {
-                                return entity.isEnabled
-                            }, set: { value in
-                                entity.isEnabled = value
-
-                            })) {
+                            Button{
+                                entity.isEnabled.toggle()
+                            }label:{
                                 Text("Toggle \(entity.name.isEmpty ? "Unnamed Object" : entity.name)")
                             }
 
                         }
                     }
                 }
-                .listStyle(.sidebar)
+                .background(.regularMaterial)
+                .clipShape(.rect(cornerRadius: 16))
+                .padding()
+                .listStyle(.grouped)
+                Button {
+                    for entity in modelData.models {
+                        entity.position = .zero
+//                        entity.move(to: .identity, relativeTo: entity.parent, duration: 0.2)
+                        
+                    }
+                } label: {
+                    Label("Reset Positions", systemImage: "arrow.counterclockwise.circle")
+                }
             }
+            .padding([.top,.bottom])
         }
     }
 }

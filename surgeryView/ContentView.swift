@@ -16,14 +16,23 @@ struct ContentView: View {
     @State private var showImmersiveSpace = false
     @State private var immersiveSpaceIsShown = false
 
-    private var sampleObject = ModelEntity(mesh: .generateBox(size: 0.5, cornerRadius: 0.1), materials: [SimpleMaterial(color: .blue, isMetallic: true)])
-    @EnvironmentObject var ModelData: ModelData
+    private var sampleObject = ModelEntity(mesh: .generateBox(size: 0.4, cornerRadius: 0.05), materials: [SimpleMaterial(color: .blue, isMetallic: true)])
+    @Environment(ModelData.self) var modelData
     @Environment(\.openWindow) private var openWindow
     var body: some View {
         ZStack (alignment: .bottom) {
             ModelManager()
                 .onAppear{
-                    ModelData.models = [sampleObject, ModelEntity(mesh: .generateSphere(radius: 0.2), materials: [PhysicallyBasedMaterial()])]
+                    
+                }
+                .task {
+                    let testModels = ["Model_1_spleen", "Model_5_liver", "Model_6_stomach", "Model_65_Sacrum"]
+                    modelData.models = []
+                    for model in testModels{
+                        if let _model = try? await ModelEntity(named: model){
+                            modelData.models.append(_model)
+                        }
+                    }
                 }
             Button {
                 openWindow(id: "control-panel")
