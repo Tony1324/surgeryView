@@ -20,26 +20,19 @@ struct ContentView: View {
     @Environment(ModelData.self) var modelData
     @Environment(\.openWindow) private var openWindow
     var body: some View {
-        ZStack (alignment: .bottom) {
-            ModelManager()
-                .onAppear{
-                    
-                }
-                .task {
-                    let testModels = ["Model_1_spleen", "Model_5_liver", "Model_6_stomach", "Model_65_Sacrum"]
-                    modelData.models = []
-                    for model in testModels{
-                        if let _model = try? await ModelEntity(named: model){
-                            modelData.models.append(_model)
-                        }
+        ModelManager()
+            .task {
+                let testModels = ["Model_1_spleen", "Model_5_liver", "Model_6_stomach", "Model_65_Sacrum"]
+                modelData.models = []
+                for model in testModels{
+                    if let _model = try? await ModelEntity(named: model){
+                        modelData.models.append(_model)
                     }
                 }
-            Button {
-                openWindow(id: "control-panel")
-            } label: {
-                Label("Open Control Panel", systemImage: "info.circle")
             }
-        }
+            .onAppear{
+                openWindow(id: "control-panel")
+            }
     }
 }
 

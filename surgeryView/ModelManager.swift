@@ -17,6 +17,7 @@ struct ModelManager: View {
     func addEntity(content: RealityViewContent ,entity: Entity){
         if let originAnchor = content.entities.first {
             entity.components.set(InputTargetComponent())
+            entity.components.set(HoverEffectComponent())
             entity.generateCollisionShapes(recursive: true)
             originAnchor.addChild(entity)
         }
@@ -28,7 +29,8 @@ struct ModelManager: View {
         ZStack(alignment: .leading) {
             RealityView { content in
 
-                let originAnchor = AnchorEntity(world: .zero)
+                let originAnchor = AnchorEntity(world:.zero)
+                originAnchor.position = [0, 2, -2] 
                 originAnchor.name = "origin"
                 content.add(originAnchor)
                 for entity in modelData.models {

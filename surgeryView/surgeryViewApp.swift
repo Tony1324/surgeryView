@@ -32,8 +32,6 @@ struct surgeryViewApp: App {
 
     @State private var modelData = ModelData(models: [])
 
-    @State private var style: ImmersionStyle = .mixed
-
     var body: some SwiftUI.Scene {
         WindowGroup(id:"control-panel"){
             ControlPanel()
@@ -44,7 +42,8 @@ struct surgeryViewApp: App {
         ImmersiveSpace(id: "3d-immersive") {
             ContentView()
                 .environment(modelData)
+                .frame(depth: 1000)
         }
-        .immersionStyle(selection: $style, in: .mixed)
+        .immersionStyle(selection: .constant(.mixed), in: .mixed)
     }
 }

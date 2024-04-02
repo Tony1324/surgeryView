@@ -15,13 +15,6 @@ struct ControlPanel: View {
     var body: some View {
         NavigationStack{
             VStack{
-                Button {
-                    Task{
-                        await openImmersiveSpace(id: "3d-immersive")
-                    }
-                } label: {
-                    Label("Open 3d Viewer ", systemImage: "move.3d")
-                }
 
                 List{
                     Section ("Models Visibility"){
@@ -41,9 +34,7 @@ struct ControlPanel: View {
                 .listStyle(.grouped)
                 Button {
                     for entity in modelData.models {
-                        entity.position = .zero
-//                        entity.move(to: .identity, relativeTo: entity.parent, duration: 0.2)
-                        
+                        entity.position = [0,0,0]
                     }
                 } label: {
                     Label("Reset Positions", systemImage: "arrow.counterclockwise.circle")
