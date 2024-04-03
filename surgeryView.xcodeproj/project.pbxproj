@@ -9,15 +9,62 @@
 /* Begin PBXBuildFile section */
 		1B0054522BB07D8F004697EE /* ControlPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B0054512BB07D8E004697EE /* ControlPanel.swift */; };
 		1B11BFB72BA918B700E1DEB0 /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B11BFB62BA918B700E1DEB0 /* ModelManager.swift */; };
-		1B3F570C2B957BB700753CBB /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 1B3F570B2B957BB700753CBB /* RealityKitContent */; };
 		1B3F570E2B957BB700753CBB /* surgeryViewApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B3F570D2B957BB700753CBB /* surgeryViewApp.swift */; };
 		1B3F57102B957BB700753CBB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B3F570F2B957BB700753CBB /* ContentView.swift */; };
 		1B3F57142B957BB900753CBB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1B3F57132B957BB900753CBB /* Assets.xcassets */; };
 		1B3F57172B957BB900753CBB /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1B3F57162B957BB900753CBB /* Preview Assets.xcassets */; };
-		B732FE112BB7552500B33C52 /* Model_6_stomach.usdz in Resources */ = {isa = PBXBuildFile; fileRef = B732FE0D2BB7552500B33C52 /* Model_6_stomach.usdz */; };
-		B732FE122BB7552500B33C52 /* Model_65_Sacrum.usdz in Resources */ = {isa = PBXBuildFile; fileRef = B732FE0E2BB7552500B33C52 /* Model_65_Sacrum.usdz */; };
-		B732FE132BB7552500B33C52 /* Model_5_liver.usdz in Resources */ = {isa = PBXBuildFile; fileRef = B732FE0F2BB7552500B33C52 /* Model_5_liver.usdz */; };
-		B732FE142BB7552500B33C52 /* Model_1_spleen.usdz in Resources */ = {isa = PBXBuildFile; fileRef = B732FE102BB7552500B33C52 /* Model_1_spleen.usdz */; };
+		1BF411962BBCE5330010CD1D /* Model_58_right_rib_11.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411622BBCE5310010CD1D /* Model_58_right_rib_11.usdz */; };
+		1BF411972BBCE5330010CD1D /* Model_59_right_rib_12.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411632BBCE5310010CD1D /* Model_59_right_rib_12.usdz */; };
+		1BF411982BBCE5330010CD1D /* Model_46_left_rib_8.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411642BBCE5310010CD1D /* Model_46_left_rib_8.usdz */; };
+		1BF411992BBCE5330010CD1D /* Model_45_left_rib_7.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411652BBCE5310010CD1D /* Model_45_left_rib_7.usdz */; };
+		1BF4119A2BBCE5330010CD1D /* Model_6_stomach.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411662BBCE5310010CD1D /* Model_6_stomach.usdz */; };
+		1BF4119B2BBCE5330010CD1D /* Model_48_left_rib_10.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411672BBCE5310010CD1D /* Model_48_left_rib_10.usdz */; };
+		1BF4119C2BBCE5330010CD1D /* Model_44_left_rib_6.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411682BBCE5310010CD1D /* Model_44_left_rib_6.usdz */; };
+		1BF4119D2BBCE5330010CD1D /* Model_3_left_kidney.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411692BBCE5310010CD1D /* Model_3_left_kidney.usdz */; };
+		1BF4119E2BBCE5330010CD1D /* Model_7_aorta.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF4116A2BBCE5310010CD1D /* Model_7_aorta.usdz */; };
+		1BF4119F2BBCE5330010CD1D /* Model_64_right_hip.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF4116B2BBCE5310010CD1D /* Model_64_right_hip.usdz */; };
+		1BF411A02BBCE5330010CD1D /* Model_9_Portal_vein_and_splenic_vein.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF4116C2BBCE5310010CD1D /* Model_9_Portal_vein_and_splenic_vein.usdz */; };
+		1BF411A12BBCE5330010CD1D /* Model_2_right_kidney.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF4116D2BBCE5310010CD1D /* Model_2_right_kidney.usdz */; };
+		1BF411A22BBCE5330010CD1D /* Model_19_L4_vertebra.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF4116E2BBCE5310010CD1D /* Model_19_L4_vertebra.usdz */; };
+		1BF411A32BBCE5330010CD1D /* Model_1_spleen.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF4116F2BBCE5310010CD1D /* Model_1_spleen.usdz */; };
+		1BF411A42BBCE5330010CD1D /* Model_42_left_rib_4.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411702BBCE5310010CD1D /* Model_42_left_rib_4.usdz */; };
+		1BF411A52BBCE5330010CD1D /* Model_65_Sacrum.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411712BBCE5310010CD1D /* Model_65_Sacrum.usdz */; };
+		1BF411A62BBCE5330010CD1D /* Model_43_left_rib_5.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411722BBCE5310010CD1D /* Model_43_left_rib_5.usdz */; };
+		1BF411A72BBCE5330010CD1D /* Model_25_T10_vertebra.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411732BBCE5310010CD1D /* Model_25_T10_vertebra.usdz */; };
+		1BF411A82BBCE5330010CD1D /* Model_17_inferior_lobe_of_right_lung.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411742BBCE5310010CD1D /* Model_17_inferior_lobe_of_right_lung.usdz */; };
+		1BF411A92BBCE5330010CD1D /* Model_55_right_rib_8.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411752BBCE5310010CD1D /* Model_55_right_rib_8.usdz */; };
+		1BF411AA2BBCE5330010CD1D /* Model_56_right_rib_9.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411762BBCE5310010CD1D /* Model_56_right_rib_9.usdz */; };
+		1BF411AB2BBCE5330010CD1D /* Model_28_T7_vertebra.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411772BBCE5320010CD1D /* Model_28_T7_vertebra.usdz */; };
+		1BF411AC2BBCE5330010CD1D /* Model_8_inferior_vena_cava.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411782BBCE5320010CD1D /* Model_8_inferior_vena_cava.usdz */; };
+		1BF411AD2BBCE5330010CD1D /* Model_47_left_rib_9.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411792BBCE5320010CD1D /* Model_47_left_rib_9.usdz */; };
+		1BF411AE2BBCE5330010CD1D /* Model_36_right_common_iliac_artery.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF4117A2BBCE5320010CD1D /* Model_36_right_common_iliac_artery.usdz */; };
+		1BF411AF2BBCE5330010CD1D /* Model_24_T11_vertebra.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF4117B2BBCE5320010CD1D /* Model_24_T11_vertebra.usdz */; };
+		1BF411B02BBCE5330010CD1D /* Model_16_middle_lobe_of_right_lung.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF4117C2BBCE5320010CD1D /* Model_16_middle_lobe_of_right_lung.usdz */; };
+		1BF411B12BBCE5330010CD1D /* Model_38_right_common_iliac_vein.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF4117D2BBCE5320010CD1D /* Model_38_right_common_iliac_vein.usdz */; };
+		1BF411B22BBCE5330010CD1D /* Model_54_right_rib_7.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF4117E2BBCE5320010CD1D /* Model_54_right_rib_7.usdz */; };
+		1BF411B32BBCE5330010CD1D /* Model_21_L2_vertebra.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF4117F2BBCE5320010CD1D /* Model_21_L2_vertebra.usdz */; };
+		1BF411B42BBCE5330010CD1D /* Model_50_left_rib_12.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411802BBCE5320010CD1D /* Model_50_left_rib_12.usdz */; };
+		1BF411B52BBCE5330010CD1D /* Model_49_left_rib_11.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411812BBCE5320010CD1D /* Model_49_left_rib_11.usdz */; };
+		1BF411B62BBCE5330010CD1D /* Model_20_L3_vertebra.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411822BBCE5320010CD1D /* Model_20_L3_vertebra.usdz */; };
+		1BF411B72BBCE5330010CD1D /* Model_14_inferior_lobe_of_left_lung.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411832BBCE5320010CD1D /* Model_14_inferior_lobe_of_left_lung.usdz */; };
+		1BF411B82BBCE5330010CD1D /* Model_52_right_rib_5.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411842BBCE5320010CD1D /* Model_52_right_rib_5.usdz */; };
+		1BF411B92BBCE5330010CD1D /* Model_27_T8_vertebra.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411852BBCE5320010CD1D /* Model_27_T8_vertebra.usdz */; };
+		1BF411BA2BBCE5330010CD1D /* Model_29_esophagus.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411862BBCE5320010CD1D /* Model_29_esophagus.usdz */; };
+		1BF411BB2BBCE5330010CD1D /* Model_15_superior_lobe_of_right_lung.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411872BBCE5320010CD1D /* Model_15_superior_lobe_of_right_lung.usdz */; };
+		1BF411BC2BBCE5330010CD1D /* Model_22_L1_vertebra.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411882BBCE5320010CD1D /* Model_22_L1_vertebra.usdz */; };
+		1BF411BD2BBCE5330010CD1D /* Model_5_liver.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411892BBCE5320010CD1D /* Model_5_liver.usdz */; };
+		1BF411BE2BBCE5330010CD1D /* Model_35_left_common_iliac_artery.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF4118A2BBCE5320010CD1D /* Model_35_left_common_iliac_artery.usdz */; };
+		1BF411BF2BBCE5330010CD1D /* Model_53_right_rib_6.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF4118B2BBCE5320010CD1D /* Model_53_right_rib_6.usdz */; };
+		1BF411C02BBCE5330010CD1D /* Model_37_left_common_iliac_vein.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF4118C2BBCE5320010CD1D /* Model_37_left_common_iliac_vein.usdz */; };
+		1BF411C12BBCE5330010CD1D /* Model_51_right_rib_4.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF4118D2BBCE5320010CD1D /* Model_51_right_rib_4.usdz */; };
+		1BF411C22BBCE5330010CD1D /* Model_57_right_rib_10.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF4118E2BBCE5320010CD1D /* Model_57_right_rib_10.usdz */; };
+		1BF411C32BBCE5330010CD1D /* Model_10_pancreas.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF4118F2BBCE5320010CD1D /* Model_10_pancreas.usdz */; };
+		1BF411C42BBCE5330010CD1D /* Model_4_gallbladder.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411902BBCE5330010CD1D /* Model_4_gallbladder.usdz */; };
+		1BF411C52BBCE5330010CD1D /* Model_13_superior_lobe_of_left_lung.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411912BBCE5330010CD1D /* Model_13_superior_lobe_of_left_lung.usdz */; };
+		1BF411C62BBCE5330010CD1D /* Model_23_T12_vertebra.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411922BBCE5330010CD1D /* Model_23_T12_vertebra.usdz */; };
+		1BF411C72BBCE5330010CD1D /* Model_26_T9_vertebra.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411932BBCE5330010CD1D /* Model_26_T9_vertebra.usdz */; };
+		1BF411C82BBCE5330010CD1D /* Model_18_L5_vertebra.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411942BBCE5330010CD1D /* Model_18_L5_vertebra.usdz */; };
+		1BF411C92BBCE5330010CD1D /* Model_63_left_hip.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411952BBCE5330010CD1D /* Model_63_left_hip.usdz */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,10 +77,58 @@
 		1B3F57132B957BB900753CBB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1B3F57162B957BB900753CBB /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		1B3F57182B957BB900753CBB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B732FE0D2BB7552500B33C52 /* Model_6_stomach.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_6_stomach.usdz; path = "../../../Downloads/Code-Tony/Models USDZ/Model_6_stomach.usdz"; sourceTree = "<group>"; };
-		B732FE0E2BB7552500B33C52 /* Model_65_Sacrum.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_65_Sacrum.usdz; path = "../../../Downloads/Code-Tony/Models USDZ/Model_65_Sacrum.usdz"; sourceTree = "<group>"; };
-		B732FE0F2BB7552500B33C52 /* Model_5_liver.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_5_liver.usdz; path = "../../../Downloads/Code-Tony/Models USDZ/Model_5_liver.usdz"; sourceTree = "<group>"; };
-		B732FE102BB7552500B33C52 /* Model_1_spleen.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_1_spleen.usdz; path = "../../../Downloads/Code-Tony/Models USDZ/Model_1_spleen.usdz"; sourceTree = "<group>"; };
+		1BF411622BBCE5310010CD1D /* Model_58_right_rib_11.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_58_right_rib_11.usdz; path = "3d-models/Model_58_right_rib_11.usdz"; sourceTree = "<group>"; };
+		1BF411632BBCE5310010CD1D /* Model_59_right_rib_12.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_59_right_rib_12.usdz; path = "3d-models/Model_59_right_rib_12.usdz"; sourceTree = "<group>"; };
+		1BF411642BBCE5310010CD1D /* Model_46_left_rib_8.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_46_left_rib_8.usdz; path = "3d-models/Model_46_left_rib_8.usdz"; sourceTree = "<group>"; };
+		1BF411652BBCE5310010CD1D /* Model_45_left_rib_7.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_45_left_rib_7.usdz; path = "3d-models/Model_45_left_rib_7.usdz"; sourceTree = "<group>"; };
+		1BF411662BBCE5310010CD1D /* Model_6_stomach.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_6_stomach.usdz; path = "3d-models/Model_6_stomach.usdz"; sourceTree = "<group>"; };
+		1BF411672BBCE5310010CD1D /* Model_48_left_rib_10.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_48_left_rib_10.usdz; path = "3d-models/Model_48_left_rib_10.usdz"; sourceTree = "<group>"; };
+		1BF411682BBCE5310010CD1D /* Model_44_left_rib_6.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_44_left_rib_6.usdz; path = "3d-models/Model_44_left_rib_6.usdz"; sourceTree = "<group>"; };
+		1BF411692BBCE5310010CD1D /* Model_3_left_kidney.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_3_left_kidney.usdz; path = "3d-models/Model_3_left_kidney.usdz"; sourceTree = "<group>"; };
+		1BF4116A2BBCE5310010CD1D /* Model_7_aorta.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_7_aorta.usdz; path = "3d-models/Model_7_aorta.usdz"; sourceTree = "<group>"; };
+		1BF4116B2BBCE5310010CD1D /* Model_64_right_hip.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_64_right_hip.usdz; path = "3d-models/Model_64_right_hip.usdz"; sourceTree = "<group>"; };
+		1BF4116C2BBCE5310010CD1D /* Model_9_Portal_vein_and_splenic_vein.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_9_Portal_vein_and_splenic_vein.usdz; path = "3d-models/Model_9_Portal_vein_and_splenic_vein.usdz"; sourceTree = "<group>"; };
+		1BF4116D2BBCE5310010CD1D /* Model_2_right_kidney.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_2_right_kidney.usdz; path = "3d-models/Model_2_right_kidney.usdz"; sourceTree = "<group>"; };
+		1BF4116E2BBCE5310010CD1D /* Model_19_L4_vertebra.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_19_L4_vertebra.usdz; path = "3d-models/Model_19_L4_vertebra.usdz"; sourceTree = "<group>"; };
+		1BF4116F2BBCE5310010CD1D /* Model_1_spleen.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_1_spleen.usdz; path = "3d-models/Model_1_spleen.usdz"; sourceTree = "<group>"; };
+		1BF411702BBCE5310010CD1D /* Model_42_left_rib_4.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_42_left_rib_4.usdz; path = "3d-models/Model_42_left_rib_4.usdz"; sourceTree = "<group>"; };
+		1BF411712BBCE5310010CD1D /* Model_65_Sacrum.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_65_Sacrum.usdz; path = "3d-models/Model_65_Sacrum.usdz"; sourceTree = "<group>"; };
+		1BF411722BBCE5310010CD1D /* Model_43_left_rib_5.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_43_left_rib_5.usdz; path = "3d-models/Model_43_left_rib_5.usdz"; sourceTree = "<group>"; };
+		1BF411732BBCE5310010CD1D /* Model_25_T10_vertebra.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_25_T10_vertebra.usdz; path = "3d-models/Model_25_T10_vertebra.usdz"; sourceTree = "<group>"; };
+		1BF411742BBCE5310010CD1D /* Model_17_inferior_lobe_of_right_lung.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_17_inferior_lobe_of_right_lung.usdz; path = "3d-models/Model_17_inferior_lobe_of_right_lung.usdz"; sourceTree = "<group>"; };
+		1BF411752BBCE5310010CD1D /* Model_55_right_rib_8.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_55_right_rib_8.usdz; path = "3d-models/Model_55_right_rib_8.usdz"; sourceTree = "<group>"; };
+		1BF411762BBCE5310010CD1D /* Model_56_right_rib_9.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_56_right_rib_9.usdz; path = "3d-models/Model_56_right_rib_9.usdz"; sourceTree = "<group>"; };
+		1BF411772BBCE5320010CD1D /* Model_28_T7_vertebra.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_28_T7_vertebra.usdz; path = "3d-models/Model_28_T7_vertebra.usdz"; sourceTree = "<group>"; };
+		1BF411782BBCE5320010CD1D /* Model_8_inferior_vena_cava.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_8_inferior_vena_cava.usdz; path = "3d-models/Model_8_inferior_vena_cava.usdz"; sourceTree = "<group>"; };
+		1BF411792BBCE5320010CD1D /* Model_47_left_rib_9.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_47_left_rib_9.usdz; path = "3d-models/Model_47_left_rib_9.usdz"; sourceTree = "<group>"; };
+		1BF4117A2BBCE5320010CD1D /* Model_36_right_common_iliac_artery.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_36_right_common_iliac_artery.usdz; path = "3d-models/Model_36_right_common_iliac_artery.usdz"; sourceTree = "<group>"; };
+		1BF4117B2BBCE5320010CD1D /* Model_24_T11_vertebra.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_24_T11_vertebra.usdz; path = "3d-models/Model_24_T11_vertebra.usdz"; sourceTree = "<group>"; };
+		1BF4117C2BBCE5320010CD1D /* Model_16_middle_lobe_of_right_lung.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_16_middle_lobe_of_right_lung.usdz; path = "3d-models/Model_16_middle_lobe_of_right_lung.usdz"; sourceTree = "<group>"; };
+		1BF4117D2BBCE5320010CD1D /* Model_38_right_common_iliac_vein.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_38_right_common_iliac_vein.usdz; path = "3d-models/Model_38_right_common_iliac_vein.usdz"; sourceTree = "<group>"; };
+		1BF4117E2BBCE5320010CD1D /* Model_54_right_rib_7.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_54_right_rib_7.usdz; path = "3d-models/Model_54_right_rib_7.usdz"; sourceTree = "<group>"; };
+		1BF4117F2BBCE5320010CD1D /* Model_21_L2_vertebra.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_21_L2_vertebra.usdz; path = "3d-models/Model_21_L2_vertebra.usdz"; sourceTree = "<group>"; };
+		1BF411802BBCE5320010CD1D /* Model_50_left_rib_12.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_50_left_rib_12.usdz; path = "3d-models/Model_50_left_rib_12.usdz"; sourceTree = "<group>"; };
+		1BF411812BBCE5320010CD1D /* Model_49_left_rib_11.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_49_left_rib_11.usdz; path = "3d-models/Model_49_left_rib_11.usdz"; sourceTree = "<group>"; };
+		1BF411822BBCE5320010CD1D /* Model_20_L3_vertebra.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_20_L3_vertebra.usdz; path = "3d-models/Model_20_L3_vertebra.usdz"; sourceTree = "<group>"; };
+		1BF411832BBCE5320010CD1D /* Model_14_inferior_lobe_of_left_lung.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_14_inferior_lobe_of_left_lung.usdz; path = "3d-models/Model_14_inferior_lobe_of_left_lung.usdz"; sourceTree = "<group>"; };
+		1BF411842BBCE5320010CD1D /* Model_52_right_rib_5.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_52_right_rib_5.usdz; path = "3d-models/Model_52_right_rib_5.usdz"; sourceTree = "<group>"; };
+		1BF411852BBCE5320010CD1D /* Model_27_T8_vertebra.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_27_T8_vertebra.usdz; path = "3d-models/Model_27_T8_vertebra.usdz"; sourceTree = "<group>"; };
+		1BF411862BBCE5320010CD1D /* Model_29_esophagus.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_29_esophagus.usdz; path = "3d-models/Model_29_esophagus.usdz"; sourceTree = "<group>"; };
+		1BF411872BBCE5320010CD1D /* Model_15_superior_lobe_of_right_lung.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_15_superior_lobe_of_right_lung.usdz; path = "3d-models/Model_15_superior_lobe_of_right_lung.usdz"; sourceTree = "<group>"; };
+		1BF411882BBCE5320010CD1D /* Model_22_L1_vertebra.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_22_L1_vertebra.usdz; path = "3d-models/Model_22_L1_vertebra.usdz"; sourceTree = "<group>"; };
+		1BF411892BBCE5320010CD1D /* Model_5_liver.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_5_liver.usdz; path = "3d-models/Model_5_liver.usdz"; sourceTree = "<group>"; };
+		1BF4118A2BBCE5320010CD1D /* Model_35_left_common_iliac_artery.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_35_left_common_iliac_artery.usdz; path = "3d-models/Model_35_left_common_iliac_artery.usdz"; sourceTree = "<group>"; };
+		1BF4118B2BBCE5320010CD1D /* Model_53_right_rib_6.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_53_right_rib_6.usdz; path = "3d-models/Model_53_right_rib_6.usdz"; sourceTree = "<group>"; };
+		1BF4118C2BBCE5320010CD1D /* Model_37_left_common_iliac_vein.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_37_left_common_iliac_vein.usdz; path = "3d-models/Model_37_left_common_iliac_vein.usdz"; sourceTree = "<group>"; };
+		1BF4118D2BBCE5320010CD1D /* Model_51_right_rib_4.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_51_right_rib_4.usdz; path = "3d-models/Model_51_right_rib_4.usdz"; sourceTree = "<group>"; };
+		1BF4118E2BBCE5320010CD1D /* Model_57_right_rib_10.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_57_right_rib_10.usdz; path = "3d-models/Model_57_right_rib_10.usdz"; sourceTree = "<group>"; };
+		1BF4118F2BBCE5320010CD1D /* Model_10_pancreas.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_10_pancreas.usdz; path = "3d-models/Model_10_pancreas.usdz"; sourceTree = "<group>"; };
+		1BF411902BBCE5330010CD1D /* Model_4_gallbladder.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_4_gallbladder.usdz; path = "3d-models/Model_4_gallbladder.usdz"; sourceTree = "<group>"; };
+		1BF411912BBCE5330010CD1D /* Model_13_superior_lobe_of_left_lung.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_13_superior_lobe_of_left_lung.usdz; path = "3d-models/Model_13_superior_lobe_of_left_lung.usdz"; sourceTree = "<group>"; };
+		1BF411922BBCE5330010CD1D /* Model_23_T12_vertebra.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_23_T12_vertebra.usdz; path = "3d-models/Model_23_T12_vertebra.usdz"; sourceTree = "<group>"; };
+		1BF411932BBCE5330010CD1D /* Model_26_T9_vertebra.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_26_T9_vertebra.usdz; path = "3d-models/Model_26_T9_vertebra.usdz"; sourceTree = "<group>"; };
+		1BF411942BBCE5330010CD1D /* Model_18_L5_vertebra.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_18_L5_vertebra.usdz; path = "3d-models/Model_18_L5_vertebra.usdz"; sourceTree = "<group>"; };
+		1BF411952BBCE5330010CD1D /* Model_63_left_hip.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; name = Model_63_left_hip.usdz; path = "3d-models/Model_63_left_hip.usdz"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,7 +136,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1B3F570C2B957BB700753CBB /* RealityKitContent in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,10 +162,58 @@
 		1B3F57082B957BB700753CBB /* surgeryView */ = {
 			isa = PBXGroup;
 			children = (
-				B732FE102BB7552500B33C52 /* Model_1_spleen.usdz */,
-				B732FE0F2BB7552500B33C52 /* Model_5_liver.usdz */,
-				B732FE0D2BB7552500B33C52 /* Model_6_stomach.usdz */,
-				B732FE0E2BB7552500B33C52 /* Model_65_Sacrum.usdz */,
+				1BF4116F2BBCE5310010CD1D /* Model_1_spleen.usdz */,
+				1BF4116D2BBCE5310010CD1D /* Model_2_right_kidney.usdz */,
+				1BF411692BBCE5310010CD1D /* Model_3_left_kidney.usdz */,
+				1BF411902BBCE5330010CD1D /* Model_4_gallbladder.usdz */,
+				1BF411892BBCE5320010CD1D /* Model_5_liver.usdz */,
+				1BF411662BBCE5310010CD1D /* Model_6_stomach.usdz */,
+				1BF4116A2BBCE5310010CD1D /* Model_7_aorta.usdz */,
+				1BF411782BBCE5320010CD1D /* Model_8_inferior_vena_cava.usdz */,
+				1BF4116C2BBCE5310010CD1D /* Model_9_Portal_vein_and_splenic_vein.usdz */,
+				1BF4118F2BBCE5320010CD1D /* Model_10_pancreas.usdz */,
+				1BF411912BBCE5330010CD1D /* Model_13_superior_lobe_of_left_lung.usdz */,
+				1BF411832BBCE5320010CD1D /* Model_14_inferior_lobe_of_left_lung.usdz */,
+				1BF411872BBCE5320010CD1D /* Model_15_superior_lobe_of_right_lung.usdz */,
+				1BF4117C2BBCE5320010CD1D /* Model_16_middle_lobe_of_right_lung.usdz */,
+				1BF411742BBCE5310010CD1D /* Model_17_inferior_lobe_of_right_lung.usdz */,
+				1BF411942BBCE5330010CD1D /* Model_18_L5_vertebra.usdz */,
+				1BF4116E2BBCE5310010CD1D /* Model_19_L4_vertebra.usdz */,
+				1BF411822BBCE5320010CD1D /* Model_20_L3_vertebra.usdz */,
+				1BF4117F2BBCE5320010CD1D /* Model_21_L2_vertebra.usdz */,
+				1BF411882BBCE5320010CD1D /* Model_22_L1_vertebra.usdz */,
+				1BF411922BBCE5330010CD1D /* Model_23_T12_vertebra.usdz */,
+				1BF4117B2BBCE5320010CD1D /* Model_24_T11_vertebra.usdz */,
+				1BF411732BBCE5310010CD1D /* Model_25_T10_vertebra.usdz */,
+				1BF411932BBCE5330010CD1D /* Model_26_T9_vertebra.usdz */,
+				1BF411852BBCE5320010CD1D /* Model_27_T8_vertebra.usdz */,
+				1BF411772BBCE5320010CD1D /* Model_28_T7_vertebra.usdz */,
+				1BF411862BBCE5320010CD1D /* Model_29_esophagus.usdz */,
+				1BF4118A2BBCE5320010CD1D /* Model_35_left_common_iliac_artery.usdz */,
+				1BF4117A2BBCE5320010CD1D /* Model_36_right_common_iliac_artery.usdz */,
+				1BF4118C2BBCE5320010CD1D /* Model_37_left_common_iliac_vein.usdz */,
+				1BF4117D2BBCE5320010CD1D /* Model_38_right_common_iliac_vein.usdz */,
+				1BF411702BBCE5310010CD1D /* Model_42_left_rib_4.usdz */,
+				1BF411722BBCE5310010CD1D /* Model_43_left_rib_5.usdz */,
+				1BF411682BBCE5310010CD1D /* Model_44_left_rib_6.usdz */,
+				1BF411652BBCE5310010CD1D /* Model_45_left_rib_7.usdz */,
+				1BF411642BBCE5310010CD1D /* Model_46_left_rib_8.usdz */,
+				1BF411792BBCE5320010CD1D /* Model_47_left_rib_9.usdz */,
+				1BF411672BBCE5310010CD1D /* Model_48_left_rib_10.usdz */,
+				1BF411812BBCE5320010CD1D /* Model_49_left_rib_11.usdz */,
+				1BF411802BBCE5320010CD1D /* Model_50_left_rib_12.usdz */,
+				1BF4118D2BBCE5320010CD1D /* Model_51_right_rib_4.usdz */,
+				1BF411842BBCE5320010CD1D /* Model_52_right_rib_5.usdz */,
+				1BF4118B2BBCE5320010CD1D /* Model_53_right_rib_6.usdz */,
+				1BF4117E2BBCE5320010CD1D /* Model_54_right_rib_7.usdz */,
+				1BF411752BBCE5310010CD1D /* Model_55_right_rib_8.usdz */,
+				1BF411762BBCE5310010CD1D /* Model_56_right_rib_9.usdz */,
+				1BF4118E2BBCE5320010CD1D /* Model_57_right_rib_10.usdz */,
+				1BF411622BBCE5310010CD1D /* Model_58_right_rib_11.usdz */,
+				1BF411632BBCE5310010CD1D /* Model_59_right_rib_12.usdz */,
+				1BF411952BBCE5330010CD1D /* Model_63_left_hip.usdz */,
+				1BF4116B2BBCE5310010CD1D /* Model_64_right_hip.usdz */,
+				1BF411712BBCE5310010CD1D /* Model_65_Sacrum.usdz */,
 				1B3F570D2B957BB700753CBB /* surgeryViewApp.swift */,
 				1B0054512BB07D8E004697EE /* ControlPanel.swift */,
 				1B3F570F2B957BB700753CBB /* ContentView.swift */,
@@ -116,7 +258,6 @@
 			);
 			name = surgeryView;
 			packageProductDependencies = (
-				1B3F570B2B957BB700753CBB /* RealityKitContent */,
 			);
 			productName = surgeryView;
 			productReference = 1B3F57062B957BB700753CBB /* surgeryView.app */;
@@ -160,12 +301,60 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B732FE142BB7552500B33C52 /* Model_1_spleen.usdz in Resources */,
-				B732FE132BB7552500B33C52 /* Model_5_liver.usdz in Resources */,
+				1BF411A02BBCE5330010CD1D /* Model_9_Portal_vein_and_splenic_vein.usdz in Resources */,
+				1BF4119D2BBCE5330010CD1D /* Model_3_left_kidney.usdz in Resources */,
+				1BF411BC2BBCE5330010CD1D /* Model_22_L1_vertebra.usdz in Resources */,
+				1BF411AE2BBCE5330010CD1D /* Model_36_right_common_iliac_artery.usdz in Resources */,
+				1BF411A22BBCE5330010CD1D /* Model_19_L4_vertebra.usdz in Resources */,
+				1BF411B02BBCE5330010CD1D /* Model_16_middle_lobe_of_right_lung.usdz in Resources */,
+				1BF411AB2BBCE5330010CD1D /* Model_28_T7_vertebra.usdz in Resources */,
+				1BF411C72BBCE5330010CD1D /* Model_26_T9_vertebra.usdz in Resources */,
+				1BF411AC2BBCE5330010CD1D /* Model_8_inferior_vena_cava.usdz in Resources */,
+				1BF411A72BBCE5330010CD1D /* Model_25_T10_vertebra.usdz in Resources */,
+				1BF411A62BBCE5330010CD1D /* Model_43_left_rib_5.usdz in Resources */,
+				1BF411B52BBCE5330010CD1D /* Model_49_left_rib_11.usdz in Resources */,
+				1BF411C02BBCE5330010CD1D /* Model_37_left_common_iliac_vein.usdz in Resources */,
+				1BF411BF2BBCE5330010CD1D /* Model_53_right_rib_6.usdz in Resources */,
+				1BF411A42BBCE5330010CD1D /* Model_42_left_rib_4.usdz in Resources */,
+				1BF411962BBCE5330010CD1D /* Model_58_right_rib_11.usdz in Resources */,
+				1BF411BE2BBCE5330010CD1D /* Model_35_left_common_iliac_artery.usdz in Resources */,
+				1BF4119F2BBCE5330010CD1D /* Model_64_right_hip.usdz in Resources */,
+				1BF411AF2BBCE5330010CD1D /* Model_24_T11_vertebra.usdz in Resources */,
 				1B3F57172B957BB900753CBB /* Preview Assets.xcassets in Resources */,
-				B732FE122BB7552500B33C52 /* Model_65_Sacrum.usdz in Resources */,
+				1BF411AA2BBCE5330010CD1D /* Model_56_right_rib_9.usdz in Resources */,
+				1BF411C42BBCE5330010CD1D /* Model_4_gallbladder.usdz in Resources */,
+				1BF411B62BBCE5330010CD1D /* Model_20_L3_vertebra.usdz in Resources */,
+				1BF411B12BBCE5330010CD1D /* Model_38_right_common_iliac_vein.usdz in Resources */,
+				1BF411B22BBCE5330010CD1D /* Model_54_right_rib_7.usdz in Resources */,
+				1BF411C32BBCE5330010CD1D /* Model_10_pancreas.usdz in Resources */,
+				1BF411C12BBCE5330010CD1D /* Model_51_right_rib_4.usdz in Resources */,
 				1B3F57142B957BB900753CBB /* Assets.xcassets in Resources */,
-				B732FE112BB7552500B33C52 /* Model_6_stomach.usdz in Resources */,
+				1BF411992BBCE5330010CD1D /* Model_45_left_rib_7.usdz in Resources */,
+				1BF411A12BBCE5330010CD1D /* Model_2_right_kidney.usdz in Resources */,
+				1BF411B82BBCE5330010CD1D /* Model_52_right_rib_5.usdz in Resources */,
+				1BF411AD2BBCE5330010CD1D /* Model_47_left_rib_9.usdz in Resources */,
+				1BF4119E2BBCE5330010CD1D /* Model_7_aorta.usdz in Resources */,
+				1BF411BA2BBCE5330010CD1D /* Model_29_esophagus.usdz in Resources */,
+				1BF411A52BBCE5330010CD1D /* Model_65_Sacrum.usdz in Resources */,
+				1BF411B32BBCE5330010CD1D /* Model_21_L2_vertebra.usdz in Resources */,
+				1BF411C82BBCE5330010CD1D /* Model_18_L5_vertebra.usdz in Resources */,
+				1BF411B72BBCE5330010CD1D /* Model_14_inferior_lobe_of_left_lung.usdz in Resources */,
+				1BF411C22BBCE5330010CD1D /* Model_57_right_rib_10.usdz in Resources */,
+				1BF411BD2BBCE5330010CD1D /* Model_5_liver.usdz in Resources */,
+				1BF411972BBCE5330010CD1D /* Model_59_right_rib_12.usdz in Resources */,
+				1BF4119A2BBCE5330010CD1D /* Model_6_stomach.usdz in Resources */,
+				1BF411982BBCE5330010CD1D /* Model_46_left_rib_8.usdz in Resources */,
+				1BF4119B2BBCE5330010CD1D /* Model_48_left_rib_10.usdz in Resources */,
+				1BF411B42BBCE5330010CD1D /* Model_50_left_rib_12.usdz in Resources */,
+				1BF411BB2BBCE5330010CD1D /* Model_15_superior_lobe_of_right_lung.usdz in Resources */,
+				1BF411C52BBCE5330010CD1D /* Model_13_superior_lobe_of_left_lung.usdz in Resources */,
+				1BF411C92BBCE5330010CD1D /* Model_63_left_hip.usdz in Resources */,
+				1BF411A32BBCE5330010CD1D /* Model_1_spleen.usdz in Resources */,
+				1BF411A92BBCE5330010CD1D /* Model_55_right_rib_8.usdz in Resources */,
+				1BF411B92BBCE5330010CD1D /* Model_27_T8_vertebra.usdz in Resources */,
+				1BF4119C2BBCE5330010CD1D /* Model_44_left_rib_6.usdz in Resources */,
+				1BF411C62BBCE5330010CD1D /* Model_23_T12_vertebra.usdz in Resources */,
+				1BF411A82BBCE5330010CD1D /* Model_17_inferior_lobe_of_right_lung.usdz in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,13 +570,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		1B3F570B2B957BB700753CBB /* RealityKitContent */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = RealityKitContent;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1B3F56FE2B957BB700753CBB /* Project object */;
 }

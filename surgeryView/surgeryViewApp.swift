@@ -5,6 +5,7 @@
 //  Created by Tony Zhang on 3/3/24.
 //
 
+import Foundation
 import SwiftUI
 import RealityKit
 
@@ -36,6 +37,22 @@ struct surgeryViewApp: App {
         WindowGroup(id:"control-panel"){
             ControlPanel()
                 .environment(modelData)
+                .task {
+                    let testModels = Bundle.main.urls(forResourcesWithExtension: "usdz", subdirectory: "")
+                    modelData.models = []
+                    if let urls = testModels {
+                        print("loading test models")
+                        await withTaskGroup(of: Void.self) { group in
+                            for model in urls {
+                                group.addTask {
+                                    if let _model = try? await ModelEntity(named: model.lastPathComponent){
+                                        modelData.models.append(_model)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
         }
         .defaultSize(CGSize(width: 250, height: 400))
 

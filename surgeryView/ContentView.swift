@@ -7,7 +7,6 @@
 
 import SwiftUI
 import RealityKit
-import RealityKitContent
 
 struct ContentView: View {
 
@@ -21,15 +20,6 @@ struct ContentView: View {
     @Environment(\.openWindow) private var openWindow
     var body: some View {
         ModelManager()
-            .task {
-                let testModels = ["Model_1_spleen", "Model_5_liver", "Model_6_stomach", "Model_65_Sacrum"]
-                modelData.models = []
-                for model in testModels{
-                    if let _model = try? await ModelEntity(named: model){
-                        modelData.models.append(_model)
-                    }
-                }
-            }
             .onAppear{
                 openWindow(id: "control-panel")
             }

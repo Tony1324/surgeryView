@@ -7,7 +7,6 @@
 
 import SwiftUI
 import RealityKit
-import RealityKitContent
 
 struct ModelManager: View {
     // custom content handling
