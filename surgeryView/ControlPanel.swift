@@ -33,7 +33,9 @@ struct ControlPanel: View {
                 .padding()
                 .listStyle(.grouped)
                 Button {
+//                    modelData.resetPositions()
                     for entity in modelData.models {
+                        print(modelData.models.count)
                         entity.position = [0,0,0]
                     }
                 } label: {

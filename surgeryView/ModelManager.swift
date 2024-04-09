@@ -19,6 +19,7 @@ struct ModelManager: View {
             entity.components.set(HoverEffectComponent())
             entity.generateCollisionShapes(recursive: true)
             originAnchor.addChild(entity)
+            print(modelData.models.count)
         }
     }
     
@@ -29,13 +30,19 @@ struct ModelManager: View {
             RealityView { content in
 
                 let originAnchor = AnchorEntity(world:.zero)
-                originAnchor.position = [0, 2, -2] 
+                originAnchor.position = [0, 1, -1.5]
+                originAnchor.scale = [0.1, 0.1, 0.1]
+                originAnchor.setOrientation(simd_quatf.init(angle: -Float.pi/2, axis: [1, 0, 0]), relativeTo: nil)
                 originAnchor.name = "origin"
+                let dragBase = ModelEntity(mesh: .generateCylinder(height: 0.4, radius: 3), materials: [SimpleMaterial.init(color: .darkGray, isMetallic: true)])
+                dragBase.position = [0, 0, -5]
+                dragBase.name = "base"
+                dragBase.setOrientation(simd_quatf.init(angle: Float.pi/2, axis: [1, 0, 0]), relativeTo: nil)
                 content.add(originAnchor)
+                
+                addEntity(content: content, entity: dragBase)
+
                 for entity in modelData.models {
-//                    let objectAnchor = Entity()
-//                    objectAnchor.addChild(entity)
-//                    originAnchor.addChild(objectAnchor)
                     addEntity(content: content, entity: entity)
                 }
             } update: { content in
@@ -44,8 +51,6 @@ struct ModelManager: View {
                         if originAnchor.children.contains(entity) {
                             continue
                         }else{
-                            //                        let objectAnchor = Entity()
-                            //                        objectAnchor.addChild(entity)
                             addEntity(content: content, entity: entity)
                         }
                     }
@@ -63,10 +68,23 @@ struct ModelManager: View {
                 DragGesture()
                     .targetedToAnyEntity()
                     .onChanged({ value in
+                        
+                        if value.entity.name == "base" {
+                            if dragStartLocation3d == nil {
+                                dragStartLocation3d = value.entity.parent!.transform
+                            }
+                            let translation = value.convert(value.translation3D, from: .local, to: .scene)
+                            value.entity.parent?.transform = dragStartLocation3d!.whenTranslatedBy(vector: Vector3D(translation))
+
+                            return
+                        }
+                        
                         if dragStartLocation3d == nil {
                             dragStartLocation3d = value.entity.transform
                         }
-                        let translation = value.convert(value.translation3D, from: .local, to: .scene)
+                        
+                        let translation = value.convert(value.translation3D, from: .local, to: value.entity.parent!)
+                        
                         value.entity.transform = dragStartLocation3d!.whenTranslatedBy(vector: Vector3D(translation))
                     })
                     .onEnded({ _ in
