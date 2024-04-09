@@ -69,23 +69,24 @@ struct ModelManager: View {
                     .targetedToAnyEntity()
                     .onChanged({ value in
                         
-                        if value.entity.name == "base" {
+                        let entity = value.entity
+                        if entity.name == "base" {
                             if dragStartLocation3d == nil {
-                                dragStartLocation3d = value.entity.parent!.transform
+                                dragStartLocation3d = entity.parent!.transform
                             }
                             let translation = value.convert(value.translation3D, from: .local, to: .scene)
-                            value.entity.parent?.transform = dragStartLocation3d!.whenTranslatedBy(vector: Vector3D(translation))
+                            entity.parent?.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D(translation)), relativeTo: nil, duration: 0.1)
 
                             return
                         }
                         
                         if dragStartLocation3d == nil {
-                            dragStartLocation3d = value.entity.transform
+                            dragStartLocation3d = entity.transform
                         }
                         
-                        let translation = value.convert(value.translation3D, from: .local, to: value.entity.parent!)
+                        let translation = value.convert(value.translation3D, from: .local, to: entity.parent!)
                         
-                        value.entity.transform = dragStartLocation3d!.whenTranslatedBy(vector: Vector3D(translation))
+                        entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D(translation)), relativeTo: entity.parent, duration: 0.1)
                     })
                     .onEnded({ _ in
                         dragStartLocation3d = nil

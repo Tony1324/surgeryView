@@ -53,7 +53,7 @@ class ModelData{
     
     func resetPositions() {
         for entity in models {
-            entity.position = [0,0,0]
+            entity.move(to: Transform(scale: entity.scale, translation: [0,0,0]), relativeTo: entity.parent, duration: 0.2)
         }
     }
 }
@@ -62,11 +62,16 @@ class ModelData{
 struct surgeryViewApp: App {
 
     @State private var modelData = ModelData(models: [])
+    @State var style: ImmersionStyle = .mixed
+    @Environment(\.openImmersiveSpace) var openImmersiveSpace
 
     var body: some SwiftUI.Scene {
         WindowGroup(id:"control-panel"){
             ControlPanel()
                 .environment(modelData)
+                .task {
+                    await openImmersiveSpace(id: "3d-immersive")
+                }
         }
         .defaultSize(CGSize(width: 250, height: 400))
 
@@ -75,6 +80,6 @@ struct surgeryViewApp: App {
                 .environment(modelData)
                 .frame(depth: 1000)
         }
-        .immersionStyle(selection: .constant(.mixed), in: .mixed)
+        .immersionStyle(selection: $style, in: .mixed)
     }
 }
