@@ -23,6 +23,36 @@ struct ModelManager: View {
         }
     }
     
+    func addBase(content: RealityViewContent) {
+        if let originAnchor = content.entities.first {
+            let dragBase = ModelEntity(mesh: .generateCylinder(height: 0.02, radius: 0.2), materials: [SimpleMaterial.init(color: .darkGray, isMetallic: false)])
+            dragBase.name = "base"
+            addEntity(content: content, entity: dragBase)
+            dragBase.move(to: dragBase.convert(transform: Transform(), to: originAnchor), relativeTo: nil)
+
+        }
+    }
+    
+    func positionBase(content: RealityViewContent){
+        if let originAnchor = content.entities.first{
+            if let base = originAnchor.findEntity(named: "base"){
+                var centers: SIMD3<Float> = [0,0,0]
+                var lowestZ: Float = 0
+                for entity in originAnchor.children {
+                    guard entity.name != "base" else {continue}
+                    let bounds = entity.visualBounds(relativeTo: entity.parent)
+                    centers = centers + bounds.center /  max((Float(originAnchor.children.count - 1)),1)
+                    lowestZ = min(lowestZ, bounds.min.z)
+                }
+                centers.z = lowestZ - 0.1
+                base.position = centers
+            }else {
+                addBase(content: content)
+                positionBase(content: content)
+            }
+        }
+    }
+    
     @State var dragStartLocation3d: Transform? = nil
     
     var body: some View {
@@ -34,17 +64,16 @@ struct ModelManager: View {
                 originAnchor.scale = [0.1, 0.1, 0.1]
                 originAnchor.setOrientation(simd_quatf.init(angle: -Float.pi/2, axis: [1, 0, 0]), relativeTo: nil)
                 originAnchor.name = "origin"
-                let dragBase = ModelEntity(mesh: .generateCylinder(height: 0.4, radius: 3), materials: [SimpleMaterial.init(color: .darkGray, isMetallic: true)])
-                dragBase.position = [0, 0, -5]
-                dragBase.name = "base"
-                dragBase.setOrientation(simd_quatf.init(angle: Float.pi/2, axis: [1, 0, 0]), relativeTo: nil)
+                
                 content.add(originAnchor)
                 
-                addEntity(content: content, entity: dragBase)
 
                 for entity in modelData.models {
                     addEntity(content: content, entity: entity)
                 }
+                
+                addBase(content: content)
+                
             } update: { content in
                 if let originAnchor = content.entities.first{
                     for entity in modelData.models {
@@ -60,6 +89,7 @@ struct ModelManager: View {
                         }
                     }
                 }
+                positionBase(content: content)
                 if let update {
                     update(content)
                 }

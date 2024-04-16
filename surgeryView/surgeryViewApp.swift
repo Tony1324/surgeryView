@@ -60,10 +60,13 @@ class ModelData{
     }
 
     func explodeModels(_ factor: Float) {
+        resetPositions()
         for entity in models {
             let bounds = entity.visualBounds(relativeTo: entity.parent)
-            let center = bounds.center
-            entity.move(to: Transform(scale: entity.scale, translation: center*factor), relativeTo: entity.parent, duration: 0.2)
+            var center = bounds.center
+            center.z = center.z - (entity.parent?.findEntity(named: "base")?.position.z ?? 0) - 1
+            print(entity.parent?.findEntity(named: "base")?.position)
+            entity.move(to: Transform(scale: entity.scale, translation: center*factor), relativeTo: entity.parent, duration: 0.2, timingFunction: .easeOut)
         }
     }
 }

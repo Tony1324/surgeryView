@@ -48,7 +48,7 @@ struct ControlPanel: View {
                     }
                     ToolbarItem(placement: .bottomOrnament) {
                         Button {
-                            modelData.explodeModels(2)
+                            modelData.explodeModels(1)
                         } label: {
                             Label("Explode Models", systemImage: "arrow.up.backward.and.arrow.down.forward.square")
                         }
