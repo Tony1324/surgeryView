@@ -55,8 +55,8 @@ struct ModelManager: View {
                         }
                     }
                     for entity in originAnchor.children {
-                        if !modelData.models.contains(entity) {
-                            content.remove(entity)
+                        if !modelData.models.contains(entity) && entity.name != "base" {
+                            originAnchor.removeChild(entity)
                         }
                     }
                 }

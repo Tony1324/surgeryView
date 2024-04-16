@@ -53,7 +53,17 @@ class ModelData{
     
     func resetPositions() {
         for entity in models {
-            entity.move(to: Transform(scale: entity.scale, translation: [0,0,0]), relativeTo: entity.parent, duration: 0.2)
+            if let parent = entity.parent{
+                entity.move(to: Transform(scale:entity.scale, translation: [0,0,0]), relativeTo: parent, duration: 0.2)
+            }
+        }
+    }
+
+    func explodeModels(_ factor: Float) {
+        for entity in models {
+            let bounds = entity.visualBounds(relativeTo: entity.parent)
+            let center = bounds.center
+            entity.move(to: Transform(scale: entity.scale, translation: center*factor), relativeTo: entity.parent, duration: 0.2)
         }
     }
 }
