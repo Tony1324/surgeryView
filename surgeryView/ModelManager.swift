@@ -19,7 +19,6 @@ struct ModelManager: View {
             entity.components.set(HoverEffectComponent())
             entity.generateCollisionShapes(recursive: true)
             originAnchor.addChild(entity)
-            print(modelData.models.count)
         }
     }
     
