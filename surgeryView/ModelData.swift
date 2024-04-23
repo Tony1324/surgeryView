@@ -16,38 +16,18 @@ class ModelData{
     
     var images: [Entity]
     var models: [Entity]
-    
-    var connection: NWConnection?
-    var endpoint: NWEndpoint = .hostPort(host: "127.0.0.1", port: .init(rawValue: 8267)!)
+    var igtlClient: CommunicationsManager? 
 
     init(images: [Entity] = [], models: [Entity] = []) {
         self.images = images
         self.models = models
     }
     
-    func startClient() {
-        connection = NWConnection(to: endpoint, using: .tcp)
-        if let connection {
-            connection.start(queue: .main)
-            connection.send(content: "testing".data(using: .utf8), completion: .contentProcessed({ error in
-                print("something happened")
-            }))
-            
-            func receiveM() {
-                connection.receive(minimumIncompleteLength: 0, maximumLength: 1024) { content, contentContext, isComplete, error in
-                    if let content {
-                        self.processMessage(content)
-                    }
-                    receiveM()
-                }
-            }
-            receiveM()
+    func startServer() {
+        igtlClient = CommunicationsManager(host: "127.0.0.1", port: 8267)
+        if let igtlClient {
+            igtlClient.startClient()
         }
-    }
-    
-    
-    func processMessage(_ data:Data) {
-        print(String(data: data, encoding: .utf8))
     }
     
     func loadSampleModels() async{
