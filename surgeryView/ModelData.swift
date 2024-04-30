@@ -16,7 +16,7 @@ class ModelData{
     
     var images: [Entity]
     var models: [Entity]
-    var igtlClient: CommunicationsManager? 
+    var igtlClient: CommunicationsManager?
 
     init(images: [Entity] = [], models: [Entity] = []) {
         self.images = images
