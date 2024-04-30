@@ -8,6 +8,7 @@
 import Foundation
 import Network
 
+
 struct IGTHeader {
     var v: UInt16
     var messageType: String
@@ -45,6 +46,16 @@ struct IGTHeader {
         let CRC = UInt64(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt64.self) })
 
         return IGTHeader(v: v, messageType: messageType, deviceName: deviceName, timeStamp: timeStamp, bodySize: bodySize, CRC: CRC)
+    }
+    func encode() -> Data{
+        var data = Data()
+        withUnsafeBytes(of: v.bigEndian) { data.append(contentsOf: $0 )}
+        data.append(messageType.data(using: .ascii) ?? Data())
+        data.append(deviceName.data(using: .ascii) ?? Data())
+        withUnsafeBytes(of: timeStamp.bigEndian) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: bodySize.bigEndian) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: CRC.bigEndian) { data.append(contentsOf: $0 )}
+        return data
     }
 }
 
@@ -154,9 +165,9 @@ struct PolyData {
     }
 }
 
-class CommunicationsManager{
+actor CommunicationsManager{
     var connection: NWConnection?
-    var endpoint: NWEndpoint = .hostPort(host: "127.0.0.1", port: .init(rawValue: 8267)!)
+    var endpoint: NWEndpoint
     
     init(host: NWEndpoint.Host, port: NWEndpoint.Port) {
         self.endpoint = NWEndpoint.hostPort(host: host, port: port)
@@ -166,21 +177,24 @@ class CommunicationsManager{
         connection = NWConnection(to: endpoint, using: .tcp)
         if let connection {
             connection.start(queue: .main)
-            connection.send(content: "testing".data(using: .utf8), completion: .contentProcessed({ error in
+            var message = IGTHeader(v: 2, messageType: "GET_POLYDATA", deviceName: "Client", timeStamp: 0, bodySize: 0, CRC: 0)
+            var rawMessage = message.encode()
+            connection.send(content: rawMessage, completion: .contentProcessed({ error in
                 print("something happened")
             }))
             
             func receiveM() {
                 var header = Data()
+
                 while header.count < IGTHeader.messageSize {
-                    connection.receive(minimumIncompleteLength: 0, maximumLength: 58 - header.count) { content, contentContext, isComplete, error in
+//                    print("starting to receive")
+                    connection.receive(minimumIncompleteLength: 1, maximumLength: 58 - header.count) { content, contentContext, isComplete, error in
+                        print("receiving")
                         if let content {
                             header.append(content)
                         }
                     }
                 }
-
-
                 let parsedHeader = IGTHeader.decode(header)
             }
             receiveM()

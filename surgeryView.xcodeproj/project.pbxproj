@@ -132,6 +132,7 @@
 		1BF411942BBCE5330010CD1D /* Model_18_L5_vertebra.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Model_18_L5_vertebra.usdz; sourceTree = "<group>"; };
 		1BF411952BBCE5330010CD1D /* Model_63_left_hip.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Model_63_left_hip.usdz; sourceTree = "<group>"; };
 		B7378D072BD842E4006EDCEC /* OpenIGTLLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenIGTLLink.swift; sourceTree = "<group>"; };
+		B7378D092BE183B9006EDCEC /* surgeryView-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "surgeryView-Bridging-Header.h"; sourceTree = "<group>"; };
 		B7B50D722BD1B0F9006733EF /* ModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -176,6 +177,7 @@
 				1B3F57132B957BB900753CBB /* Assets.xcassets */,
 				1B3F57182B957BB900753CBB /* Info.plist */,
 				1B3F57152B957BB900753CBB /* Preview Content */,
+				B7378D092BE183B9006EDCEC /* surgeryView-Bridging-Header.h */,
 			);
 			path = surgeryView;
 			sourceTree = "<group>";
@@ -289,6 +291,7 @@
 				TargetAttributes = {
 					1B3F57052B957BB700753CBB = {
 						CreatedOnToolsVersion = 15.2;
+						LastSwiftMigration = 1530;
 					};
 				};
 			};
@@ -515,6 +518,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"surgeryView/Preview Content\"";
@@ -531,6 +535,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "surgeryView/surgeryView-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				XROS_DEPLOYMENT_TARGET = 1.0;
@@ -542,6 +548,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"surgeryView/Preview Content\"";
@@ -558,6 +565,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "surgeryView/surgeryView-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				XROS_DEPLOYMENT_TARGET = 1.0;

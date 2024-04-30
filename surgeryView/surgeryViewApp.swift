@@ -32,7 +32,9 @@ struct surgeryViewApp: App {
                 .environment(modelData)
                 .frame(depth: 1000)
                 .task {
-                    modelData.startServer()
+                    Task{
+                        modelData.startServer()
+                    }
                 }
         }
         .immersionStyle(selection: $style, in: .mixed)
