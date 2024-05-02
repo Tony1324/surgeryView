@@ -24,7 +24,7 @@ class ModelData{
     }
     
     func startServer() {
-        igtlClient = CommunicationsManager(host: "127.0.0.1", port: 8264)
+        igtlClient = CommunicationsManager(host: "127.0.0.1", port: 8265)
         if let igtlClient {
             Task{
                 await igtlClient.startClient()

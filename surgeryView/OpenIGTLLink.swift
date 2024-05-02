@@ -7,7 +7,7 @@
 
 import Foundation
 import Network
-
+import RealityKit
 
 struct IGTHeader {
     var v: UInt16
@@ -37,21 +37,21 @@ struct IGTHeader {
         guard let deviceName = String(data: deviceNameData, encoding: .ascii) else { return nil }
         offset += 20
         
-        let timeStamp = UInt64(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt64.self) })
+        let timeStamp = data.subdata(in: offset..<offset+MemoryLayout<UInt64>.size).withUnsafeBytes { $0.pointee } as UInt64
         offset += MemoryLayout<UInt64>.size
         
-        let bodySize = UInt64(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt64.self) })
+        let bodySize = data.subdata(in: offset..<offset+MemoryLayout<UInt64>.size).withUnsafeBytes { $0.pointee } as UInt64
         offset += MemoryLayout<UInt64>.size
         
-        let CRC = UInt64(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt64.self) })
+        let CRC = data.subdata(in: offset..<offset+MemoryLayout<UInt64>.size).withUnsafeBytes { $0.pointee } as UInt64
 
         return IGTHeader(v: v, messageType: messageType, deviceName: deviceName, timeStamp: timeStamp, bodySize: bodySize, CRC: CRC)
     }
     func encode() -> Data{
         var data = Data()
         withUnsafeBytes(of: v.bigEndian) { data.append(contentsOf: $0 )}
-        data.append(messageType.data(using: .ascii) ?? Data())
-        data.append(deviceName.data(using: .ascii) ?? Data())
+        data.append(messageType.padding(toLength: 12, withPad: "\0", startingAt: 0).data(using: .ascii) ?? Data())
+        data.append(deviceName.padding(toLength: 20, withPad: "\0", startingAt: 0).data(using: .ascii) ?? Data())
         withUnsafeBytes(of: timeStamp.bigEndian) { data.append(contentsOf: $0 )}
         withUnsafeBytes(of: bodySize.bigEndian) { data.append(contentsOf: $0 )}
         withUnsafeBytes(of: CRC.bigEndian) { data.append(contentsOf: $0 )}
@@ -69,7 +69,7 @@ struct PolyData {
     var ntriangle_strips: UInt32
     var size_triangle_strips: UInt32
     var nattributes: UInt32
-    var points: [(Float32, Float32, Float32)]
+    var points: [SIMD3<Float>]
     struct STRUCT_ARRAY {
         var structs: [POINT_INDICES]
     }
@@ -115,7 +115,7 @@ struct PolyData {
         let nattributes = UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) })
         offset += MemoryLayout<UInt32>.size
 
-        var points: [(Float32, Float32, Float32)] = []
+        var points: [SIMD3<Float>] = []
 
         for _ in 0..<Int(npoints) {
             let x = Float32(bitPattern: UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) }))
@@ -127,7 +127,7 @@ struct PolyData {
             let z = Float32(bitPattern: UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) }))
             offset += MemoryLayout<UInt32>.size
 
-            points.append((x, y, z))
+            points.append(SIMD3(x: x as Float, y: y as Float, z: z as Float))
         }
 
         // Extracting vertices
@@ -165,6 +165,36 @@ struct PolyData {
     }
 }
 
+struct TransformMessage {
+    var transform: simd_float4x4
+    
+    func encode() -> Data{
+        var data = Data()
+        withUnsafeBytes(of: transform.columns.0.x) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: transform.columns.0.y) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: transform.columns.0.z) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: transform.columns.0.w) { data.append(contentsOf: $0 )}
+        
+        withUnsafeBytes(of: transform.columns.1.x) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: transform.columns.1.y) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: transform.columns.1.z) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: transform.columns.1.w) { data.append(contentsOf: $0 )}
+        
+        withUnsafeBytes(of: transform.columns.2.x) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: transform.columns.2.y) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: transform.columns.2.z) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: transform.columns.2.w) { data.append(contentsOf: $0 )}
+        
+        withUnsafeBytes(of: transform.columns.3.x) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: transform.columns.3.y) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: transform.columns.3.z) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: transform.columns.3.w) { data.append(contentsOf: $0 )}
+        return data
+    }
+    
+    
+}
+
 actor CommunicationsManager{
     var connection: NWConnection?
     var endpoint: NWEndpoint
@@ -177,8 +207,8 @@ actor CommunicationsManager{
         connection = NWConnection(to: endpoint, using: .tcp)
         if let connection {
             connection.start(queue: .main)
-            var message = IGTHeader(v: 2, messageType: "GET_POLYDATA", deviceName: "Client", timeStamp: 0, bodySize: 0, CRC: 0)
-            var rawMessage = message.encode()
+            let message = IGTHeader(v: 2, messageType: "GET_POLYDATA", deviceName: "Client", timeStamp: 0, bodySize: 0, CRC: 0)
+            let rawMessage = message.encode()
             connection.send(content: rawMessage, completion: .contentProcessed({ error in
                 print("something happened")
             }))
@@ -196,6 +226,18 @@ actor CommunicationsManager{
                     }
                 }
                 let parsedHeader = IGTHeader.decode(header)
+                print(parsedHeader)
+                if let parsedHeader{
+                    var body = Data()
+                    while body.count < parsedHeader.bodySize {
+                        connection.receive(minimumIncompleteLength: 1, maximumLength: Int(parsedHeader.bodySize) - body.count) { content, contentContext, isComplete, error in
+                            print("receiving")
+                            if let content {
+                                body.append(content)
+                            }
+                        }
+                    }
+                }
             }
             receiveM()
         }
