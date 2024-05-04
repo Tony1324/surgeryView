@@ -16,7 +16,7 @@ class ModelData{
     
     var images: [Entity]
     var models: [Entity]
-    var igtlClient: CommunicationsManager? 
+    var igtlClient: CommunicationsManager?
 
     init(images: [Entity] = [], models: [Entity] = []) {
         self.images = images
@@ -24,9 +24,11 @@ class ModelData{
     }
     
     func startServer() {
-        igtlClient = CommunicationsManager(host: "127.0.0.1", port: 8267)
+        igtlClient = CommunicationsManager(host: "127.0.0.1", port: 8265)
         if let igtlClient {
-            igtlClient.startClient()
+            Task{
+                await igtlClient.startClient()
+            }
         }
     }
     

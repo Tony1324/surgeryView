@@ -66,8 +66,19 @@
 		1BF411C82BBCE5330010CD1D /* Model_18_L5_vertebra.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411942BBCE5330010CD1D /* Model_18_L5_vertebra.usdz */; };
 		1BF411C92BBCE5330010CD1D /* Model_63_left_hip.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411952BBCE5330010CD1D /* Model_63_left_hip.usdz */; };
 		B7378D082BD842E4006EDCEC /* OpenIGTLLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7378D072BD842E4006EDCEC /* OpenIGTLLink.swift */; };
+		B7378F122BE412DE006EDCEC /* surgeryViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7378F112BE412DE006EDCEC /* surgeryViewTests.swift */; };
 		B7B50D732BD1B0F9006733EF /* ModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B50D722BD1B0F9006733EF /* ModelData.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B7378F132BE412DE006EDCEC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1B3F56FE2B957BB700753CBB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1B3F57052B957BB700753CBB;
+			remoteInfo = surgeryView;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		1B0054512BB07D8E004697EE /* ControlPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlPanel.swift; sourceTree = "<group>"; };
@@ -132,11 +143,21 @@
 		1BF411942BBCE5330010CD1D /* Model_18_L5_vertebra.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Model_18_L5_vertebra.usdz; sourceTree = "<group>"; };
 		1BF411952BBCE5330010CD1D /* Model_63_left_hip.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Model_63_left_hip.usdz; sourceTree = "<group>"; };
 		B7378D072BD842E4006EDCEC /* OpenIGTLLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenIGTLLink.swift; sourceTree = "<group>"; };
+		B7378D092BE183B9006EDCEC /* surgeryView-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "surgeryView-Bridging-Header.h"; sourceTree = "<group>"; };
+		B7378F0F2BE412DE006EDCEC /* surgeryViewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = surgeryViewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B7378F112BE412DE006EDCEC /* surgeryViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = surgeryViewTests.swift; sourceTree = "<group>"; };
 		B7B50D722BD1B0F9006733EF /* ModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		1B3F57032B957BB700753CBB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B7378F0C2BE412DE006EDCEC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -151,6 +172,7 @@
 			children = (
 				1B3F57082B957BB700753CBB /* surgeryView */,
 				1B3F57092B957BB700753CBB /* Packages */,
+				B7378F102BE412DE006EDCEC /* surgeryViewTests */,
 				1B3F57072B957BB700753CBB /* Products */,
 			);
 			sourceTree = "<group>";
@@ -159,6 +181,7 @@
 			isa = PBXGroup;
 			children = (
 				1B3F57062B957BB700753CBB /* surgeryView.app */,
+				B7378F0F2BE412DE006EDCEC /* surgeryViewTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -176,6 +199,7 @@
 				1B3F57132B957BB900753CBB /* Assets.xcassets */,
 				1B3F57182B957BB900753CBB /* Info.plist */,
 				1B3F57152B957BB900753CBB /* Preview Content */,
+				B7378D092BE183B9006EDCEC /* surgeryView-Bridging-Header.h */,
 			);
 			path = surgeryView;
 			sourceTree = "<group>";
@@ -255,6 +279,14 @@
 			path = sampleModels;
 			sourceTree = "<group>";
 		};
+		B7378F102BE412DE006EDCEC /* surgeryViewTests */ = {
+			isa = PBXGroup;
+			children = (
+				B7378F112BE412DE006EDCEC /* surgeryViewTests.swift */,
+			);
+			path = surgeryViewTests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -277,6 +309,24 @@
 			productReference = 1B3F57062B957BB700753CBB /* surgeryView.app */;
 			productType = "com.apple.product-type.application";
 		};
+		B7378F0E2BE412DE006EDCEC /* surgeryViewTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B7378F152BE412DE006EDCEC /* Build configuration list for PBXNativeTarget "surgeryViewTests" */;
+			buildPhases = (
+				B7378F0B2BE412DE006EDCEC /* Sources */,
+				B7378F0C2BE412DE006EDCEC /* Frameworks */,
+				B7378F0D2BE412DE006EDCEC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B7378F142BE412DE006EDCEC /* PBXTargetDependency */,
+			);
+			name = surgeryViewTests;
+			productName = surgeryViewTests;
+			productReference = B7378F0F2BE412DE006EDCEC /* surgeryViewTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -284,11 +334,16 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1520;
+				LastSwiftUpdateCheck = 1530;
 				LastUpgradeCheck = 1520;
 				TargetAttributes = {
 					1B3F57052B957BB700753CBB = {
 						CreatedOnToolsVersion = 15.2;
+						LastSwiftMigration = 1530;
+					};
+					B7378F0E2BE412DE006EDCEC = {
+						CreatedOnToolsVersion = 15.3;
+						TestTargetID = 1B3F57052B957BB700753CBB;
 					};
 				};
 			};
@@ -306,6 +361,7 @@
 			projectRoot = "";
 			targets = (
 				1B3F57052B957BB700753CBB /* surgeryView */,
+				B7378F0E2BE412DE006EDCEC /* surgeryViewTests */,
 			);
 		};
 /* End PBXProject section */
@@ -372,6 +428,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B7378F0D2BE412DE006EDCEC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -388,7 +451,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B7378F0B2BE412DE006EDCEC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B7378F122BE412DE006EDCEC /* surgeryViewTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B7378F142BE412DE006EDCEC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1B3F57052B957BB700753CBB /* surgeryView */;
+			targetProxy = B7378F132BE412DE006EDCEC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		1B3F57192B957BB900753CBB /* Debug */ = {
@@ -515,6 +594,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"surgeryView/Preview Content\"";
@@ -531,6 +611,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "surgeryView/surgeryView-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				XROS_DEPLOYMENT_TARGET = 1.0;
@@ -542,6 +624,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"surgeryView/Preview Content\"";
@@ -558,8 +641,49 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "surgeryView/surgeryView-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 1.0;
+			};
+			name = Release;
+		};
+		B7378F162BE412DE006EDCEC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4JW7JH8SFZ;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = testing.surgeryViewTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/surgeryView.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/surgeryView";
+				XROS_DEPLOYMENT_TARGET = 1.0;
+			};
+			name = Debug;
+		};
+		B7378F172BE412DE006EDCEC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4JW7JH8SFZ;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = testing.surgeryViewTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/surgeryView.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/surgeryView";
 				XROS_DEPLOYMENT_TARGET = 1.0;
 			};
 			name = Release;
@@ -581,6 +705,15 @@
 			buildConfigurations = (
 				1B3F571C2B957BB900753CBB /* Debug */,
 				1B3F571D2B957BB900753CBB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B7378F152BE412DE006EDCEC /* Build configuration list for PBXNativeTarget "surgeryViewTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B7378F162BE412DE006EDCEC /* Debug */,
+				B7378F172BE412DE006EDCEC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
