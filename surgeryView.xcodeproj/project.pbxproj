@@ -13,6 +13,11 @@
 		1B3F57102B957BB700753CBB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B3F570F2B957BB700753CBB /* ContentView.swift */; };
 		1B3F57142B957BB900753CBB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1B3F57132B957BB900753CBB /* Assets.xcassets */; };
 		1B3F57172B957BB900753CBB /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1B3F57162B957BB900753CBB /* Preview Assets.xcassets */; };
+		1B7F9EC02BE70ED300D0CE52 /* surgeryViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B7F9EBF2BE70ED300D0CE52 /* surgeryViewTest.swift */; };
+		1BA965522BE70B5F0019B819 /* OpenIGTLLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BA965302BE709BA0019B819 /* OpenIGTLLink.swift */; };
+		1BA965532BE70B5F0019B819 /* Polydata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BA965312BE709BA0019B819 /* Polydata.swift */; };
+		1BA965542BE70B5F0019B819 /* Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BA9652F2BE709BA0019B819 /* Transform.swift */; };
+		1BA965552BE70B5F0019B819 /* IGTHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BA9652E2BE709B90019B819 /* IGTHeader.swift */; };
 		1BF411962BBCE5330010CD1D /* Model_58_right_rib_11.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411622BBCE5310010CD1D /* Model_58_right_rib_11.usdz */; };
 		1BF411972BBCE5330010CD1D /* Model_59_right_rib_12.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411632BBCE5310010CD1D /* Model_59_right_rib_12.usdz */; };
 		1BF411982BBCE5330010CD1D /* Model_46_left_rib_8.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411642BBCE5310010CD1D /* Model_46_left_rib_8.usdz */; };
@@ -65,13 +70,11 @@
 		1BF411C72BBCE5330010CD1D /* Model_26_T9_vertebra.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411932BBCE5330010CD1D /* Model_26_T9_vertebra.usdz */; };
 		1BF411C82BBCE5330010CD1D /* Model_18_L5_vertebra.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411942BBCE5330010CD1D /* Model_18_L5_vertebra.usdz */; };
 		1BF411C92BBCE5330010CD1D /* Model_63_left_hip.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411952BBCE5330010CD1D /* Model_63_left_hip.usdz */; };
-		B7378D082BD842E4006EDCEC /* OpenIGTLLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7378D072BD842E4006EDCEC /* OpenIGTLLink.swift */; };
-		B7378F122BE412DE006EDCEC /* surgeryViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7378F112BE412DE006EDCEC /* surgeryViewTests.swift */; };
 		B7B50D732BD1B0F9006733EF /* ModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B50D722BD1B0F9006733EF /* ModelData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		B7378F132BE412DE006EDCEC /* PBXContainerItemProxy */ = {
+		1B7F9EC12BE70ED300D0CE52 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1B3F56FE2B957BB700753CBB /* Project object */;
 			proxyType = 1;
@@ -79,6 +82,19 @@
 			remoteInfo = surgeryView;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		1BA9651F2BE7093A0019B819 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1B0054512BB07D8E004697EE /* ControlPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlPanel.swift; sourceTree = "<group>"; };
@@ -90,6 +106,12 @@
 		1B3F57132B957BB900753CBB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1B3F57162B957BB900753CBB /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		1B3F57182B957BB900753CBB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1B7F9EBD2BE70ED300D0CE52 /* surgeryViewTest.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = surgeryViewTest.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1B7F9EBF2BE70ED300D0CE52 /* surgeryViewTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = surgeryViewTest.swift; sourceTree = "<group>"; };
+		1BA9652E2BE709B90019B819 /* IGTHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IGTHeader.swift; sourceTree = "<group>"; };
+		1BA9652F2BE709BA0019B819 /* Transform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transform.swift; sourceTree = "<group>"; };
+		1BA965302BE709BA0019B819 /* OpenIGTLLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenIGTLLink.swift; sourceTree = "<group>"; };
+		1BA965312BE709BA0019B819 /* Polydata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Polydata.swift; sourceTree = "<group>"; };
 		1BF411622BBCE5310010CD1D /* Model_58_right_rib_11.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Model_58_right_rib_11.usdz; sourceTree = "<group>"; };
 		1BF411632BBCE5310010CD1D /* Model_59_right_rib_12.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Model_59_right_rib_12.usdz; sourceTree = "<group>"; };
 		1BF411642BBCE5310010CD1D /* Model_46_left_rib_8.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Model_46_left_rib_8.usdz; sourceTree = "<group>"; };
@@ -142,10 +164,7 @@
 		1BF411932BBCE5330010CD1D /* Model_26_T9_vertebra.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Model_26_T9_vertebra.usdz; sourceTree = "<group>"; };
 		1BF411942BBCE5330010CD1D /* Model_18_L5_vertebra.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Model_18_L5_vertebra.usdz; sourceTree = "<group>"; };
 		1BF411952BBCE5330010CD1D /* Model_63_left_hip.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Model_63_left_hip.usdz; sourceTree = "<group>"; };
-		B7378D072BD842E4006EDCEC /* OpenIGTLLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenIGTLLink.swift; sourceTree = "<group>"; };
 		B7378D092BE183B9006EDCEC /* surgeryView-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "surgeryView-Bridging-Header.h"; sourceTree = "<group>"; };
-		B7378F0F2BE412DE006EDCEC /* surgeryViewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = surgeryViewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B7378F112BE412DE006EDCEC /* surgeryViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = surgeryViewTests.swift; sourceTree = "<group>"; };
 		B7B50D722BD1B0F9006733EF /* ModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -157,7 +176,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B7378F0C2BE412DE006EDCEC /* Frameworks */ = {
+		1B7F9EBA2BE70ED300D0CE52 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -172,7 +191,7 @@
 			children = (
 				1B3F57082B957BB700753CBB /* surgeryView */,
 				1B3F57092B957BB700753CBB /* Packages */,
-				B7378F102BE412DE006EDCEC /* surgeryViewTests */,
+				1B7F9EBE2BE70ED300D0CE52 /* surgeryViewTest */,
 				1B3F57072B957BB700753CBB /* Products */,
 			);
 			sourceTree = "<group>";
@@ -181,7 +200,7 @@
 			isa = PBXGroup;
 			children = (
 				1B3F57062B957BB700753CBB /* surgeryView.app */,
-				B7378F0F2BE412DE006EDCEC /* surgeryViewTests.xctest */,
+				1B7F9EBD2BE70ED300D0CE52 /* surgeryViewTest.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -192,10 +211,10 @@
 				1B6CEEC22BCDFDF1000E1162 /* sampleModels */,
 				1B3F570D2B957BB700753CBB /* surgeryViewApp.swift */,
 				B7B50D722BD1B0F9006733EF /* ModelData.swift */,
-				B7378D072BD842E4006EDCEC /* OpenIGTLLink.swift */,
 				1B0054512BB07D8E004697EE /* ControlPanel.swift */,
 				1B3F570F2B957BB700753CBB /* ContentView.swift */,
 				1B11BFB62BA918B700E1DEB0 /* ModelManager.swift */,
+				1BA965562BE70BEB0019B819 /* OpenIGTLink */,
 				1B3F57132B957BB900753CBB /* Assets.xcassets */,
 				1B3F57182B957BB900753CBB /* Info.plist */,
 				1B3F57152B957BB900753CBB /* Preview Content */,
@@ -279,12 +298,23 @@
 			path = sampleModels;
 			sourceTree = "<group>";
 		};
-		B7378F102BE412DE006EDCEC /* surgeryViewTests */ = {
+		1B7F9EBE2BE70ED300D0CE52 /* surgeryViewTest */ = {
 			isa = PBXGroup;
 			children = (
-				B7378F112BE412DE006EDCEC /* surgeryViewTests.swift */,
+				1B7F9EBF2BE70ED300D0CE52 /* surgeryViewTest.swift */,
 			);
-			path = surgeryViewTests;
+			path = surgeryViewTest;
+			sourceTree = "<group>";
+		};
+		1BA965562BE70BEB0019B819 /* OpenIGTLink */ = {
+			isa = PBXGroup;
+			children = (
+				1BA9652E2BE709B90019B819 /* IGTHeader.swift */,
+				1BA965302BE709BA0019B819 /* OpenIGTLLink.swift */,
+				1BA965312BE709BA0019B819 /* Polydata.swift */,
+				1BA9652F2BE709BA0019B819 /* Transform.swift */,
+			);
+			path = OpenIGTLink;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -297,6 +327,7 @@
 				1B3F57022B957BB700753CBB /* Sources */,
 				1B3F57032B957BB700753CBB /* Frameworks */,
 				1B3F57042B957BB700753CBB /* Resources */,
+				1BA9651F2BE7093A0019B819 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -309,22 +340,22 @@
 			productReference = 1B3F57062B957BB700753CBB /* surgeryView.app */;
 			productType = "com.apple.product-type.application";
 		};
-		B7378F0E2BE412DE006EDCEC /* surgeryViewTests */ = {
+		1B7F9EBC2BE70ED300D0CE52 /* surgeryViewTest */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B7378F152BE412DE006EDCEC /* Build configuration list for PBXNativeTarget "surgeryViewTests" */;
+			buildConfigurationList = 1B7F9EC32BE70ED300D0CE52 /* Build configuration list for PBXNativeTarget "surgeryViewTest" */;
 			buildPhases = (
-				B7378F0B2BE412DE006EDCEC /* Sources */,
-				B7378F0C2BE412DE006EDCEC /* Frameworks */,
-				B7378F0D2BE412DE006EDCEC /* Resources */,
+				1B7F9EB92BE70ED300D0CE52 /* Sources */,
+				1B7F9EBA2BE70ED300D0CE52 /* Frameworks */,
+				1B7F9EBB2BE70ED300D0CE52 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				B7378F142BE412DE006EDCEC /* PBXTargetDependency */,
+				1B7F9EC22BE70ED300D0CE52 /* PBXTargetDependency */,
 			);
-			name = surgeryViewTests;
-			productName = surgeryViewTests;
-			productReference = B7378F0F2BE412DE006EDCEC /* surgeryViewTests.xctest */;
+			name = surgeryViewTest;
+			productName = surgeryViewTest;
+			productReference = 1B7F9EBD2BE70ED300D0CE52 /* surgeryViewTest.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -341,7 +372,7 @@
 						CreatedOnToolsVersion = 15.2;
 						LastSwiftMigration = 1530;
 					};
-					B7378F0E2BE412DE006EDCEC = {
+					1B7F9EBC2BE70ED300D0CE52 = {
 						CreatedOnToolsVersion = 15.3;
 						TestTargetID = 1B3F57052B957BB700753CBB;
 					};
@@ -361,7 +392,7 @@
 			projectRoot = "";
 			targets = (
 				1B3F57052B957BB700753CBB /* surgeryView */,
-				B7378F0E2BE412DE006EDCEC /* surgeryViewTests */,
+				1B7F9EBC2BE70ED300D0CE52 /* surgeryViewTest */,
 			);
 		};
 /* End PBXProject section */
@@ -428,7 +459,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B7378F0D2BE412DE006EDCEC /* Resources */ = {
+		1B7F9EBB2BE70ED300D0CE52 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -445,27 +476,30 @@
 				1B3F57102B957BB700753CBB /* ContentView.swift in Sources */,
 				1B0054522BB07D8F004697EE /* ControlPanel.swift in Sources */,
 				B7B50D732BD1B0F9006733EF /* ModelData.swift in Sources */,
-				B7378D082BD842E4006EDCEC /* OpenIGTLLink.swift in Sources */,
 				1B11BFB72BA918B700E1DEB0 /* ModelManager.swift in Sources */,
 				1B3F570E2B957BB700753CBB /* surgeryViewApp.swift in Sources */,
+				1BA965522BE70B5F0019B819 /* OpenIGTLLink.swift in Sources */,
+				1BA965532BE70B5F0019B819 /* Polydata.swift in Sources */,
+				1BA965542BE70B5F0019B819 /* Transform.swift in Sources */,
+				1BA965552BE70B5F0019B819 /* IGTHeader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B7378F0B2BE412DE006EDCEC /* Sources */ = {
+		1B7F9EB92BE70ED300D0CE52 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B7378F122BE412DE006EDCEC /* surgeryViewTests.swift in Sources */,
+				1B7F9EC02BE70ED300D0CE52 /* surgeryViewTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		B7378F142BE412DE006EDCEC /* PBXTargetDependency */ = {
+		1B7F9EC22BE70ED300D0CE52 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1B3F57052B957BB700753CBB /* surgeryView */;
-			targetProxy = B7378F132BE412DE006EDCEC /* PBXContainerItemProxy */;
+			targetProxy = 1B7F9EC12BE70ED300D0CE52 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -648,43 +682,43 @@
 			};
 			name = Release;
 		};
-		B7378F162BE412DE006EDCEC /* Debug */ = {
+		1B7F9EC42BE70ED300D0CE52 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4JW7JH8SFZ;
+				DEVELOPMENT_TEAM = 68NKG8SS32;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = testing.surgeryViewTests;
+				PRODUCT_BUNDLE_IDENTIFIER = net.tonyzhang.surgeryViewTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/surgeryView.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/surgeryView";
-				XROS_DEPLOYMENT_TARGET = 1.0;
+				XROS_DEPLOYMENT_TARGET = 1.1;
 			};
 			name = Debug;
 		};
-		B7378F172BE412DE006EDCEC /* Release */ = {
+		1B7F9EC52BE70ED300D0CE52 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4JW7JH8SFZ;
+				DEVELOPMENT_TEAM = 68NKG8SS32;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = testing.surgeryViewTests;
+				PRODUCT_BUNDLE_IDENTIFIER = net.tonyzhang.surgeryViewTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/surgeryView.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/surgeryView";
-				XROS_DEPLOYMENT_TARGET = 1.0;
+				XROS_DEPLOYMENT_TARGET = 1.1;
 			};
 			name = Release;
 		};
@@ -709,11 +743,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B7378F152BE412DE006EDCEC /* Build configuration list for PBXNativeTarget "surgeryViewTests" */ = {
+		1B7F9EC32BE70ED300D0CE52 /* Build configuration list for PBXNativeTarget "surgeryViewTest" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				B7378F162BE412DE006EDCEC /* Debug */,
-				B7378F172BE412DE006EDCEC /* Release */,
+				1B7F9EC42BE70ED300D0CE52 /* Debug */,
+				1B7F9EC52BE70ED300D0CE52 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

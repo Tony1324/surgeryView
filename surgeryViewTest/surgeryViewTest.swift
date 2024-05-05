@@ -17,14 +17,14 @@ final class surgeryViewTests: XCTestCase {
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
-    
+
     func testHeaderEncoding() throws {
-        var message = IGTHeader(v: 2, messageType: "GET_POLYDATA", deviceName: "Client", timeStamp: 0, bodySize: 0, CRC: 0)
+        var message = IGTHeader(v: 2, messageType: "GET_POLYDATA", deviceName: "Client", timeStamp: UInt64(Date.timeIntervalBetween1970AndReferenceDate), bodySize: 1000, CRC: 5)
         var rawMessage = message.encode()
         assert(rawMessage.count == 58)
         assert(IGTHeader.decode(rawMessage) != nil)
     }
-    
+
     func testExample() throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
