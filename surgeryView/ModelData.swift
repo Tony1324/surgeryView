@@ -24,12 +24,16 @@ class ModelData{
     }
     
     func startServer() {
-        igtlClient = CommunicationsManager(host: "127.0.0.1", port: 8265)
+        igtlClient = CommunicationsManager(host: "127.0.0.1", port: 8265, delegate: self)
         if let igtlClient {
             Task{
                 await igtlClient.startClient()
+                let message = IGTHeader(v: 2, messageType: "GET_POLYDATA", deviceName: "Client", timeStamp: 0, bodySize: 0, CRC: 0)
+                igtlClient.sendMessage(header: message, content: NoneMessage())
             }
         }
+        
+
     }
     
     func loadSampleModels() async{
@@ -72,6 +76,19 @@ class ModelData{
             center.z = center.z - (entity.parent?.findEntity(named: "base")?.position.z ?? 0) - 1
             print(entity.parent?.findEntity(named: "base")?.position)
             entity.move(to: Transform(scale: entity.scale, translation: center*factor), relativeTo: entity.parent, duration: 0.2, timingFunction: .easeOut)
+        }
+    }
+}
+
+
+extension ModelData: OpenIGTDelegate {
+    func receiveTransformMessage(header: IGTHeader, polydata: TransformMessage) {
+        print("Transform recieved!")
+    }
+    func receivePolyDataMessage(header: IGTHeader, polydata: PolyDataMessage) {
+        print("polydata recieved!")
+        if let model = polydata.generateModelEntityFromPolys() {
+            models.append(model)
         }
     }
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct IGTHeader {
+struct IGTHeader: OpenIGTDecodable, OpenIGTEncodable{
     var v: UInt16
     var messageType: String
     var deviceName: String

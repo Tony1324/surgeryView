@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import RealityKit
 
-struct PolyDataMessage {
+struct PolyDataMessage: OpenIGTDecodable {
+    
     var npoints: UInt32
     var nvertices: UInt32
     var size_vertices: UInt32
@@ -36,9 +38,6 @@ struct PolyDataMessage {
 
     static func decode(_ data: Data) -> PolyDataMessage? {
         var offset = 0
-
-        print(data.map { String(format: "%02x", $0) }.joined(separator: " "))
-
 
         let npoints = UInt32(bigEndian: data.withUnsafeBytes{$0.load(fromByteOffset: offset, as: UInt32.self)})
         offset += MemoryLayout<UInt32>.size
@@ -117,5 +116,47 @@ struct PolyDataMessage {
         }
 
         return PolyDataMessage(npoints: npoints, nvertices: nvertices, size_vertices: size_vertices, nlines: nlines, size_lines: size_lines, npolygons: npolygons, size_polygons: size_polygons, ntriangle_strips: ntriangle_strips, size_triangle_strips: size_triangle_strips, nattributes: nattributes, points: points, vertices: vertices, lines: lines, polygons: polygons, triangle_strips: triangle_strips)
+    }
+    
+    func generateModelEntityFromTris() -> ModelEntity? {
+        // Create mesh vertices
+        var meshDescriptor = MeshDescriptor(name: "mesh")
+        meshDescriptor.positions = MeshBuffers.Positions(points)
+        var triangles: [UInt32] = []
+        for triangle in triangle_strips.structs {
+            if triangle.indices.count == 3{
+                triangles.append(triangle.indices[0])
+                triangles.append(triangle.indices[1])
+                triangles.append(triangle.indices[2])
+            }
+            return nil
+        }
+        meshDescriptor.primitives = .triangles(triangles)
+        
+        if let mesh = try? MeshResource.generate(from: [meshDescriptor]) {
+            var model = ModelEntity(mesh: mesh, materials: [SimpleMaterial(color: .blue, isMetallic: false)])
+            return model
+        }
+        return nil
+    }
+    
+    func generateModelEntityFromPolys() -> ModelEntity? {
+        // Create mesh vertices
+        var meshDescriptor = MeshDescriptor(name: "mesh")
+        meshDescriptor.positions = MeshBuffers.Positions(points)
+        var counts: [UInt8] = []
+        var polys: [UInt32] = []
+        for poly in polygons.structs {
+            counts.append(UInt8(poly.indices.count))
+            polys.append(contentsOf: poly.indices)
+        }
+        meshDescriptor.primitives = .polygons(counts, polys)
+        
+        // Create model component
+        if let mesh = try? MeshResource.generate(from: [meshDescriptor]) {
+            var model = ModelEntity(mesh: mesh, materials: [SimpleMaterial(color: .blue, isMetallic: false)])
+            return model
+        }
+        return nil
     }
 }

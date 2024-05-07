@@ -9,25 +9,24 @@ import Foundation
 import Network
 
 
-actor CommunicationsManager{
+class CommunicationsManager{
     var connection: NWConnection?
     var endpoint: NWEndpoint
+    var delegate: OpenIGTDelegate
     
-    init(host: NWEndpoint.Host, port: NWEndpoint.Port) {
+    init(host: NWEndpoint.Host, port: NWEndpoint.Port, delegate: OpenIGTDelegate) {
         self.endpoint = NWEndpoint.hostPort(host: host, port: port)
+        self.delegate = delegate
     }
     
     func startClient() {
         connection = NWConnection(to: endpoint, using: .tcp)
         if let connection {
             connection.start(queue: .main)
-            let message = IGTHeader(v: 2, messageType: "GET_POLYDATA", deviceName: "Client", timeStamp: 0, bodySize: 0, CRC: 0)
-            let rawMessage = message.encode()
-            connection.send(content: rawMessage, completion: .contentProcessed({ error in
-                print("something happened")
-            }))
+//            let message = IGTHeader(v: 2, messageType: "GET_POLYDATA", deviceName: "Client", timeStamp: 0, bodySize: 0, CRC: 0)
+//            sendMessage(header: message, content: NoneMessage())
             
-            func receiveM() {
+            func receiveM() async {
 
                 func recieveHeader(_ data: Data){
     //                    print("starting to receive")
@@ -65,9 +64,25 @@ actor CommunicationsManager{
                             }
                         } else
                         {
-                            let content_data = data
-                            let polyData = PolyDataMessage.decode(content_data)
-                            print(polyData)
+                            switch header.messageType.trimmingCharacters(in: [" ", "\0"]) {
+                            case "POLYDATA":
+                                let content_data = data
+                                let polyData = PolyDataMessage.decode(content_data)
+                                if let polyData{
+                                    return delegate.receivePolyDataMessage(header: header, polydata: polyData)
+                                }
+                                print("Unable to decode PolyData")
+                            case "TRANSFORM":
+                                let content_data = data
+                                let transform = TransformMessage.decode(content_data)
+                                if let transform{
+                                    return delegate.receiveTransformMessage(header: header, transform: transform)
+                                }
+                                print("Unable to decode PolyData")
+                            default:
+                                print("No message body")
+                            }
+                            
                         }
 
                     }
@@ -82,28 +97,46 @@ actor CommunicationsManager{
                     }
                 }
                 recieveHeader(Data())
-
-//                if let parsedHeader{
-//                    var body = Data()
-//                    while body.count < parsedHeader.bodySize {
-//                        connection.receive(minimumIncompleteLength: 1, maximumLength: Int(parsedHeader.bodySize) - body.count) { content, contentContext, isComplete, error in
-//                            print("receiving")
-//                            if let content {
-//                                body.append(content)
-//                            }
-//                        }
-//                    }
-//                    let ext_header = IGTExtendedHeader.decode(body)
-//                    if let ext_header {
-//                        print(ext_header)
-//                    }
-//                }
             }
-            receiveM()
+            Task{
+                await receiveM()
+            }
         }
     }
     
-    func processMessage(_ data:Data) {
-        print(String(data: data, encoding: .utf8))
+    func sendMessage(header: IGTHeader, content: OpenIGTEncodable) {
+        if let connection {
+            let rawHeader = header.encode()
+            let rawContent = content.encode()
+            var data = Data()
+            data.append(rawHeader)
+            data.append(rawContent)
+            print("message sent")
+            connection.send(content: data, completion: .contentProcessed({ error in
+                print(error)
+            }))
+        }
+    }
+}
+
+protocol OpenIGTDecodable{
+    static func decode(_ data: Data) -> Self?
+}
+
+protocol OpenIGTEncodable{
+    func encode() -> Data
+}
+
+protocol OpenIGTDelegate{
+    func receivePolyDataMessage(header: IGTHeader, polydata: PolyDataMessage)
+    func receiveTransformMessage(header: IGTHeader, transform: TransformMessage)
+}
+
+extension OpenIGTDelegate{
+    func receivePolyDataMessage(header: IGTHeader, polydata: PolyDataMessage) {
+        print("No implementation for recieving PolyData")
+    }
+    func receiveTransformMessage(header: IGTHeader, transform: TransformMessage) {
+        print("No implementation for recieving Transform")
     }
 }
