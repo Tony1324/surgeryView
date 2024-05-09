@@ -24,7 +24,9 @@ class ModelData{
     }
     
     func startServer() {
-        igtlClient = CommunicationsManager(host: "127.0.0.1", port: 8265, delegate: self)
+        //The communications manager handles networking and parsing
+        //this class, modelData, is used as a delegate to implement receiving messages, see extension below
+        igtlClient = CommunicationsManager(host: "127.0.0.1", port: 18944, delegate: self)
         if let igtlClient {
             Task{
                 await igtlClient.startClient()

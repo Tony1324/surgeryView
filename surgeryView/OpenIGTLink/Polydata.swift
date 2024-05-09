@@ -32,9 +32,9 @@ struct PolyDataMessage: OpenIGTDecodable {
     var lines: STRUCT_ARRAY
     var polygons: STRUCT_ARRAY
     var triangle_strips: STRUCT_ARRAY
-//    var attribute_header: [(UInt16, UInt32)]
-//    var attribute_names: [String]
-//    var attribute_data: [[Float]]
+    var attribute_header: [(UInt16, UInt32)]
+    var attribute_names: [String]
+    var attribute_data: [[Float]]
 
     static func decode(_ data: Data) -> PolyDataMessage? {
         var offset = 0
@@ -114,8 +114,23 @@ struct PolyDataMessage: OpenIGTDecodable {
 
             return STRUCT_ARRAY(structs: structs)
         }
+        
+        var attribute_header: [(UInt16, UInt32)] = []
+        
+        for _ in 0..<Int(nattributes) {
+            let attributeType = UInt16(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt16.self) })
+            offset += MemoryLayout<UInt16>.size
+            let nattribute = UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) })
+            offset += MemoryLayout<UInt32>.size
+            attribute_header.append((attributeType,nattribute))
+        }
+        
+        // TODO
+        var attribute_names:[String] = []
+        
+        var attribute_data: [[Float]] = []
 
-        return PolyDataMessage(npoints: npoints, nvertices: nvertices, size_vertices: size_vertices, nlines: nlines, size_lines: size_lines, npolygons: npolygons, size_polygons: size_polygons, ntriangle_strips: ntriangle_strips, size_triangle_strips: size_triangle_strips, nattributes: nattributes, points: points, vertices: vertices, lines: lines, polygons: polygons, triangle_strips: triangle_strips)
+        return PolyDataMessage(npoints: npoints, nvertices: nvertices, size_vertices: size_vertices, nlines: nlines, size_lines: size_lines, npolygons: npolygons, size_polygons: size_polygons, ntriangle_strips: ntriangle_strips, size_triangle_strips: size_triangle_strips, nattributes: nattributes, points: points, vertices: vertices, lines: lines, polygons: polygons, triangle_strips: triangle_strips, attribute_header: attribute_header, attribute_names: attribute_names, attribute_data: attribute_data)
     }
     
     func generateModelEntityFromTris() -> ModelEntity? {

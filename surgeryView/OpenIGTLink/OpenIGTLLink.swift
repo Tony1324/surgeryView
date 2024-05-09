@@ -23,19 +23,18 @@ class CommunicationsManager{
         connection = NWConnection(to: endpoint, using: .tcp)
         if let connection {
             connection.start(queue: .main)
-//            let message = IGTHeader(v: 2, messageType: "GET_POLYDATA", deviceName: "Client", timeStamp: 0, bodySize: 0, CRC: 0)
-//            sendMessage(header: message, content: NoneMessage())
-            
-            func receiveM() async {
-
-                func recieveHeader(_ data: Data){
-    //                    print("starting to receive")
+            //after finishing connection to server, immediately begin listening for messages, and recursively calling itself to receive more messages
+            //here data is parsed and the OpenIGTDelegate (ModelData) is called to handle the messages
+            func receiveM() {
+                func receiveHeader(_ data: Data){
+                        print("starting to receive")
                     if(data.count == IGTHeader.messageSize) {
                         let header = IGTHeader.decode(data)
                         if let header {
                             print(header)
-                            recieveBody(Data(), header: header)
+                            receiveBody(Data(), header: header)
                         }
+                        return
                     }
                     connection.receive(minimumIncompleteLength: 0, maximumLength: 58 - data.count) { content, contentContext, isComplete, error in
                         print("receiving")
@@ -43,48 +42,50 @@ class CommunicationsManager{
                             var _data = Data()
                             _data.append(data)
                             _data.append(content)
-                            recieveHeader(_data)
+                            receiveHeader(_data)
                         }
                     }
                 }
 
-                func recieveBody(_ data: Data, header: IGTHeader) {
+                func receiveBody(_ data: Data, header: IGTHeader) {
                     if (data.count == header.bodySize) {
                         print("all data collected")
+                        var ext_header_data: Data = Data()
+                        var meta_data_data: Data = Data()
+                        var content_data: Data = Data()
                         if(header.v >= 2){
                             let ext_header = IGTExtendedHeader.decode(data)
                             if let ext_header {
                                 print(ext_header)
-                                let ext_header_data = data.subdata(in: 0..<Data.Index(ext_header.ext_header_size))
+                                ext_header_data = data.subdata(in: 0..<Data.Index(ext_header.ext_header_size))
 
                                 let content_size = Int(header.bodySize) - Int(ext_header.ext_header_size) - Int(ext_header.meta_data_size)
 
-                                let content_data = data.subdata(in: Data.Index(ext_header.ext_header_size)..<content_size + Int(ext_header.ext_header_size))
-                                let meta_data_data = data.subdata(in: content_size + Int(ext_header.ext_header_size)..<Int(header.bodySize))
+                                content_data = data.subdata(in: Data.Index(ext_header.ext_header_size)..<content_size + Int(ext_header.ext_header_size))
+                                meta_data_data = data.subdata(in: content_size + Int(ext_header.ext_header_size)..<Int(header.bodySize))
                             }
-                        } else
-                        {
-                            switch header.messageType.trimmingCharacters(in: [" ", "\0"]) {
-                            case "POLYDATA":
-                                let content_data = data
-                                let polyData = PolyDataMessage.decode(content_data)
-                                if let polyData{
-                                    return delegate.receivePolyDataMessage(header: header, polydata: polyData)
-                                }
-                                print("Unable to decode PolyData")
-                            case "TRANSFORM":
-                                let content_data = data
-                                let transform = TransformMessage.decode(content_data)
-                                if let transform{
-                                    return delegate.receiveTransformMessage(header: header, transform: transform)
-                                }
-                                print("Unable to decode PolyData")
-                            default:
-                                print("No message body")
-                            }
-                            
+                        }else{
+                            content_data = data
                         }
-
+                        switch header.messageType.trimmingCharacters(in: [" ", "\0"]) {
+                        case "POLYDATA":
+                            let polyData = PolyDataMessage.decode(content_data)
+                            if let polyData{
+                                delegate.receivePolyDataMessage(header: header, polydata: polyData)
+                            }
+                            print("Unable to decode PolyData")
+                        case "TRANSFORM":
+                            let transform = TransformMessage.decode(content_data)
+                            if let transform{
+                                delegate.receiveTransformMessage(header: header, transform: transform)
+                            }
+                            print("Unable to decode PolyData")
+                        default:
+                            print("No message body")
+                        }
+                        print("receiving another message")
+                        receiveM()
+                        return
                     }
                     connection.receive(minimumIncompleteLength: 0, maximumLength: Int(header.bodySize) - data.count) { content, contentContext, isComplete, error in
                         print("receiving")
@@ -92,15 +93,13 @@ class CommunicationsManager{
                             var _data = Data()
                             _data.append(data)
                             _data.append(content)
-                            recieveBody(_data, header: header)
+                            receiveBody(_data, header: header)
                         }
                     }
                 }
-                recieveHeader(Data())
+                receiveHeader(Data())
             }
-            Task{
-                await receiveM()
-            }
+            receiveM()
         }
     }
     

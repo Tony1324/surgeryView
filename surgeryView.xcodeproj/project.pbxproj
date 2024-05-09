@@ -167,6 +167,7 @@
 		1BF411952BBCE5330010CD1D /* Model_63_left_hip.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Model_63_left_hip.usdz; sourceTree = "<group>"; };
 		B7378D092BE183B9006EDCEC /* surgeryView-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "surgeryView-Bridging-Header.h"; sourceTree = "<group>"; };
 		B75C70502BEAB3300019A527 /* NoneMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoneMessage.swift; sourceTree = "<group>"; };
+		B75C70522BED5CC70019A527 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		B7B50D722BD1B0F9006733EF /* ModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -210,9 +211,10 @@
 		1B3F57082B957BB700753CBB /* surgeryView */ = {
 			isa = PBXGroup;
 			children = (
+				B75C70522BED5CC70019A527 /* README.md */,
 				1B6CEEC22BCDFDF1000E1162 /* sampleModels */,
-				1B3F570D2B957BB700753CBB /* surgeryViewApp.swift */,
 				B7B50D722BD1B0F9006733EF /* ModelData.swift */,
+				1B3F570D2B957BB700753CBB /* surgeryViewApp.swift */,
 				1B0054512BB07D8E004697EE /* ControlPanel.swift */,
 				1B3F570F2B957BB700753CBB /* ContentView.swift */,
 				1B11BFB62BA918B700E1DEB0 /* ModelManager.swift */,
@@ -311,9 +313,9 @@
 		1BA965562BE70BEB0019B819 /* OpenIGTLink */ = {
 			isa = PBXGroup;
 			children = (
+				1BA965302BE709BA0019B819 /* OpenIGTLLink.swift */,
 				1BA9652E2BE709B90019B819 /* IGTHeader.swift */,
 				B75C70502BEAB3300019A527 /* NoneMessage.swift */,
-				1BA965302BE709BA0019B819 /* OpenIGTLLink.swift */,
 				1BA965312BE709BA0019B819 /* Polydata.swift */,
 				1BA9652F2BE709BA0019B819 /* Transform.swift */,
 			);

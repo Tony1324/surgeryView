@@ -24,7 +24,7 @@ struct ContentView: View {
                 openWindow(id: "control-panel")
             }
             .task {
-                await modelData.loadSampleModels()
+//                await modelData.loadSampleModels()
             }
             
     }
