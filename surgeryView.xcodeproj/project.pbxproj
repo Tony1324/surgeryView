@@ -18,6 +18,7 @@
 		1BA965532BE70B5F0019B819 /* Polydata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BA965312BE709BA0019B819 /* Polydata.swift */; };
 		1BA965542BE70B5F0019B819 /* Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BA9652F2BE709BA0019B819 /* Transform.swift */; };
 		1BA965552BE70B5F0019B819 /* IGTHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BA9652E2BE709B90019B819 /* IGTHeader.swift */; };
+		1BBF31322BFC3C0C007E63DE /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 1BBF31312BFC3C0C007E63DE /* README.md */; };
 		1BF411962BBCE5330010CD1D /* Model_58_right_rib_11.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411622BBCE5310010CD1D /* Model_58_right_rib_11.usdz */; };
 		1BF411972BBCE5330010CD1D /* Model_59_right_rib_12.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411632BBCE5310010CD1D /* Model_59_right_rib_12.usdz */; };
 		1BF411982BBCE5330010CD1D /* Model_46_left_rib_8.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411642BBCE5310010CD1D /* Model_46_left_rib_8.usdz */; };
@@ -113,6 +114,7 @@
 		1BA9652F2BE709BA0019B819 /* Transform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transform.swift; sourceTree = "<group>"; };
 		1BA965302BE709BA0019B819 /* OpenIGTLLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenIGTLLink.swift; sourceTree = "<group>"; };
 		1BA965312BE709BA0019B819 /* Polydata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Polydata.swift; sourceTree = "<group>"; };
+		1BBF31312BFC3C0C007E63DE /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1BF411622BBCE5310010CD1D /* Model_58_right_rib_11.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Model_58_right_rib_11.usdz; sourceTree = "<group>"; };
 		1BF411632BBCE5310010CD1D /* Model_59_right_rib_12.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Model_59_right_rib_12.usdz; sourceTree = "<group>"; };
 		1BF411642BBCE5310010CD1D /* Model_46_left_rib_8.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Model_46_left_rib_8.usdz; sourceTree = "<group>"; };
@@ -167,7 +169,6 @@
 		1BF411952BBCE5330010CD1D /* Model_63_left_hip.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Model_63_left_hip.usdz; sourceTree = "<group>"; };
 		B7378D092BE183B9006EDCEC /* surgeryView-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "surgeryView-Bridging-Header.h"; sourceTree = "<group>"; };
 		B75C70502BEAB3300019A527 /* NoneMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoneMessage.swift; sourceTree = "<group>"; };
-		B75C70522BED5CC70019A527 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		B7B50D722BD1B0F9006733EF /* ModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -192,6 +193,7 @@
 		1B3F56FD2B957BB700753CBB = {
 			isa = PBXGroup;
 			children = (
+				1BBF31312BFC3C0C007E63DE /* README.md */,
 				1B3F57082B957BB700753CBB /* surgeryView */,
 				1B3F57092B957BB700753CBB /* Packages */,
 				1B7F9EBE2BE70ED300D0CE52 /* surgeryViewTest */,
@@ -211,7 +213,6 @@
 		1B3F57082B957BB700753CBB /* surgeryView */ = {
 			isa = PBXGroup;
 			children = (
-				B75C70522BED5CC70019A527 /* README.md */,
 				1B6CEEC22BCDFDF1000E1162 /* sampleModels */,
 				B7B50D722BD1B0F9006733EF /* ModelData.swift */,
 				1B3F570D2B957BB700753CBB /* surgeryViewApp.swift */,
@@ -449,6 +450,7 @@
 				1BF411BD2BBCE5330010CD1D /* Model_5_liver.usdz in Resources */,
 				1BF411972BBCE5330010CD1D /* Model_59_right_rib_12.usdz in Resources */,
 				1BF4119A2BBCE5330010CD1D /* Model_6_stomach.usdz in Resources */,
+				1BBF31322BFC3C0C007E63DE /* README.md in Resources */,
 				1BF411982BBCE5330010CD1D /* Model_46_left_rib_8.usdz in Resources */,
 				1BF4119B2BBCE5330010CD1D /* Model_48_left_rib_10.usdz in Resources */,
 				1BF411B42BBCE5330010CD1D /* Model_50_left_rib_12.usdz in Resources */,
