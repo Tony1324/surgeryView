@@ -1,4 +1,4 @@
-# Surgery View: an 3d Viewer through OpenIGTLink on Apple Vision Pro 
+# Surgery View: an OpenIGTLink 3d Viewer on Apple Vision Pro 
 
 # Overview
 
