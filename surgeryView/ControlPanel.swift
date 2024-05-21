@@ -16,46 +16,80 @@ struct ControlPanel: View {
         NavigationStack{
 
                 List{
-                    Text("Model Visibility")
-                        .font(.title)
-                    ForEach(modelData.models){ entity in
-                        Button{
-                            entity.isEnabled.toggle()
-                        }label:{
-                            Text(entity.name.isEmpty ? "Unnamed Object" : entity.name)
-                        }
-
-                    }
-                }
-                .listStyle(.plain)
-                .listStyle(.sidebar)
-                .toolbar(content: {
-                    ToolbarItem(placement: .bottomOrnament) {
-                        Button {
-                            Task{
-                                await openImmersiveSpace(id: "3d-immersive")
+                    NavigationLink {
+                        List{
+                            
+                            Button {
+                                Task{
+                                    modelData.clearAll()
+                                }
+                            } label: {
+                                Text("Clear all models")
                             }
-                        } label: {
-                            Label("Open Immersive Space", systemImage: "cube")
+                            Button {
+                                Task{
+                                    await modelData.loadSampleModels()
+                                }
+                            } label: {
+                                Text("Load Sample Scene")
+                            }
+                            
+                            Button {
+                                Task{
+                                    modelData.clearAll()
+                                    modelData.startServer()
+                                }
+                            } label: {
+                                Text("Begin OpenIGTLink Connection")
+                            }
+
                         }
+                    } label: {
+                        Text("Scenes")
                     }
-                    ToolbarItem(placement: .bottomOrnament) {
-                        Button {
-                            modelData.resetPositions()
-                        } label: {
-                            Label("Reset Positions", systemImage: "arrow.counterclockwise.circle")
+                    NavigationLink {
+                        List{
+                            ForEach(modelData.models){ entity in
+                                Button{
+                                    entity.isEnabled.toggle()
+                                }label:{
+                                    Text(entity.name.isEmpty ? "Unnamed Object" : entity.name)
+                                }
+                            }
                         }
+                    } label: {
+                        Text("Models")
                     }
-                    ToolbarItem(placement: .bottomOrnament) {
-                        Button {
-                            modelData.explodeModels(1)
-                        } label: {
-                            Label("Explode Models", systemImage: "arrow.up.backward.and.arrow.down.forward.square")
-                        }
-                    }
-                })
+                    
+                }
+                .listStyle(.sidebar)
         }
         .navigationTitle("Models")
+        .toolbar(content: {
+            ToolbarItem(placement: .bottomOrnament) {
+                Button {
+                    Task{
+                        await openImmersiveSpace(id: "3d-immersive")
+                    }
+                } label: {
+                    Label("Open Immersive Space", systemImage: "cube")
+                }
+            }
+            ToolbarItem(placement: .bottomOrnament) {
+                Button {
+                    modelData.resetPositions()
+                } label: {
+                    Label("Reset Positions", systemImage: "arrow.counterclockwise.circle")
+                }
+            }
+            ToolbarItem(placement: .bottomOrnament) {
+                Button {
+                    modelData.explodeModels(1)
+                } label: {
+                    Label("Explode Models", systemImage: "arrow.up.backward.and.arrow.down.forward.square")
+                }
+            }
+        })
     }
 }
 

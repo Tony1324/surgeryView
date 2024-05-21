@@ -60,7 +60,7 @@ struct ModelManager: View {
 
                 let originAnchor = AnchorEntity(world:.zero)
                 originAnchor.position = [0, 1, -1.5]
-                originAnchor.scale = [0.1, 0.1, 0.1]
+                originAnchor.scale = [0.005, 0.005, 0.005] // hardcoded value for now
                 originAnchor.setOrientation(simd_quatf.init(angle: -Float.pi/2, axis: [1, 0, 0]), relativeTo: nil)
                 originAnchor.name = "origin"
                 
@@ -82,7 +82,7 @@ struct ModelManager: View {
                             addEntity(content: content, entity: entity)
                         }
                     }
-                    for entity in originAnchor.children {
+                    for entity in originAnchor.children.reversed() {
                         if !modelData.models.contains(entity) && entity.name != "base" {
                             originAnchor.removeChild(entity)
                         }
