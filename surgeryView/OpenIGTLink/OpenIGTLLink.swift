@@ -116,6 +116,10 @@ class CommunicationsManager{
             }))
         }
     }
+    
+    func disconnect(){
+        connection?.cancel()
+    }
 }
 
 protocol OpenIGTDecodable{

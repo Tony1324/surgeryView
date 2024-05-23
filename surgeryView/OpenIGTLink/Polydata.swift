@@ -8,6 +8,7 @@
 import Foundation
 import RealityKit
 
+
 struct PolyDataMessage: OpenIGTDecodable {
     
     var npoints: UInt32
@@ -81,7 +82,7 @@ struct PolyDataMessage: OpenIGTDecodable {
             let z = Float32(bitPattern: UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) }))
             offset += MemoryLayout<UInt32>.size
 
-            points.append(SIMD3(x: x as Float, y: y as Float, z: z as Float))
+            points.append(SIMD3(x: x as Float, y: z as Float, z: -y as Float))
         }
 
         // Extracting vertices
@@ -118,9 +119,9 @@ struct PolyDataMessage: OpenIGTDecodable {
         var attribute_header: [(UInt16, UInt32)] = []
         
         for _ in 0..<Int(nattributes) {
-            let attributeType = UInt16(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt16.self) })
+            let attributeType = (data.subdata(in: offset..<offset+MemoryLayout<UInt16>.size).withUnsafeBytes { $0.pointee } as UInt16).bigEndian
             offset += MemoryLayout<UInt16>.size
-            let nattribute = UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) })
+            let nattribute = (data.subdata(in: offset..<offset+MemoryLayout<UInt32>.size).withUnsafeBytes { $0.pointee } as UInt32).bigEndian
             offset += MemoryLayout<UInt32>.size
             attribute_header.append((attributeType,nattribute))
         }
@@ -169,7 +170,7 @@ struct PolyDataMessage: OpenIGTDecodable {
         
         // Create model component
         if let mesh = try? MeshResource.generate(from: [meshDescriptor]) {
-            var model = ModelEntity(mesh: mesh, materials: [SimpleMaterial(color: .blue, isMetallic: false)])
+            var model = ModelEntity(mesh: mesh, materials: [PhysicallyBasedMaterial()])
             return model
         }
         return nil

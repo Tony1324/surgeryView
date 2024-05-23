@@ -26,12 +26,13 @@ class ModelData{
     func startServer() {
         //The communications manager handles networking and parsing
         //this class, modelData, is used as a delegate to implement receiving messages, see extension below
-        igtlClient = CommunicationsManager(host: "10.15.236.219", port: 18944, delegate: self)
+        igtlClient?.disconnect()
+        igtlClient = CommunicationsManager(host: "10.15.236.219", port: 2000, delegate: self)
         if let igtlClient {
             Task{
                 await igtlClient.startClient()
-//                let message = IGTHeader(v: 2, messageType: "GET_POLYDATA", deviceName: "Client", timeStamp: 0, bodySize: 0, CRC: 0)
-//                igtlClient.sendMessage(header: message, content: NoneMessage())
+                let message = IGTHeader(v: 2, messageType: "GET_POLYDATA", deviceName: "Client", timeStamp: 0, bodySize: 0, CRC: 0)
+                igtlClient.sendMessage(header: message, content: NoneMessage())
             }
         }
     }

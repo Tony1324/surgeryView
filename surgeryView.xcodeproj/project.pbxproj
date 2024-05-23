@@ -72,6 +72,7 @@
 		1BF411C82BBCE5330010CD1D /* Model_18_L5_vertebra.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411942BBCE5330010CD1D /* Model_18_L5_vertebra.usdz */; };
 		1BF411C92BBCE5330010CD1D /* Model_63_left_hip.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411952BBCE5330010CD1D /* Model_63_left_hip.usdz */; };
 		B75C70512BEAB3300019A527 /* NoneMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75C70502BEAB3300019A527 /* NoneMessage.swift */; };
+		B75C70542BFFC8710019A527 /* DataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75C70532BFFC8710019A527 /* DataReader.swift */; };
 		B7B50D732BD1B0F9006733EF /* ModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B50D722BD1B0F9006733EF /* ModelData.swift */; };
 /* End PBXBuildFile section */
 
@@ -169,6 +170,7 @@
 		1BF411952BBCE5330010CD1D /* Model_63_left_hip.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Model_63_left_hip.usdz; sourceTree = "<group>"; };
 		B7378D092BE183B9006EDCEC /* surgeryView-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "surgeryView-Bridging-Header.h"; sourceTree = "<group>"; };
 		B75C70502BEAB3300019A527 /* NoneMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoneMessage.swift; sourceTree = "<group>"; };
+		B75C70532BFFC8710019A527 /* DataReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataReader.swift; sourceTree = "<group>"; };
 		B7B50D722BD1B0F9006733EF /* ModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -315,6 +317,7 @@
 			isa = PBXGroup;
 			children = (
 				1BA965302BE709BA0019B819 /* OpenIGTLLink.swift */,
+				B75C70532BFFC8710019A527 /* DataReader.swift */,
 				1BA9652E2BE709B90019B819 /* IGTHeader.swift */,
 				B75C70502BEAB3300019A527 /* NoneMessage.swift */,
 				1BA965312BE709BA0019B819 /* Polydata.swift */,
@@ -488,6 +491,7 @@
 				1B3F570E2B957BB700753CBB /* surgeryViewApp.swift in Sources */,
 				1BA965522BE70B5F0019B819 /* OpenIGTLLink.swift in Sources */,
 				1BA965532BE70B5F0019B819 /* Polydata.swift in Sources */,
+				B75C70542BFFC8710019A527 /* DataReader.swift in Sources */,
 				1BA965542BE70B5F0019B819 /* Transform.swift in Sources */,
 				1BA965552BE70B5F0019B819 /* IGTHeader.swift in Sources */,
 			);

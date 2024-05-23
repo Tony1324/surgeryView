@@ -60,8 +60,10 @@ struct ModelManager: View {
 
                 let originAnchor = AnchorEntity(world:.zero)
                 originAnchor.position = [0, 1, -1.5]
-                originAnchor.scale = [0.005, 0.005, 0.005] // hardcoded value for now
-                originAnchor.setOrientation(simd_quatf.init(angle: -Float.pi/2, axis: [1, 0, 0]), relativeTo: nil)
+                originAnchor.scale = [0.001, 0.001, 0.001] // hardcoded value for now
+                originAnchor.setOrientation(simd_quatf.init(angle: Float.pi, axis: [0, 1, 0]), relativeTo: nil)
+//                originAnchor.setOrientation(.init(ix: Float.pi/4, iy: 0, iz: -Float.pi/4, r: 0), relativeTo: nil)
+                
                 originAnchor.name = "origin"
                 
                 content.add(originAnchor)
