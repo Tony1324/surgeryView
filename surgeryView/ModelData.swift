@@ -16,6 +16,7 @@ class ModelData{
     
     var images: [Entity]
     var models: [Entity]
+    var originTransform: Transform = Transform.identity
     var igtlClient: CommunicationsManager?
 
     init(images: [Entity] = [], models: [Entity] = []) {
@@ -26,18 +27,20 @@ class ModelData{
     func startServer() {
         //The communications manager handles networking and parsing
         //this class, modelData, is used as a delegate to implement receiving messages, see extension below
+        originTransform = Transform(scale: [0.001, 0.001, 0.001], rotation: simd_quatf.init(angle: Float.pi, axis: [0, 1, 0]), translation: [0, 1, -1.5])
         igtlClient?.disconnect()
-        igtlClient = CommunicationsManager(host: "10.15.236.219", port: 2000, delegate: self)
+        igtlClient = CommunicationsManager(host: "192.168.1.107", port: 2000, delegate: self)
         if let igtlClient {
             Task{
                 await igtlClient.startClient()
-                let message = IGTHeader(v: 2, messageType: "GET_POLYDATA", deviceName: "Client", timeStamp: 0, bodySize: 0, CRC: 0)
-                igtlClient.sendMessage(header: message, content: NoneMessage())
+//                let message = IGTHeader(v: 2, messageType: "GET_POLYDATA", deviceName: "Client", timeStamp: 0, bodySize: 0, CRC: 0)
+//                igtlClient.sendMessage(header: message, content: NoneMessage())
             }
         }
     }
     
     func loadSampleModels() async{
+        originTransform = Transform(scale: [0.1, 0.1, 0.1], rotation: simd_quatf.init(angle: -Float.pi/2, axis: [1, 0, 0]), translation: [0, 1, -1.5])
         let testModels = Bundle.main.urls(forResourcesWithExtension: "usdz", subdirectory: "")
         if let urls = testModels {
             let _models = try? await withThrowingTaskGroup(of: Optional<Entity>.self) { group in
@@ -57,7 +60,7 @@ class ModelData{
                 return models
 
             }
-            models = _models?.compactMap({ $0 }) ?? []
+            models.append(contentsOf: _models?.compactMap({ $0 }) ?? [])
         }
     }
     

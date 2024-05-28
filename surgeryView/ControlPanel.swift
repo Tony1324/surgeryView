@@ -28,6 +28,7 @@ struct ControlPanel: View {
                             }
                             Button {
                                 Task{
+                                    modelData.clearAll()
                                     await modelData.loadSampleModels()
                                 }
                             } label: {

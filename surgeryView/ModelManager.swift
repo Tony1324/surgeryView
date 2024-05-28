@@ -35,16 +35,23 @@ struct ModelManager: View {
     func positionBase(content: RealityViewContent){
         if let originAnchor = content.entities.first{
             if let base = originAnchor.findEntity(named: "base"){
+
                 var centers: SIMD3<Float> = [0,0,0]
                 var lowestZ: Float = 0
+
+                base.transform = Transform()
+                base.move(to: base.convert(transform: Transform(), to: originAnchor), relativeTo: nil)
+
                 for entity in originAnchor.children {
                     guard entity.name != "base" else {continue}
-                    let bounds = entity.visualBounds(relativeTo: entity.parent)
+                    let bounds = entity.visualBounds(relativeTo: originAnchor)
                     centers = centers + bounds.center /  max((Float(originAnchor.children.count - 1)),1)
                     lowestZ = min(lowestZ, bounds.min.z)
                 }
+
                 centers.z = lowestZ - 0.1
                 base.position = centers
+
             }else {
                 addBase(content: content)
                 positionBase(content: content)
@@ -65,9 +72,9 @@ struct ModelManager: View {
 //                originAnchor.setOrientation(.init(ix: Float.pi/4, iy: 0, iz: -Float.pi/4, r: 0), relativeTo: nil)
                 
                 originAnchor.name = "origin"
-                
+                originAnchor.transform = modelData.originTransform
                 content.add(originAnchor)
-                
+
 
                 for entity in modelData.models {
                     addEntity(content: content, entity: entity)
@@ -89,6 +96,7 @@ struct ModelManager: View {
                             originAnchor.removeChild(entity)
                         }
                     }
+                    originAnchor.transform = modelData.originTransform
                 }
                 positionBase(content: content)
                 if let update {
