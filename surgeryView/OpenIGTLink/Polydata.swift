@@ -38,75 +38,51 @@ struct PolyDataMessage: OpenIGTDecodable {
     var attribute_data: [[Float]]
 
     static func decode(_ data: Data) -> PolyDataMessage? {
-        var offset = 0
+        let data = DataReader(data)
 
-        let npoints = UInt32(bigEndian: data.withUnsafeBytes{$0.load(fromByteOffset: offset, as: UInt32.self)})
-        offset += MemoryLayout<UInt32>.size
-
-        let nvertices = UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) })
-        offset += MemoryLayout<UInt32>.size
-
-        let size_vertices = UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) })
-        offset += MemoryLayout<UInt32>.size
-
-        let nlines = UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) })
-        offset += MemoryLayout<UInt32>.size
-
-        let size_lines = UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) })
-        offset += MemoryLayout<UInt32>.size
-
-        let npolygons = UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) })
-        offset += MemoryLayout<UInt32>.size
-
-        let size_polygons = UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) })
-        offset += MemoryLayout<UInt32>.size
-
-        let ntriangle_strips = UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) })
-        offset += MemoryLayout<UInt32>.size
-
-        let size_triangle_strips = UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) })
-        offset += MemoryLayout<UInt32>.size
-
-        let nattributes = UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) })
-        offset += MemoryLayout<UInt32>.size
+        guard let npoints: UInt32 = data.readInt() else {return nil}
+        guard let nvertices: UInt32 = data.readInt() else {return nil}
+        guard let size_vertices: UInt32 = data.readInt() else {return nil}
+        guard let nlines: UInt32 = data.readInt() else {return nil}
+        guard let size_lines: UInt32 = data.readInt() else {return nil}
+        guard let npolygons: UInt32 = data.readInt() else {return nil}
+        guard let size_polygons: UInt32 = data.readInt() else {return nil}
+        guard let ntriangle_strips: UInt32 = data.readInt() else {return nil}
+        guard let size_triangle_strips: UInt32 = data.readInt() else {return nil}
+        guard let nattributes: UInt32 = data.readInt() else {return nil}
 
         var points: [SIMD3<Float>] = []
 
         for _ in 0..<Int(npoints) {
-            let x = Float32(bitPattern: UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) }))
-            offset += MemoryLayout<UInt32>.size
+            guard let x = data.readFloat() else {return nil}
 
-            let y = Float32(bitPattern: UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) }))
-            offset += MemoryLayout<UInt32>.size
+            guard let y = data.readFloat() else {return nil}
 
-            let z = Float32(bitPattern: UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) }))
-            offset += MemoryLayout<UInt32>.size
+            guard let z = data.readFloat() else {return nil}
 
             points.append(SIMD3(x: x as Float, y: z as Float, z: -y as Float))
         }
 
         // Extracting vertices
-        let vertices = extractStructArray(&offset, data, nvertices)
+        guard let vertices = extractStructArray(nvertices) else {return nil}
 
         // Extracting lines
-        let lines = extractStructArray(&offset, data, nlines)
+        guard let lines = extractStructArray(nlines) else {return nil}
 
         // Extracting polygons
-        let polygons = extractStructArray(&offset, data, npolygons)
+        guard let polygons = extractStructArray(npolygons) else {return nil}
 
         // Extracting triangle_strips
-        let triangle_strips = extractStructArray(&offset, data, ntriangle_strips)
+        guard let triangle_strips = extractStructArray(ntriangle_strips) else {return nil}
 
-        func extractStructArray(_ offset: inout Int, _ data: Data, _ count: UInt32) -> STRUCT_ARRAY {
+        func extractStructArray(_ count: UInt32) -> STRUCT_ARRAY? {
             var structs: [POINT_INDICES] = []
             for _ in 0..<Int(count) {
-                let nindices = (data.subdata(in: offset..<offset+MemoryLayout<UInt32>.size).withUnsafeBytes { $0.pointee } as UInt32).bigEndian
-                offset += MemoryLayout<UInt32>.size
+                guard let nindices: UInt32 = data.readInt() else {return nil}
 
                 var indices: [UInt32] = []
                 for _ in 0..<Int(nindices) {
-                    let index = (data.subdata(in: offset..<offset+MemoryLayout<UInt32>.size).withUnsafeBytes { $0.pointee } as UInt32).bigEndian
-                    offset += MemoryLayout<UInt32>.size
+                    guard let index: UInt32 = data.readInt() else {return nil}
                     indices.append(index)
                 }
 
@@ -119,10 +95,8 @@ struct PolyDataMessage: OpenIGTDecodable {
         var attribute_header: [(UInt16, UInt32)] = []
         
         for _ in 0..<Int(nattributes) {
-            let attributeType = (data.subdata(in: offset..<offset+MemoryLayout<UInt16>.size).withUnsafeBytes { $0.pointee } as UInt16).bigEndian
-            offset += MemoryLayout<UInt16>.size
-            let nattribute = (data.subdata(in: offset..<offset+MemoryLayout<UInt32>.size).withUnsafeBytes { $0.pointee } as UInt32).bigEndian
-            offset += MemoryLayout<UInt32>.size
+            guard let attributeType: UInt16 = data.readInt() else {return nil}
+            guard let nattribute: UInt32 = data.readInt() else {return nil}
             attribute_header.append((attributeType,nattribute))
         }
         

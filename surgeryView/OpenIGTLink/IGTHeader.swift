@@ -18,45 +18,20 @@ struct IGTHeader: OpenIGTDecodable, OpenIGTEncodable{
     static var messageSize = 58
     static func decode(_ data: Data) -> IGTHeader?{
         guard data.count == messageSize else {return nil}
-        var offset = 0
+        var data = DataReader(data)
+        data.prettyPrint()
+
+        guard let v: UInt16 = data.readInt() else {return nil}
+
+        guard let messageType = data.readString(length:12) else {return nil}
+
+        guard let deviceName = data.readString(length:20) else {return nil}
         
-//        let data = DataReader(data: data)
-//        data.prettyPrint()
+        guard let timeStamp: UInt64 = data.readInt() else {return nil}
 
-        //Version Number
-        let v = UInt16(bigEndian: data.withUnsafeBytes({ bufferPointer in
-            bufferPointer.load(fromByteOffset: offset, as: UInt16.self)
-        }))
-        offset += MemoryLayout<UInt16>.size
+        guard let bodySize: UInt64 = data.readInt() else {return nil}
 
-        //Unpack Message Type
-        let messageTypeData = data.subdata(in: offset..<offset+12)
-        guard let messageType = String(data: messageTypeData, encoding: .ascii) else { return nil }
-        offset += 12
-
-        let deviceNameData = data.subdata(in: offset..<offset+20)
-        guard let deviceName = String(data: deviceNameData, encoding: .ascii) else { return nil }
-        offset += 20
-
-        let timeStamp = (data.subdata(in: offset..<offset+MemoryLayout<UInt64>.size).withUnsafeBytes { $0.pointee } as UInt64).bigEndian
-        offset += MemoryLayout<UInt64>.size
-
-        let bodySize = (data.subdata(in: offset..<offset+MemoryLayout<UInt64>.size).withUnsafeBytes { $0.pointee } as UInt64).bigEndian
-        offset += MemoryLayout<UInt64>.size
-
-        let CRC = (data.subdata(in: offset..<offset+MemoryLayout<UInt64>.size).withUnsafeBytes { $0.pointee } as UInt64).bigEndian
-
-//        guard let v: UInt16 = data.readInt() else {return nil}
-
-//        guard let messageType = data.readString(12) else {return nil}
-//
-//        guard let deviceName = data.readString(20) else {return nil}
-//        
-//        guard let timeStamp: UInt64 = data.readInt() else {return nil}
-//
-//        guard let bodySize: UInt64 = data.readInt() else {return nil}
-//
-//        guard let CRC: UInt64 = data.readInt() else {return nil}
+        guard let CRC: UInt64 = data.readInt() else {return nil}
 
         return IGTHeader(v: v, messageType: messageType, deviceName: deviceName, timeStamp: timeStamp, bodySize: bodySize, CRC: CRC)
     }
@@ -88,15 +63,13 @@ struct IGTExtendedHeader {
 
     static func decode(_ data: Data) -> IGTExtendedHeader?{
         guard data.count >= minMessageSize else {return nil}
-        var offset = 0
+        let data = DataReader(data)
 
-        let ext_header_size = (data.subdata(in: offset..<offset+MemoryLayout<UInt64>.size).withUnsafeBytes { $0.pointee } as UInt16).bigEndian
-        offset += MemoryLayout<UInt16>.size
+        guard let ext_header_size: UInt16 = data.readInt() else {return nil}
+        
+        guard let meta_data_size: UInt16 = data.readInt() else {return nil}
 
-        let meta_data_size = (data.subdata(in: offset..<offset+MemoryLayout<UInt64>.size).withUnsafeBytes { $0.pointee } as UInt16).bigEndian
-        offset += MemoryLayout<UInt16>.size
-
-        let msg_id = (data.subdata(in: offset..<offset+MemoryLayout<UInt64>.size).withUnsafeBytes { $0.pointee } as UInt32).bigEndian
+        guard let msg_id: UInt32 = data.readInt() else {return nil}
 
         return IGTExtendedHeader(ext_header_size: ext_header_size, meta_data_size: meta_data_size, msg_id: msg_id)
     }

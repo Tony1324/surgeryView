@@ -35,33 +35,20 @@ struct TransformMessage: OpenIGTEncodable{
     
     static func decode(_ data: Data) -> TransformMessage?{
         guard data.count == messageSize else {return nil}
-        var offset = 0
-        let offsetAmount = MemoryLayout<UInt32>.size
+        let data = DataReader(data)
         
-        let a0 = Float32(bitPattern: UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) }))
-        offset += offsetAmount
-        let b0 = Float32(bitPattern: UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) }))
-        offset += offsetAmount
-        let c0 = Float32(bitPattern: UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) }))
-        offset += offsetAmount
-        let a1 = Float32(bitPattern: UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) }))
-        offset += offsetAmount
-        let b1 = Float32(bitPattern: UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) }))
-        offset += offsetAmount
-        let c1 = Float32(bitPattern: UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) }))
-        offset += offsetAmount
-        let a2 = Float32(bitPattern: UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) }))
-        offset += offsetAmount
-        let b2 = Float32(bitPattern: UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) }))
-        offset += offsetAmount
-        let c2 = Float32(bitPattern: UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) }))
-        offset += offsetAmount
-        let a3 = Float32(bitPattern: UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) }))
-        offset += offsetAmount
-        let b3 = Float32(bitPattern: UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) }))
-        offset += offsetAmount
-        let c3 = Float32(bitPattern: UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: offset, as: UInt32.self) }))
-        offset += offsetAmount
+        guard let a0 = data.readFloat() else {return nil}
+        guard let b0 = data.readFloat() else {return nil}
+        guard let c0 = data.readFloat() else {return nil}
+        guard let a1 = data.readFloat() else {return nil}
+        guard let b1 = data.readFloat() else {return nil}
+        guard let c1 = data.readFloat() else {return nil}
+        guard let a2 = data.readFloat() else {return nil}
+        guard let b2 = data.readFloat() else {return nil}
+        guard let c2 = data.readFloat() else {return nil}
+        guard let a3 = data.readFloat() else {return nil}
+        guard let b3 = data.readFloat() else {return nil}
+        guard let c3 = data.readFloat() else {return nil}
         
         return TransformMessage(transform: simd_float4x4(columns: (simd_float4(a0, b0, c0, 0), simd_float4(a1, b1, c1, 0), simd_float4(a2, b2, c2, 0), simd_float4(a3, b3, c3, 1))))
     }

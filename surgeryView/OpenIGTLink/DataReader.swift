@@ -9,7 +9,7 @@ import Foundation
 
 class DataReader {
     var data: Data
-    init(data: Data) {
+    init(_ data: Data) {
         self.data = data
     }
     func prettyPrint() {
@@ -18,16 +18,15 @@ class DataReader {
     }
     func readInt<T:FixedWidthInteger>() -> T? {
         if data.count >= MemoryLayout<T>.size {
-            let x = T(bigEndian: data.withUnsafeBytes{$0.load(fromByteOffset: data.startIndex, as: T.self)})
+            let x = T(bigEndian: data.subdata(in: data.startIndex..<data.startIndex + MemoryLayout<T>.size).withUnsafeBytes{$0.load(as: T.self)})
             data.removeFirst(MemoryLayout<T>.size)
             return x
         }
         return nil
     }
     
-    func readString(_ length: Int) -> String? {
+    func readString(length: Int) -> String? {
         if data.count >= length {
-            print(data.startIndex)
             let str = String(data: data.subdata(in: data.startIndex..<data.startIndex + length), encoding: .ascii)
             data.removeFirst(length)
             return str
@@ -37,7 +36,7 @@ class DataReader {
     
     func readFloat() -> Float32? {
         if data.count >= MemoryLayout<Float32>.size {
-            let float = Float32(bitPattern: UInt32(bigEndian: data.withUnsafeBytes { $0.load(fromByteOffset: data.startIndex, as: UInt32.self) }))
+            let float = Float32(bitPattern: UInt32(bigEndian: data.subdata(in: data.startIndex..<data.startIndex + MemoryLayout<Float32>.size).withUnsafeBytes { $0.load(as: UInt32.self) }))
             data.removeFirst(MemoryLayout<Float32>.size)
             return float
         }
