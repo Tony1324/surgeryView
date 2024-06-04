@@ -18,19 +18,11 @@ struct surgeryViewApp: App {
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
 
     var body: some SwiftUI.Scene {
-        WindowGroup(id:"control-panel"){
-            ControlPanel()
-                .environment(modelData)
-                .task {
-                    await openImmersiveSpace(id: "3d-immersive")
-                }
-        }
-        .defaultSize(CGSize(width: 250, height: 400))
+
 
         ImmersiveSpace(id: "3d-immersive") {
             ContentView()
                 .environment(modelData)
-                .frame(depth: 1000)
                 .task {
                     modelData.startServer()
                 }

@@ -15,32 +15,41 @@ struct ModelManager: View {
     
     func addEntity(content: RealityViewContent ,entity: Entity){
         if let originAnchor = content.entities.first {
+            
             entity.components.set(InputTargetComponent())
             entity.components.set(HoverEffectComponent())
             entity.generateCollisionShapes(recursive: true)
-            var textLabel = ModelEntity(mesh: MeshResource.generateText("untitled entity"), materials: [SimpleMaterial(color: .white, isMetallic: false)])
+//            var textLabel = ModelEntity(mesh: MeshResource.generateText("untitled entity"), materials: [SimpleMaterial(color: .white, isMetallic: false)])
             originAnchor.addChild(entity)
-            entity.addChild(textLabel)
-            let bounds = entity.visualBounds(relativeTo: entity)
-            var pos = entity.convert(position: bounds.center, to: nil)
-            pos.z = entity.convert(position:bounds.min, to: nil).z + 0.01
-            textLabel.move(to: Transform(scale: [0.001, 0.001, 0.001],translation: pos), relativeTo: nil)
+//            entity.addChild(textLabel)
+//            let bounds = entity.visualBounds(relativeTo: entity)
+//            var pos = entity.convert(position: bounds.center, to: nil)
+//            pos.z = entity.convert(position:bounds.min, to: nil).z + 0.01
+//            textLabel.move(to: Transform(scale: [0.001, 0.001, 0.001],translation: pos), relativeTo: nil)
             
             
         }
     }
     
-    func addBase(content: RealityViewContent) {
+    func addBase(content: RealityViewContent, attachments: RealityViewAttachments) {
         if let originAnchor = content.entities.first {
             let dragBase = ModelEntity(mesh: .generateCylinder(height: 0.02, radius: 0.2), materials: [SimpleMaterial.init(color: .darkGray, isMetallic: false)])
             dragBase.name = "base"
-            addEntity(content: content, entity: dragBase)
+            dragBase.components.set(InputTargetComponent())
+            dragBase.components.set(HoverEffectComponent())
+            dragBase.generateCollisionShapes(recursive: true)
+            originAnchor.addChild(dragBase)
             dragBase.move(to: dragBase.convert(transform: Transform(), to: originAnchor), relativeTo: nil)
-
+            if let panel = attachments.entity(for: "controls") {
+                panel.name = "controls"
+                panel.move(to: Transform(translation: [-0.5, 0.2, 0]), relativeTo: dragBase)
+                panel.transform.rotation = .init(angle: Float.pi/8, axis: [0, 1, 0])
+                dragBase.addChild(panel)
+            }
         }
     }
     
-    func positionBase(content: RealityViewContent){
+    func positionBase(content: RealityViewContent, attachment: RealityViewAttachments){
         if let originAnchor = content.entities.first{
             if let base = originAnchor.findEntity(named: "base"){
 
@@ -62,8 +71,8 @@ struct ModelManager: View {
                 base.position = centers
 
             }else {
-                addBase(content: content)
-                positionBase(content: content)
+                addBase(content: content, attachments: attachment)
+                positionBase(content: content, attachment: attachment)
             }
         }
     }
@@ -72,26 +81,26 @@ struct ModelManager: View {
     
     var body: some View {
         ZStack(alignment: .leading) {
-            RealityView { content in
+            RealityView { content, attachments in
 
                 let originAnchor = AnchorEntity(world:.zero)
                 originAnchor.position = [0, 1, -1.5]
-                originAnchor.scale = [0.001, 0.001, 0.001] // hardcoded value for now
-                originAnchor.setOrientation(simd_quatf.init(angle: Float.pi, axis: [0, 1, 0]), relativeTo: nil)
-//                originAnchor.setOrientation(.init(ix: Float.pi/4, iy: 0, iz: -Float.pi/4, r: 0), relativeTo: nil)
                 
                 originAnchor.name = "origin"
                 originAnchor.transform = modelData.originTransform
                 content.add(originAnchor)
+                
 
 
                 for entity in modelData.models {
                     addEntity(content: content, entity: entity)
                 }
                 
-                addBase(content: content)
+                addBase(content: content, attachments: attachments)
                 
-            } update: { content in
+                
+                
+            } update: { content, attachments in
                 if let originAnchor = content.entities.first{
                     for entity in modelData.models {
                         if originAnchor.children.contains(entity) {
@@ -100,23 +109,36 @@ struct ModelManager: View {
                             addEntity(content: content, entity: entity)
                         }
                     }
-                    for entity in originAnchor.children.reversed() {
-                        if !modelData.models.contains(entity) && entity.name != "base" {
-                            originAnchor.removeChild(entity)
+                    for entity in originAnchor.children.reversed().filter({$0.name != "base" && $0.name != "controls"}) {
+                        
+                        if !modelData.models.contains(entity){
+//                            originAnchor.removeChild(entity)
+                        }
+                        if (modelData.selectedEntity == entity || modelData.selectedEntity == nil) {
+                            entity.components.set(OpacityComponent(opacity: 1))
+                        } else {
+                            entity.components.set(OpacityComponent(opacity: 0.2))
                         }
                     }
-                    originAnchor.transform = modelData.originTransform
+                    originAnchor.transform.scale = modelData.originTransform.scale
+                    originAnchor.transform.rotation = modelData.originTransform.rotation
                 }
-                positionBase(content: content)
+                positionBase(content: content, attachment: attachments)
                 if let update {
                     update(content)
+                }
+            } attachments: {
+                Attachment(id: "controls") {
+                    ControlPanel()
+                        .environment(modelData)
+                        .frame(width: 350, height: 500)
                 }
             }
             .gesture(
                 DragGesture()
                     .targetedToAnyEntity()
                     .onChanged({ value in
-                        
+
                         let entity = value.entity
                         if entity.name == "base" {
                             if dragStartLocation3d == nil {

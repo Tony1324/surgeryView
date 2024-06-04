@@ -14,83 +14,92 @@ struct ControlPanel: View {
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
     var body: some View {
         NavigationStack{
-
-                List{
-                    NavigationLink {
-                        List{
-                            
-                            Button {
-                                Task{
-                                    modelData.clearAll()
-                                }
-                            } label: {
-                                Text("Clear all models")
+            List{
+                NavigationLink {
+                    List{
+                        
+                        Button {
+                            Task{
+                                modelData.clearAll()
                             }
-                            Button {
-                                Task{
-                                    modelData.clearAll()
-                                    await modelData.loadSampleModels()
-                                }
-                            } label: {
-                                Text("Load Sample Scene")
-                            }
-                            
-                            Button {
-                                Task{
-                                    modelData.clearAll()
-                                    modelData.startServer()
-                                }
-                            } label: {
-                                Text("Begin OpenIGTLink Connection")
-                            }
-
+                        } label: {
+                            Text("Clear all models")
                         }
-                    } label: {
-                        Text("Scenes")
+                        Button {
+                            Task{
+                                modelData.clearAll()
+                                await modelData.loadSampleModels()
+                            }
+                        } label: {
+                            Text("Load Sample Scene")
+                        }
+                        
+                        Button {
+                            Task{
+                                modelData.clearAll()
+                                modelData.startServer()
+                            }
+                        } label: {
+                            Text("Begin OpenIGTLink Connection")
+                        }
+                        
                     }
-                    NavigationLink {
+                    .navigationTitle("Scenes")
+                } label: {
+                    Text("Scenes")
+                }
+                NavigationLink {
+                    //TODO: update to multiselect
                         List{
                             ForEach(modelData.models){ entity in
                                 Button{
-                                    entity.isEnabled.toggle()
+                                    if(modelData.selectedEntity == entity) {
+                                        modelData.selectedEntity = nil
+                                    } else {
+                                        modelData.selectedEntity = entity
+                                    }
                                 }label:{
                                     Text(entity.name.isEmpty ? "Unnamed Object" : entity.name)
                                 }
+                                
                             }
                         }
+                        .navigationTitle("Models")
+
+                } label: {
+                    Text("Models")
+                }
+                
+            }
+            .toolbar(content: {
+                ToolbarItem(placement: .bottomOrnament) {
+                    Button {
+                        Task{
+                            await openImmersiveSpace(id: "3d-immersive")
+                        }
                     } label: {
-                        Text("Models")
+                        Label("Open Immersive Space", systemImage: "cube")
                     }
-                    
                 }
-                .listStyle(.sidebar)
+                ToolbarItem(placement: .bottomOrnament) {
+                    Button {
+                        modelData.resetPositions()
+                    } label: {
+                        Label("Reset Positions", systemImage: "arrow.counterclockwise.circle")
+                    }
+                }
+                ToolbarItem(placement: .bottomOrnament) {
+                    Button {
+                        modelData.explodeModels(1)
+                    } label: {
+                        Label("Explode Models", systemImage: "arrow.up.backward.and.arrow.down.forward.square")
+                    }
+                }
+            })
+            .listStyle(.sidebar)
+            .navigationTitle("Controls")
         }
-        .navigationTitle("Models")
-        .toolbar(content: {
-            ToolbarItem(placement: .bottomOrnament) {
-                Button {
-                    Task{
-                        await openImmersiveSpace(id: "3d-immersive")
-                    }
-                } label: {
-                    Label("Open Immersive Space", systemImage: "cube")
-                }
-            }
-            ToolbarItem(placement: .bottomOrnament) {
-                Button {
-                    modelData.resetPositions()
-                } label: {
-                    Label("Reset Positions", systemImage: "arrow.counterclockwise.circle")
-                }
-            }
-            ToolbarItem(placement: .bottomOrnament) {
-                Button {
-                    modelData.explodeModels(1)
-                } label: {
-                    Label("Explode Models", systemImage: "arrow.up.backward.and.arrow.down.forward.square")
-                }
-            }
-        })
+        
     }
 }
 

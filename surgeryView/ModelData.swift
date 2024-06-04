@@ -16,6 +16,7 @@ class ModelData{
     
     var images: [Entity]
     var models: [Entity]
+    var selectedEntity: Entity?
     var originTransform: Transform = Transform.identity
     var igtlClient: CommunicationsManager?
 

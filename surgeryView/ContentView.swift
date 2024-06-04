@@ -19,14 +19,13 @@ struct ContentView: View {
     @Environment(ModelData.self) var modelData
     @Environment(\.openWindow) private var openWindow
     var body: some View {
-        ModelManager()
-            .onAppear{
-                openWindow(id: "control-panel")
-            }
-            .task {
-//                await modelData.loadSampleModels()
-            }
-            
+            ModelManager()
+                .onAppear{
+                    openWindow(id: "control-panel")
+                }
+                .task {
+                    //                await modelData.loadSampleModels()
+                }
     }
 }
 
