@@ -18,7 +18,18 @@ struct ModelManager: View {
             entity.components.set(InputTargetComponent())
             entity.components.set(HoverEffectComponent())
             entity.generateCollisionShapes(recursive: true)
+            var textLabel = ModelEntity(mesh: MeshResource.generateText("Hello"), materials: [SimpleMaterial(color: .white, isMetallic: false)])
+            var bounds = entity.visualBounds(relativeTo: entity)
+            textLabel.move(to: textLabel.convert(transform: Transform(), to: originAnchor), relativeTo: nil)
+            textLabel.setScale([0.1,0.1,0.1], relativeTo: textLabel)
+//            textLabel.position.x = bounds.center.x
+//            textLabel.position.y = bounds.center.y
+//            textLabel.position.z = bounds.max.z
+            textLabel.position = bounds.center
+            textLabel.position.y = bounds.max.y
+            entity.addChild(textLabel)
             originAnchor.addChild(entity)
+            
         }
     }
     
@@ -50,6 +61,7 @@ struct ModelManager: View {
                 }
 
                 centers.z = lowestZ - 0.1
+//                centers = [0,0,0]
                 base.position = centers
 
             }else {

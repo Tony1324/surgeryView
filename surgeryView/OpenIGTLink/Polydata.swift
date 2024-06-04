@@ -63,16 +63,12 @@ struct PolyDataMessage: OpenIGTDecodable {
             points.append(SIMD3(x: x as Float, y: z as Float, z: -y as Float))
         }
 
-        // Extracting vertices
         guard let vertices = extractStructArray(nvertices) else {return nil}
 
-        // Extracting lines
         guard let lines = extractStructArray(nlines) else {return nil}
 
-        // Extracting polygons
         guard let polygons = extractStructArray(npolygons) else {return nil}
 
-        // Extracting triangle_strips
         guard let triangle_strips = extractStructArray(ntriangle_strips) else {return nil}
 
         func extractStructArray(_ count: UInt32) -> STRUCT_ARRAY? {
