@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1B0054522BB07D8F004697EE /* ControlPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B0054512BB07D8E004697EE /* ControlPanel.swift */; };
+		1B0573B92C126C8A003905D4 /* ToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B0573B82C126C8A003905D4 /* ToolbarView.swift */; };
 		1B11BFB72BA918B700E1DEB0 /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B11BFB62BA918B700E1DEB0 /* ModelManager.swift */; };
 		1B3F570E2B957BB700753CBB /* surgeryViewApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B3F570D2B957BB700753CBB /* surgeryViewApp.swift */; };
 		1B3F57102B957BB700753CBB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B3F570F2B957BB700753CBB /* ContentView.swift */; };
@@ -101,6 +102,7 @@
 
 /* Begin PBXFileReference section */
 		1B0054512BB07D8E004697EE /* ControlPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlPanel.swift; sourceTree = "<group>"; };
+		1B0573B82C126C8A003905D4 /* ToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarView.swift; sourceTree = "<group>"; };
 		1B11BFB62BA918B700E1DEB0 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
 		1B3F57062B957BB700753CBB /* surgeryView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = surgeryView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B3F570A2B957BB700753CBB /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
@@ -216,11 +218,12 @@
 			isa = PBXGroup;
 			children = (
 				1B6CEEC22BCDFDF1000E1162 /* sampleModels */,
-				B7B50D722BD1B0F9006733EF /* ModelData.swift */,
 				1B3F570D2B957BB700753CBB /* surgeryViewApp.swift */,
-				1B0054512BB07D8E004697EE /* ControlPanel.swift */,
+				B7B50D722BD1B0F9006733EF /* ModelData.swift */,
 				1B3F570F2B957BB700753CBB /* ContentView.swift */,
 				1B11BFB62BA918B700E1DEB0 /* ModelManager.swift */,
+				1B0054512BB07D8E004697EE /* ControlPanel.swift */,
+				1B0573B82C126C8A003905D4 /* ToolbarView.swift */,
 				1BA965562BE70BEB0019B819 /* OpenIGTLink */,
 				1B3F57132B957BB900753CBB /* Assets.xcassets */,
 				1B3F57182B957BB900753CBB /* Info.plist */,
@@ -485,6 +488,7 @@
 			files = (
 				1B3F57102B957BB700753CBB /* ContentView.swift in Sources */,
 				1B0054522BB07D8F004697EE /* ControlPanel.swift in Sources */,
+				1B0573B92C126C8A003905D4 /* ToolbarView.swift in Sources */,
 				B7B50D732BD1B0F9006733EF /* ModelData.swift in Sources */,
 				B75C70512BEAB3300019A527 /* NoneMessage.swift in Sources */,
 				1B11BFB72BA918B700E1DEB0 /* ModelManager.swift in Sources */,

@@ -28,7 +28,7 @@ class ModelData{
     func startServer() {
         //The communications manager handles networking and parsing
         //this class, modelData, is used as a delegate to implement receiving messages, see extension below
-        originTransform = Transform(scale: [0.001, 0.001, 0.001], rotation: simd_quatf.init(angle: Float.pi, axis: [0, 1, 0]), translation: [0, 1, -1.5])
+        originTransform = Transform(scale: [0.001, 0.001, 0.001], rotation: simd_quatf.init(angle: Float.pi, axis: [0, 1, 0]))
         igtlClient?.disconnect()
         igtlClient = CommunicationsManager(host: "10.15.253.62", port: 2200, delegate: self)
         if let igtlClient {
@@ -41,7 +41,7 @@ class ModelData{
     }
     
     func loadSampleModels() async{
-        originTransform = Transform(scale: [0.1, 0.1, 0.1], rotation: simd_quatf.init(angle: -Float.pi/2, axis: [1, 0, 0]), translation: [0, 1, -1.5])
+        originTransform = Transform(scale: [0.1, 0.1, 0.1], rotation: simd_quatf.init(angle: -Float.pi/2, axis: [1, 0, 0]))
         let testModels = Bundle.main.urls(forResourcesWithExtension: "usdz", subdirectory: "")
         if let urls = testModels {
             let _models = try? await withThrowingTaskGroup(of: Optional<Entity>.self) { group in
@@ -66,6 +66,7 @@ class ModelData{
     }
     
     func clearAll() {
+        selectedEntity = nil
         models = []
     }
     
@@ -80,11 +81,13 @@ class ModelData{
     func explodeModels(_ factor: Float) {
         resetPositions()
         for entity in models {
-            let bounds = entity.visualBounds(relativeTo: entity.parent)
-            var center = bounds.center
-            center.z = center.z - (entity.parent?.findEntity(named: "base")?.position.z ?? 0) - 1
-            print(entity.parent?.findEntity(named: "base")?.position)
-            entity.move(to: Transform(scale: entity.scale, translation: center*factor), relativeTo: entity.parent, duration: 0.2, timingFunction: .easeOut)
+            if let parent = entity.parent {
+                let base = parent.parent
+                let bounds = entity.visualBounds(relativeTo: base)
+                var center = bounds.center
+                let baseTransform = parent.convert(transform: entity.transform, to: base)
+                entity.move(to: Transform(scale: baseTransform.scale, rotation: baseTransform.rotation, translation: (bounds.center + baseTransform.translation - [0, 0.1, 0]) * factor), relativeTo: base, duration: 0.5, timingFunction: .cubicBezier(controlPoint1: [0, 1], controlPoint2: [0.5, 1]))
+            }
         }
     }
 }

@@ -20,12 +20,6 @@ struct ContentView: View {
     @Environment(\.openWindow) private var openWindow
     var body: some View {
             ModelManager()
-                .onAppear{
-                    openWindow(id: "control-panel")
-                }
-                .task {
-                    //                await modelData.loadSampleModels()
-                }
     }
 }
 

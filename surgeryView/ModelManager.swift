@@ -14,8 +14,7 @@ struct ModelManager: View {
     var update: ((RealityViewContent) -> ())?
     
     func addEntity(content: RealityViewContent ,entity: Entity){
-        if let originAnchor = content.entities.first {
-            
+        if let originAnchor = content.entities.first?.findEntity(named: "origin") {
             entity.components.set(InputTargetComponent())
             entity.components.set(HoverEffectComponent())
             entity.generateCollisionShapes(recursive: true)
@@ -26,53 +25,48 @@ struct ModelManager: View {
 //            var pos = entity.convert(position: bounds.center, to: nil)
 //            pos.z = entity.convert(position:bounds.min, to: nil).z + 0.01
 //            textLabel.move(to: Transform(scale: [0.001, 0.001, 0.001],translation: pos), relativeTo: nil)
-            
-            
         }
     }
     
-    func addBase(content: RealityViewContent, attachments: RealityViewAttachments) {
-        if let originAnchor = content.entities.first {
-            let dragBase = ModelEntity(mesh: .generateCylinder(height: 0.02, radius: 0.2), materials: [SimpleMaterial.init(color: .darkGray, isMetallic: false)])
-            dragBase.name = "base"
-            dragBase.components.set(InputTargetComponent())
-            dragBase.components.set(HoverEffectComponent())
-            dragBase.generateCollisionShapes(recursive: true)
-            originAnchor.addChild(dragBase)
-            dragBase.move(to: dragBase.convert(transform: Transform(), to: originAnchor), relativeTo: nil)
-            if let panel = attachments.entity(for: "controls") {
-                panel.name = "controls"
-                panel.move(to: Transform(translation: [-0.5, 0.2, 0]), relativeTo: dragBase)
-                panel.transform.rotation = .init(angle: Float.pi/8, axis: [0, 1, 0])
-                dragBase.addChild(panel)
-            }
+    func addBase(content: RealityViewContent, attachments: RealityViewAttachments) -> ModelEntity {
+        let base = ModelEntity(mesh: .generateCylinder(height: 0.02, radius: 0.2), materials: [SimpleMaterial.init(color: .darkGray, isMetallic: false)])
+        base.name = "base"
+        base.components.set(InputTargetComponent())
+        base.generateCollisionShapes(recursive: true)
+        content.add(base)
+        if let panel = attachments.entity(for: "controls") {
+            panel.name = "controls"
+            panel.move(to: Transform(translation: [-0.5, 0.2, 0]), relativeTo: base)
+            panel.transform.rotation = .init(angle: Float.pi/8, axis: [0, 1, 0])
+            base.addChild(panel)
         }
+        
+        if let toolbar = attachments.entity(for: "toolbar") {
+            toolbar.name = "toolbar"
+            toolbar.move(to: Transform(translation: [0, -0.05, 0.25]), relativeTo: base)
+            toolbar.move(to: Transform(translation: [0, -0.05, 0.25]), relativeTo: base)
+            toolbar.transform.rotation = .init(angle: -Float.pi/8, axis: [1, 0, 0])
+            base.addChild(toolbar)
+        }
+        return base
     }
     
-    func positionBase(content: RealityViewContent, attachment: RealityViewAttachments){
-        if let originAnchor = content.entities.first{
-            if let base = originAnchor.findEntity(named: "base"){
-
+    func positionModels(content: RealityViewContent, attachment: RealityViewAttachments){
+        if let base = content.entities.first{
+            if let originAnchor = base.findEntity(named: "origin"){
                 var centers: SIMD3<Float> = [0,0,0]
-                var lowestZ: Float = 0
-
-                base.transform = Transform()
-                base.move(to: base.convert(transform: Transform(), to: originAnchor), relativeTo: nil)
+                var lowestY: Float = 0
 
                 for entity in originAnchor.children {
                     guard entity.name != "base" else {continue}
-                    let bounds = entity.visualBounds(relativeTo: originAnchor)
-                    centers = centers + bounds.center /  max((Float(originAnchor.children.count - 1)),1)
-                    lowestZ = min(lowestZ, bounds.min.z)
+                    let bounds = entity.visualBounds(relativeTo: base)
+                    centers = centers + (bounds.center - entity.convert(position: entity.position, to: base)) / max((Float(originAnchor.children.count - 1)),1)
+                    lowestY = min(lowestY, (bounds.min.y - entity.convert(position: entity.position, to: base).y))
                 }
 
-                centers.z = lowestZ - 0.1
-//                centers = [0,0,0]
-                base.position = centers
+                centers.y = lowestY - 0.05
+                originAnchor.position = [0,0,0] - centers
 
-            }else {
-                addBase(content: content, attachments: attachment)
-                positionBase(content: content, attachment: attachment)
             }
         }
     }
@@ -80,92 +74,84 @@ struct ModelManager: View {
     @State var dragStartLocation3d: Transform? = nil
     
     var body: some View {
-        ZStack(alignment: .leading) {
-            RealityView { content, attachments in
+        RealityView { content, attachments in
+            
+            let base = addBase(content: content, attachments: attachments)
+            base.position = [0, 1, -1.5]
 
-                let originAnchor = AnchorEntity(world:.zero)
-                originAnchor.position = [0, 1, -1.5]
-                
-                originAnchor.name = "origin"
-                originAnchor.transform = modelData.originTransform
-                content.add(originAnchor)
-                
+            let originAnchor = Entity()
+
+            originAnchor.name = "origin"
+            originAnchor.transform = modelData.originTransform
+            base.addChild(originAnchor)
 
 
-                for entity in modelData.models {
-                    addEntity(content: content, entity: entity)
-                }
-                
-                addBase(content: content, attachments: attachments)
-                
-                
-                
-            } update: { content, attachments in
-                if let originAnchor = content.entities.first{
-                    for entity in modelData.models {
-                        if originAnchor.children.contains(entity) {
-                            continue
-                        }else{
-                            addEntity(content: content, entity: entity)
-                        }
-                    }
-                    for entity in originAnchor.children.reversed().filter({$0.name != "base" && $0.name != "controls"}) {
-                        
-                        if !modelData.models.contains(entity){
-//                            originAnchor.removeChild(entity)
-                        }
-                        if (modelData.selectedEntity == entity || modelData.selectedEntity == nil) {
-                            entity.components.set(OpacityComponent(opacity: 1))
-                        } else {
-                            entity.components.set(OpacityComponent(opacity: 0.2))
-                        }
-                    }
-                    originAnchor.transform.scale = modelData.originTransform.scale
-                    originAnchor.transform.rotation = modelData.originTransform.rotation
-                }
-                positionBase(content: content, attachment: attachments)
-                if let update {
-                    update(content)
-                }
-            } attachments: {
-                Attachment(id: "controls") {
-                    ControlPanel()
-                        .environment(modelData)
-                        .frame(width: 350, height: 500)
-                }
+
+            for entity in modelData.models {
+                addEntity(content: content, entity: entity)
             }
-            .gesture(
-                DragGesture()
-                    .targetedToAnyEntity()
-                    .onChanged({ value in
 
-                        let entity = value.entity
-                        if entity.name == "base" {
-                            if dragStartLocation3d == nil {
-                                dragStartLocation3d = entity.parent!.transform
-                            }
-                            let translation = value.convert(value.translation3D, from: .local, to: .scene)
-                            entity.parent?.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D(translation)), relativeTo: nil, duration: 0.1)
 
-                            return
-                        }
-                        
-                        if dragStartLocation3d == nil {
-                            dragStartLocation3d = entity.transform
-                        }
-                        
-                        let translation = value.convert(value.translation3D, from: .local, to: entity.parent!)
-                        
-                        entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D(translation)), relativeTo: entity.parent, duration: 0.1)
-                    })
-                    .onEnded({ _ in
-                        dragStartLocation3d = nil
-                    })
-            )
 
+
+        } update: { content, attachments in
+            if let originAnchor = content.entities.first?.findEntity(named: "origin"){
+                for entity in modelData.models {
+                    if originAnchor.children.contains(entity) {
+                        continue
+                    }else{
+                        addEntity(content: content, entity: entity)
+                    }
+                }
+                for entity in originAnchor.children.reversed(){
+                    if !modelData.models.contains(entity){
+                        originAnchor.removeChild(entity)
+                    }
+                    if (modelData.selectedEntity == entity || modelData.selectedEntity == nil) {
+                        entity.components.set(OpacityComponent(opacity: 1))
+                    } else {
+                        entity.components.set(OpacityComponent(opacity: 0.2))
+                    }
+                }
+                originAnchor.transform.scale = modelData.originTransform.scale
+                originAnchor.transform.rotation = modelData.originTransform.rotation
+            }
+            positionModels(content: content, attachment: attachments)
+            if let update {
+                update(content)
+            }
+        } attachments: {
+            Attachment(id: "controls") {
+                ControlPanel()
+                    .environment(modelData)
+                    .frame(width: 350, height: 500)
+            }
+            Attachment(id: "toolbar") {
+                ToolbarView()
+                    .environment(modelData)
+            }
         }
+        .gesture(
+            DragGesture()
+                .targetedToAnyEntity()
+                .onChanged({ value in
+
+                    let entity = value.entity
+                    if dragStartLocation3d == nil {
+                        dragStartLocation3d = entity.transform
+                    }
+
+                    let translation = value.convert(value.translation3D, from: .local, to: entity.parent!)
+
+                    entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D(translation)), relativeTo: entity.parent, duration: 0.1)
+                })
+                .onEnded({ _ in
+                    dragStartLocation3d = nil
+                })
+        )
 
     }
+
 }
 
 extension Transform {

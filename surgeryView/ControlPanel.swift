@@ -10,8 +10,6 @@ import RealityKit
 
 struct ControlPanel: View {
     @Environment(ModelData.self) var modelData: ModelData
-    @Environment(\.openWindow) var openWindow
-    @Environment(\.openImmersiveSpace) var openImmersiveSpace
     var body: some View {
         NavigationStack{
             List{
@@ -71,31 +69,7 @@ struct ControlPanel: View {
                 }
                 
             }
-            .toolbar(content: {
-                ToolbarItem(placement: .bottomOrnament) {
-                    Button {
-                        Task{
-                            await openImmersiveSpace(id: "3d-immersive")
-                        }
-                    } label: {
-                        Label("Open Immersive Space", systemImage: "cube")
-                    }
-                }
-                ToolbarItem(placement: .bottomOrnament) {
-                    Button {
-                        modelData.resetPositions()
-                    } label: {
-                        Label("Reset Positions", systemImage: "arrow.counterclockwise.circle")
-                    }
-                }
-                ToolbarItem(placement: .bottomOrnament) {
-                    Button {
-                        modelData.explodeModels(1)
-                    } label: {
-                        Label("Explode Models", systemImage: "arrow.up.backward.and.arrow.down.forward.square")
-                    }
-                }
-            })
+            
             .listStyle(.sidebar)
             .navigationTitle("Controls")
         }
