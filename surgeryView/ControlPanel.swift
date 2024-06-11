@@ -38,9 +38,17 @@ struct ControlPanel: View {
                                 modelData.startServer()
                             }
                         } label: {
-                            Text("Begin OpenIGTLink Connection")
+                            Text("OpenIGTLink Connection")
                         }
                         
+                        Button {
+                            Task{
+                                modelData.clearAll()
+                                modelData.stressTestCubeGrid()
+                            }
+                        } label: {
+                            Text("Performance Test")
+                        }
                     }
                     .navigationTitle("Scenes")
                 } label: {

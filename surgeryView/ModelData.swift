@@ -39,7 +39,7 @@ class ModelData{
             }
         }
     }
-    
+
     func loadSampleModels() async{
         originTransform = Transform(scale: [0.1, 0.1, 0.1], rotation: simd_quatf.init(angle: -Float.pi/2, axis: [1, 0, 0]))
         let testModels = Bundle.main.urls(forResourcesWithExtension: "usdz", subdirectory: "")
@@ -64,6 +64,21 @@ class ModelData{
             models.append(contentsOf: _models?.compactMap({ $0 }) ?? [])
         }
     }
+    
+    func stressTestCubeGrid() {
+        originTransform = Transform()
+        for x in 0..<10 {
+            for y in 0..<10 {
+                for z in 0..<10{
+                    let entity = ModelEntity(mesh: .generateBox(size: 0.008), materials: [UnlitMaterial(color: .init(white: 0, alpha: CGFloat(Float.random(in: 0...1))))])
+                    entity.transform.translation  = [Float(x)/100, Float(y)/100, Float(z)/100]
+                    models.append(entity)
+                }
+            }
+        }
+
+    }
+    
     
     func clearAll() {
         selectedEntity = nil

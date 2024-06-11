@@ -42,4 +42,7 @@ class DataReader {
         }
         return nil
     }
+    func remainingData() -> Data{
+        data.suffix(from: data.startIndex)
+    }
 }

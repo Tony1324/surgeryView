@@ -48,6 +48,11 @@ struct ModelManager: View {
             toolbar.transform.rotation = .init(angle: -Float.pi/8, axis: [1, 0, 0])
             base.addChild(toolbar)
         }
+        if let rotation = attachments.entity(for: "rotate") {
+            rotation.name = "rotate"
+            rotation.transform.rotation = .init(angle: Float.pi/2, axis: [1, 0, 0])
+            base.addChild(rotation)
+        }
         return base
     }
     
@@ -71,6 +76,7 @@ struct ModelManager: View {
         }
     }
     
+    @State var baseRotation: Float = 0
     @State var dragStartLocation3d: Transform? = nil
     
     var body: some View {
@@ -115,21 +121,35 @@ struct ModelManager: View {
                 }
                 originAnchor.transform.scale = modelData.originTransform.scale
                 originAnchor.transform.rotation = modelData.originTransform.rotation
+                content.entities.first?.transform.rotation = .init(angle: baseRotation, axis: [0,1,0])
             }
             positionModels(content: content, attachment: attachments)
             if let update {
                 update(content)
             }
         } attachments: {
+            
+            Attachment(id: "rotate") {
+                Image(systemName: "arrow.triangle.2.circlepath")
+                    .font(.system(size: 750, weight: .ultraLight))
+                    .gesture(
+                    DragGesture()
+                        .onChanged({ value in
+                            self.baseRotation += Float(value.velocity.width)/3000
+                        }))
+            }
+            
             Attachment(id: "controls") {
                 ControlPanel()
                     .environment(modelData)
                     .frame(width: 350, height: 500)
             }
+            
             Attachment(id: "toolbar") {
                 ToolbarView()
                     .environment(modelData)
             }
+            
         }
         .gesture(
             DragGesture()
