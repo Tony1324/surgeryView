@@ -132,6 +132,9 @@ struct ModelManager: View {
             Attachment(id: "rotate") {
                 Image(systemName: "arrow.triangle.2.circlepath")
                     .font(.system(size: 750, weight: .ultraLight))
+                    .opacity(0.5)
+                    .hoverEffect()
+                    .clipShape(Circle())
                     .gesture(
                     DragGesture()
                         .onChanged({ value in
@@ -169,6 +172,15 @@ struct ModelManager: View {
                     dragStartLocation3d = nil
                 })
         )
+        .gesture(RotateGesture3D()
+            .targetedToAnyEntity()
+            .onChanged({ value in
+                let entity = value.entity
+                
+                let rot = value.rotation.quaternion.vector
+                
+                entity.transform.rotation = .init(ix: Float(rot.x), iy: Float(rot.y), iz: Float(rot.z), r: Float(rot.w))
+            }))
 
     }
 
