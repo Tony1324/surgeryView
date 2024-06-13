@@ -120,8 +120,8 @@ struct ModelManager: View {
                     }
                 }
                 originAnchor.transform.scale = modelData.originTransform.scale
-                originAnchor.transform.rotation = modelData.originTransform.rotation
-                content.entities.first?.transform.rotation = .init(angle: baseRotation, axis: [0,1,0])
+                originAnchor.transform.rotation = .init(angle: baseRotation, axis: [0,1,0]) * modelData.originTransform.rotation
+                content.entities.first?.findEntity(named: "rotate")?.transform.rotation = .init(angle: baseRotation, axis: [0,1,0]) * .init(angle: Float.pi/2, axis: [1, 0, 0])
             }
             positionModels(content: content, attachment: attachments)
             if let update {
@@ -133,8 +133,6 @@ struct ModelManager: View {
                 Image(systemName: "arrow.triangle.2.circlepath")
                     .font(.system(size: 750, weight: .ultraLight))
                     .opacity(0.5)
-                    .hoverEffect()
-                    .clipShape(Circle())
                     .gesture(
                     DragGesture()
                         .onChanged({ value in
@@ -172,15 +170,20 @@ struct ModelManager: View {
                     dragStartLocation3d = nil
                 })
         )
-        .gesture(RotateGesture3D()
-            .targetedToAnyEntity()
-            .onChanged({ value in
-                let entity = value.entity
-                
-                let rot = value.rotation.quaternion.vector
-                
-                entity.transform.rotation = .init(ix: Float(rot.x), iy: Float(rot.y), iz: Float(rot.z), r: Float(rot.w))
-            }))
+        .gesture(
+            RotateGesture3D()
+                .targetedToAnyEntity()
+                .onChanged({ value in
+                    let entity = value.entity
+                    let rot = value.rotation.quaternion.vector
+                    entity.transform.rotation = entity.parent?.convert(transform: Transform(rotation: .init(ix: Float(-rot.x), iy: Float(rot.y), iz: Float(-rot.z), r: Float(rot.w))), from: nil).rotation ?? .init(ix: Float(-rot.x), iy: Float(rot.y), iz: Float(-rot.z), r: Float(rot.w))
+//                    entity.move(to: Transform(scale:
+//                                                entity.convert(normal: entity.scale, to: nil),
+//                                              rotation:
+//                            .init(ix: Float(-rot.x), iy: Float(rot.y), iz: Float(-rot.z), r: Float(rot.w)),
+//                                              translation:
+//                                                entity.convert(position: entity.position, to: nil)), relativeTo: nil)
+                }))
 
     }
 
