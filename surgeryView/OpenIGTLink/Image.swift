@@ -7,6 +7,7 @@
 
 import Foundation
 import RealityKit
+import CoreGraphics
 
 struct ImageMessage: OpenIGTDecodable {
  
@@ -57,6 +58,29 @@ struct ImageMessage: OpenIGTDecodable {
         
         return ImageMessage(v: v, num_components: num_components, scalar_type: scalar_type, endianness: endianness, image_coordinate: image_coordinate, size: size, traverse_i: traverse_i, traverse_j: traverse_j, normal: normal, position: position, subvolume_index: subvolume_index, subvolume_size: subvolume_size, image_data: image_data)
         
+    }
+    
+    func scalarSize() -> Int {
+        //(2:int8 3:uint8 4:int16 5:uint16 6:int32 7:uint32 10:float32 11:float64)
+        return switch scalar_type {
+        case 2: MemoryLayout<Int8>.size
+        case 3: MemoryLayout<UInt8>.size
+        case 4: MemoryLayout<Int16>.size
+        case 5: MemoryLayout<UInt16>.size
+        case 6: MemoryLayout<Int32>.size
+        case 7: MemoryLayout<UInt32>.size
+        case 10: MemoryLayout<Float32>.size
+        case 11: MemoryLayout<Float64>.size
+        default: -1
+        }
+    }
+    
+    func createImage() -> CGImage? {
+        let colorSpace = CGColorSpaceCreateDeviceGray()
+        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue)
+        guard let providerRef = CGDataProvider(data: image_data as CFData) else {return nil}
+        guard let image = CGImage(width: Int(size.x), height: Int(size.y), bitsPerComponent: scalarSize(), bitsPerPixel: scalarSize()*Int(num_components), bytesPerRow: Int(size.x)*scalarSize()*Int(num_components), space: colorSpace, bitmapInfo: bitmapInfo, provider: providerRef, decode: nil, shouldInterpolate: true, intent: .defaultIntent) else {return nil}
+        return image
     }
     
     
