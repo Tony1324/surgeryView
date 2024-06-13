@@ -14,7 +14,7 @@ struct ToolbarView: View {
             Button {
                 modelData.resetPositions()
             } label: {
-                Label("Reset Positions", systemImage: "arrow.counterclxockwise.circle")
+                Label("Reset Positions", systemImage: "arrow.counterclockwise.circle")
             }
             Button {
                 modelData.explodeModels(1)

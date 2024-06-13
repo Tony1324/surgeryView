@@ -76,7 +76,13 @@ class ModelData{
                 }
             }
         }
-
+    }
+    
+    func loadShaderTest() {
+        originTransform = Transform()
+        let plane = ModelEntity(mesh: .generatePlane(width: 0.5, depth: 0.5), materials: [SimpleMaterial(color: .black,roughness: 0, isMetallic: false)])
+        plane.name = "image"
+        images.append(plane)
     }
     
     

@@ -93,7 +93,7 @@ struct ModelManager: View {
 
 
 
-            for entity in modelData.models {
+            for entity in (modelData.models + modelData.images) {
                 addEntity(content: content, entity: entity)
             }
 
@@ -102,7 +102,7 @@ struct ModelManager: View {
 
         } update: { content, attachments in
             if let originAnchor = content.entities.first?.findEntity(named: "origin"){
-                for entity in modelData.models {
+                for entity in modelData.models + modelData.images {
                     if originAnchor.children.contains(entity) {
                         continue
                     }else{
@@ -110,7 +110,7 @@ struct ModelManager: View {
                     }
                 }
                 for entity in originAnchor.children.reversed(){
-                    if !modelData.models.contains(entity){
+                    if !(modelData.models + modelData.images).contains(entity){
                         originAnchor.removeChild(entity)
                     }
                     if (modelData.selectedEntity == entity || modelData.selectedEntity == nil) {
@@ -163,8 +163,11 @@ struct ModelManager: View {
                     }
 
                     let translation = value.convert(value.translation3D, from: .local, to: entity.parent!)
-
-                    entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D(translation)), relativeTo: entity.parent, duration: 0.1)
+                    if entity.name.starts(with: "image"){
+                        entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D([0,translation.y,0])), relativeTo: entity.parent, duration: 0.1)
+                    } else {
+                        entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D(translation)), relativeTo: entity.parent, duration: 0.1)
+                    }
                 })
                 .onEnded({ _ in
                     dragStartLocation3d = nil
@@ -177,12 +180,6 @@ struct ModelManager: View {
                     let entity = value.entity
                     let rot = value.rotation.quaternion.vector
                     entity.transform.rotation = entity.parent?.convert(transform: Transform(rotation: .init(ix: Float(-rot.x), iy: Float(rot.y), iz: Float(-rot.z), r: Float(rot.w))), from: nil).rotation ?? .init(ix: Float(-rot.x), iy: Float(rot.y), iz: Float(-rot.z), r: Float(rot.w))
-//                    entity.move(to: Transform(scale:
-//                                                entity.convert(normal: entity.scale, to: nil),
-//                                              rotation:
-//                            .init(ix: Float(-rot.x), iy: Float(rot.y), iz: Float(-rot.z), r: Float(rot.w)),
-//                                              translation:
-//                                                entity.convert(position: entity.position, to: nil)), relativeTo: nil)
                 }))
 
     }

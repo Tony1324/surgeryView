@@ -40,7 +40,14 @@ struct ControlPanel: View {
                         } label: {
                             Text("OpenIGTLink Connection")
                         }
-                        
+                        Button {
+                            Task{
+                                modelData.clearAll()
+                                modelData.loadShaderTest()
+                            }
+                        } label: {
+                            Text("Image Test")
+                        }
                         Button {
                             Task{
                                 modelData.clearAll()
