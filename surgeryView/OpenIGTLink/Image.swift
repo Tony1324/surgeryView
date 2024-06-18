@@ -23,7 +23,7 @@ struct ImageMessage: OpenIGTDecodable {
     let position: SIMD3<Float32>
     let subvolume_index: SIMD3<UInt16>
     let subvolume_size: SIMD3<UInt16>
-    let image_data: Data
+    var image_data: Data
     
     static func decode(_ data: Data) -> ImageMessage? {
         let data = DataReader(data)
@@ -77,9 +77,9 @@ struct ImageMessage: OpenIGTDecodable {
     
     func createImage() -> CGImage? {
         let colorSpace = CGColorSpaceCreateDeviceGray()
-        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue)
+        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.none.rawValue)
         guard let providerRef = CGDataProvider(data: image_data as CFData) else {return nil}
-        guard let image = CGImage(width: Int(size.x), height: Int(size.y), bitsPerComponent: scalarSize(), bitsPerPixel: scalarSize()*Int(num_components), bytesPerRow: Int(size.x)*scalarSize()*Int(num_components), space: colorSpace, bitmapInfo: bitmapInfo, provider: providerRef, decode: nil, shouldInterpolate: true, intent: .defaultIntent) else {return nil}
+        guard let image = CGImage(width: Int(size.x), height: Int(size.y), bitsPerComponent: scalarSize() * 8, bitsPerPixel: scalarSize()*Int(num_components) * 8, bytesPerRow: Int(size.x)*scalarSize()*Int(num_components), space: colorSpace, bitmapInfo: bitmapInfo, provider: providerRef, decode: nil, shouldInterpolate: true, intent: .defaultIntent) else {return nil}
         return image
     }
     

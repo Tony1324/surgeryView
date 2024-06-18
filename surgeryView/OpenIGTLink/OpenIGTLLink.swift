@@ -27,7 +27,6 @@ class CommunicationsManager{
             //here data is parsed and the OpenIGTDelegate (ModelData) is called to handle the messages
             func receiveM() {
                 func receiveHeader(_ data: Data){
-                        print("starting to receive")
                     if(data.count == IGTHeader.messageSize) {
                         let header = IGTHeader.decode(data)
                         if let header {
@@ -37,7 +36,6 @@ class CommunicationsManager{
                         return
                     }
                     connection.receive(minimumIncompleteLength: 0, maximumLength: 58 - data.count) { content, contentContext, isComplete, error in
-                        print("receiving")
                         if let content {
                             var _data = Data()
                             _data.append(data)
@@ -49,18 +47,14 @@ class CommunicationsManager{
 
                 func receiveBody(_ data: Data, header: IGTHeader) {
                     if (data.count == header.bodySize) {
-                        print("all data collected")
                         var ext_header_data: Data = Data()
                         var meta_data_data: Data = Data()
                         var content_data: Data = Data()
                         if(header.v >= 2){
                             let ext_header = IGTExtendedHeader.decode(data)
                             if let ext_header {
-                                print(ext_header)
                                 ext_header_data = data.subdata(in: 0..<Data.Index(ext_header.ext_header_size))
-
                                 let content_size = Int(header.bodySize) - Int(ext_header.ext_header_size) - Int(ext_header.meta_data_size)
-
                                 content_data = data.subdata(in: Data.Index(ext_header.ext_header_size)..<content_size + Int(ext_header.ext_header_size))
                                 meta_data_data = data.subdata(in: content_size + Int(ext_header.ext_header_size)..<Int(header.bodySize))
                             }
@@ -71,24 +65,28 @@ class CommunicationsManager{
                         case "POLYDATA":
                             let polyData = PolyDataMessage.decode(content_data)
                             if let polyData{
-                                delegate.receivePolyDataMessage(header: header, polydata: polyData)
+                                return delegate.receivePolyDataMessage(header: header, polydata: polyData)
                             }
                             print("Unable to decode PolyData")
                         case "TRANSFORM":
                             let transform = TransformMessage.decode(content_data)
                             if let transform{
-                                delegate.receiveTransformMessage(header: header, transform: transform)
+                                return delegate.receiveTransformMessage(header: header, transform: transform)
                             }
-                            print("Unable to decode PolyData")
+                            print("Unable to decode Transform")
+                        case "IMAGE":
+                            let image = ImageMessage.decode(content_data)
+                            if let image {
+                                return delegate.receiveImageMessage(header: header, image: image)
+                            }
+                            print("Unable to decode Image")
                         default:
-                            print("No message body")
+                            print("Unrecognized Message: \(header.messageType)")
                         }
-                        print("receiving another message")
                         receiveM()
                         return
                     }
                     connection.receive(minimumIncompleteLength: 0, maximumLength: Int(header.bodySize) - data.count) { content, contentContext, isComplete, error in
-                        print("receiving")
                         if let content {
                             var _data = Data()
                             _data.append(data)
@@ -133,6 +131,7 @@ protocol OpenIGTEncodable{
 protocol OpenIGTDelegate{
     func receivePolyDataMessage(header: IGTHeader, polydata: PolyDataMessage)
     func receiveTransformMessage(header: IGTHeader, transform: TransformMessage)
+    func receiveImageMessage(header: IGTHeader, image: ImageMessage)
 }
 
 extension OpenIGTDelegate{
@@ -141,5 +140,8 @@ extension OpenIGTDelegate{
     }
     func receiveTransformMessage(header: IGTHeader, transform: TransformMessage) {
         print("No implementation for recieving Transform")
+    }
+    func receiveImageMessage(header: IGTHeader, image: ImageMessage) {
+        print("No implementation for recieving Image")
     }
 }

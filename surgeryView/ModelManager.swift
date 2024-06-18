@@ -93,7 +93,7 @@ struct ModelManager: View {
 
 
 
-            for entity in (modelData.models + modelData.images) {
+            for entity in (modelData.models + modelData.imageSlices) {
                 addEntity(content: content, entity: entity)
             }
 
@@ -102,7 +102,7 @@ struct ModelManager: View {
 
         } update: { content, attachments in
             if let originAnchor = content.entities.first?.findEntity(named: "origin"){
-                for entity in modelData.models + modelData.images {
+                for entity in modelData.models + modelData.imageSlices {
                     if originAnchor.children.contains(entity) {
                         continue
                     }else{
@@ -110,7 +110,7 @@ struct ModelManager: View {
                     }
                 }
                 for entity in originAnchor.children.reversed(){
-                    if !(modelData.models + modelData.images).contains(entity){
+                    if !(modelData.models + modelData.imageSlices).contains(entity){
                         originAnchor.removeChild(entity)
                     }
                     if (modelData.selectedEntity == entity || modelData.selectedEntity == nil) {

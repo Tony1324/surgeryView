@@ -14,14 +14,15 @@ import Network
 class ModelData{
     
     
-    var images: [Entity]
+    var imageSlices: [Entity]
+    var image: ImageMessage?
     var models: [Entity]
     var selectedEntity: Entity?
     var originTransform: Transform = Transform.identity
     var igtlClient: CommunicationsManager?
 
     init(images: [Entity] = [], models: [Entity] = []) {
-        self.images = images
+        self.imageSlices = images
         self.models = models
     }
     
@@ -30,7 +31,7 @@ class ModelData{
         //this class, modelData, is used as a delegate to implement receiving messages, see extension below
         originTransform = Transform(scale: [0.001, 0.001, 0.001], rotation: simd_quatf.init(angle: Float.pi, axis: [0, 1, 0]))
         igtlClient?.disconnect()
-        igtlClient = CommunicationsManager(host: "10.15.253.62", port: 2200, delegate: self)
+        igtlClient = CommunicationsManager(host: "10.15.247.74", port: 2200, delegate: self)
         if let igtlClient {
             Task{
                 await igtlClient.startClient()
@@ -82,7 +83,7 @@ class ModelData{
         originTransform = Transform()
         let plane = ModelEntity(mesh: .generatePlane(width: 0.5, depth: 0.5), materials: [SimpleMaterial(color: .black,roughness: 0, isMetallic: false)])
         plane.name = "image"
-        images.append(plane)
+        imageSlices.append(plane)
     }
     
     
@@ -115,7 +116,21 @@ class ModelData{
 
 
 extension ModelData: OpenIGTDelegate {
-    func receiveTransformMessage(header: IGTHeader, polydata: TransformMessage) {
+    func receiveImageMessage(header: IGTHeader, image: ImageMessage) {
+        self.image = image
+        if let img = image.createImage() {
+            if let texture = try? TextureResource.generate(from: img, options: .init(semantic: .scalar)){
+                let baseColor = MaterialParameters.Texture(texture)
+                var material = SimpleMaterial()
+                material.color = .init(texture: baseColor)
+                let plane = ModelEntity(mesh: .generatePlane(width: 500, depth: 500), materials: [material])
+                plane.name = "image"
+                imageSlices.append(plane)
+            }
+            
+        }
+    }
+    func receiveTransformMessage(header: IGTHeader, transform: TransformMessage) {
         print("Transform recieved!")
     }
     func receivePolyDataMessage(header: IGTHeader, polydata: PolyDataMessage) {
