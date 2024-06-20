@@ -82,28 +82,21 @@ struct ImageMessage: OpenIGTDecodable {
         let byteEndPosition = Int(size.x)*Int(size.y)*scalarSize()*Int(num_components)*(position + 1)
         guard let providerRef = CGDataProvider(data: image_data.subdata(in: image_data.startIndex + bytePosition ..< image_data.startIndex + byteEndPosition) as CFData) else {return nil}
         guard let image = CGImage(width: Int(size.x), height: Int(size.y), bitsPerComponent: scalarSize() * 8, bitsPerPixel: scalarSize()*Int(num_components) * 8, bytesPerRow: Int(size.x)*scalarSize()*Int(num_components), space: colorSpace, bitmapInfo: bitmapInfo, provider: providerRef, decode: nil, shouldInterpolate: true, intent: .defaultIntent) else {return nil}
+        
+        //although image is grayscale, scalar pixels get colored as red, so we have to convert to full rgb, but with r,g, and b being the same values
         return convertGrayToRGB(image: image)
     }
+    
     
     func convertGrayToRGB(image: CGImage) -> CGImage? {
         let width = image.width
         let height = image.height
         
-        // Create a bitmap context in RGB color space
-        guard let context = CGContext(data: nil,
-                                      width: width,
-                                      height: height,
-                                      bitsPerComponent: 8,
-                                      bytesPerRow: width * 4,
-                                      space: CGColorSpaceCreateDeviceRGB(),
-                                      bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)
-        else {
-            return nil
-        }
-        // Draw the grayscale image into the RGB context
+        guard let context = CGContext(data: nil,width: width,height: height,bitsPerComponent: 8,bytesPerRow: width * 4,space: CGColorSpaceCreateDeviceRGB(),bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue) else {return nil}
+        
+        //invert image
         context.setFillColor(CGColor.init(gray: 1, alpha: 1))
         context.fill([CGRect(x: 0, y: 0, width: width, height: height)])
-
         context.setBlendMode(.difference)
         context.draw(image, in: CGRect(x: 0, y: 0, width: width, height: height))
         
