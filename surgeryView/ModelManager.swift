@@ -165,6 +165,7 @@ struct ModelManager: View {
                     let translation = value.convert(value.translation3D, from: .local, to: entity.parent!)
                     if entity.name.starts(with: "image"){
                         entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D([0,translation.y,0])), relativeTo: entity.parent, duration: 0.1)
+                        modelData.updateImageEntityPosition(entity, position: min(max(Int(entity.transform.translation.y), 0),Int(modelData.image?.size.z ?? 0) - 1))
                     } else {
                         entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D(translation)), relativeTo: entity.parent, duration: 0.1)
                     }

@@ -16,6 +16,7 @@ class ModelData{
     
     var imageSlices: [Entity]
     var image: ImageMessage?
+    var imageCache: [SimpleMaterial?]?
     var models: [Entity]
     var selectedEntity: Entity?
     var originTransform: Transform = Transform.identity
@@ -90,6 +91,8 @@ class ModelData{
     func clearAll() {
         selectedEntity = nil
         models = []
+        imageSlices = []
+        image = nil
     }
     
     func resetPositions() {
@@ -106,9 +109,30 @@ class ModelData{
             if let parent = entity.parent {
                 let base = parent.parent
                 let bounds = entity.visualBounds(relativeTo: base)
-                var center = bounds.center
                 let baseTransform = parent.convert(transform: entity.transform, to: base)
                 entity.move(to: Transform(scale: baseTransform.scale, rotation: baseTransform.rotation, translation: (bounds.center + baseTransform.translation - [0, 0.1, 0]) * factor), relativeTo: base, duration: 0.5, timingFunction: .cubicBezier(controlPoint1: [0, 1], controlPoint2: [0.5, 1]))
+            }
+        }
+    }
+    
+    func generateImageSlice(position: Int){
+        if let image = image{
+            if let imageCache = imageCache {
+                if let img = imageCache[position] {
+                    let plane = ModelEntity(mesh: .generatePlane(width: Float(image.size.x), depth: Float(image.size.y)), materials: [img])
+                    plane.name = "image"
+                    imageSlices.append(plane)
+                }
+            }
+        }
+    }
+    
+    func updateImageEntityPosition(_ entity: Entity, position: Int){
+        if let image = image {
+            if let imageCache = imageCache{
+                if let img = imageCache[position] {
+                    (entity as? ModelEntity)?.model?.materials = [img]
+                }
             }
         }
     }
@@ -118,17 +142,38 @@ class ModelData{
 extension ModelData: OpenIGTDelegate {
     func receiveImageMessage(header: IGTHeader, image: ImageMessage) {
         self.image = image
-        if let img = image.createImage() {
-            if let texture = try? TextureResource.generate(from: img, options: .init(semantic: .scalar)){
-                let baseColor = MaterialParameters.Texture(texture)
-                var material = SimpleMaterial()
-                material.color = .init(texture: baseColor)
-                let plane = ModelEntity(mesh: .generatePlane(width: 500, depth: 500), materials: [material])
-                plane.name = "image"
-                imageSlices.append(plane)
+        Task {
+            await withTaskGroup(of: Optional<(SimpleMaterial,Int)>.self) { group in
+                imageCache = []
+                for i in 0..<image.size.z {
+                    group.addTask {
+                        if let img = image.createImage(position: Int(i)) {
+                            if let texture = try? await TextureResource.generate(from: img, options: .init(semantic: .scalar)){
+                                let baseColor = MaterialParameters.Texture(texture)
+                                var material = SimpleMaterial()
+                                material.color = .init(texture: baseColor)
+                                return (material,Int(i))
+                            }
+                        }
+                        return nil
+                    }
+                }
+                for _ in 0..<image.size.z {
+                    imageCache?.append(nil)
+                }
+                for await result in group {
+                    if let result = result {
+                        imageCache?[result.1] = result.0
+                    }
+                }
             }
-            
+            Task.detached { @MainActor in
+                self.generateImageSlice(position: 0)
+
+            }
         }
+        
+
     }
     func receiveTransformMessage(header: IGTHeader, transform: TransformMessage) {
         print("Transform recieved!")

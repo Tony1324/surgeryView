@@ -75,10 +75,12 @@ struct ImageMessage: OpenIGTDecodable {
         }
     }
     
-    func createImage() -> CGImage? {
+    func createImage(position: Int) -> CGImage? {
         let colorSpace = CGColorSpaceCreateDeviceGray()
         let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.none.rawValue)
-        guard let providerRef = CGDataProvider(data: image_data as CFData) else {return nil}
+        let bytePosition = Int(size.x)*Int(size.y)*scalarSize()*Int(num_components)*position
+        let byteEndPosition = Int(size.x)*Int(size.y)*scalarSize()*Int(num_components)*(position + 1)
+        guard let providerRef = CGDataProvider(data: image_data.subdata(in: image_data.startIndex + bytePosition ..< image_data.startIndex + byteEndPosition) as CFData) else {return nil}
         guard let image = CGImage(width: Int(size.x), height: Int(size.y), bitsPerComponent: scalarSize() * 8, bitsPerPixel: scalarSize()*Int(num_components) * 8, bytesPerRow: Int(size.x)*scalarSize()*Int(num_components), space: colorSpace, bitmapInfo: bitmapInfo, provider: providerRef, decode: nil, shouldInterpolate: true, intent: .defaultIntent) else {return nil}
         return image
     }
