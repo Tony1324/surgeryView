@@ -148,10 +148,9 @@ extension ModelData: OpenIGTDelegate {
                 for i in 0..<image.size.z {
                     group.addTask {
                         if let img = image.createImage(position: Int(i)) {
-                            if let texture = try? await TextureResource.generate(from: img, options: .init(semantic: .scalar)){
-                                let baseColor = MaterialParameters.Texture(texture)
+                            if let texture = try? await TextureResource.generate(from: img, options: .init(semantic: .color)){
                                 var material = SimpleMaterial()
-                                material.color = .init(texture: baseColor)
+                                material.color =  .init(texture: .init(texture))
                                 return (material,Int(i))
                             }
                         }
@@ -172,8 +171,6 @@ extension ModelData: OpenIGTDelegate {
 
             }
         }
-        
-
     }
     func receiveTransformMessage(header: IGTHeader, transform: TransformMessage) {
         print("Transform recieved!")

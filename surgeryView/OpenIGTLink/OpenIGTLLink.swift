@@ -65,21 +65,24 @@ class CommunicationsManager{
                         case "POLYDATA":
                             let polyData = PolyDataMessage.decode(content_data)
                             if let polyData{
-                                return delegate.receivePolyDataMessage(header: header, polydata: polyData)
+                                delegate.receivePolyDataMessage(header: header, polydata: polyData)
+                            } else {
+                                print("Unable to decode PolyData")
                             }
-                            print("Unable to decode PolyData")
                         case "TRANSFORM":
                             let transform = TransformMessage.decode(content_data)
                             if let transform{
-                                return delegate.receiveTransformMessage(header: header, transform: transform)
+                                delegate.receiveTransformMessage(header: header, transform: transform)
+                            } else {
+                                print("Unable to decode Transform")
                             }
-                            print("Unable to decode Transform")
                         case "IMAGE":
                             let image = ImageMessage.decode(content_data)
                             if let image {
-                                return delegate.receiveImageMessage(header: header, image: image)
+                                delegate.receiveImageMessage(header: header, image: image)
+                            } else {
+                                print("Unable to decode Image")
                             }
-                            print("Unable to decode Image")
                         default:
                             print("Unrecognized Message: \(header.messageType)")
                         }
