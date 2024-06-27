@@ -202,14 +202,18 @@ struct ModelManager: View {
                     dragStartLocation3d = nil
                 })
         )
-        .gesture(
-            RotateGesture3D()
-                .targetedToAnyEntity()
-                .onChanged({ value in
-                    let entity = value.entity
-                    let rot = value.rotation.quaternion.vector
-                    entity.transform.rotation = entity.parent?.convert(transform: Transform(rotation: .init(ix: Float(-rot.x), iy: Float(rot.y), iz: Float(-rot.z), r: Float(rot.w))), from: nil).rotation ?? .init(ix: Float(-rot.x), iy: Float(rot.y), iz: Float(-rot.z), r: Float(rot.w))
-                }))
+//        .gesture(
+//            RotateGesture3D()
+//                .targetedToAnyEntity()
+//                .onChanged({ value in
+//                    let entity = value.entity
+//                    let rot = value.rotation.
+//
+//                    entity.transform.rotation = entity.parent?.convert(transform: Transform(rotation: .init(ix: Float(-rot.x), iy: Float(rot.y), iz: Float(-rot.z), r: Float(rot.w))), from: nil).rotation ?? .init(ix: Float(-rot.x), iy: Float(rot.y), iz: Float(-rot.z), r: Float(rot.w))
+//                    let eulers = value.rotation.eulerAngles(order: .xyz)
+//                    let rotTransform = Transform(rotation: .)
+//                    entity.transform.rotation = .init(ix: Float(rot.x), iy: Float(rot.y), iz: Float(rot.z), r: Float(rot.w))
+//                }))
 
     }
 
