@@ -13,7 +13,8 @@ import Network
 @Observable
 class ModelData{
     
-    
+    var imageOffset: Float = 0
+    var imageInterval: Int = 30
     var imageSlices: [Entity]
     var image: ImageMessage?
     var imageCache: [SimpleMaterial?]?
@@ -32,7 +33,7 @@ class ModelData{
         //this class, modelData, is used as a delegate to implement receiving messages, see extension below
         originTransform = Transform(scale: [0.001, 0.001, 0.001], rotation: simd_quatf.init(angle: Float.pi, axis: [0, 1, 0]))
         igtlClient?.disconnect()
-        igtlClient = CommunicationsManager(host: "10.15.247.74", port: 2200, delegate: self)
+        igtlClient = CommunicationsManager(host: "10.0.0.174", port: 2200, delegate: self)
         if let igtlClient {
             Task{
                 await igtlClient.startClient()
@@ -115,24 +116,41 @@ class ModelData{
         }
     }
     
-    func generateImageSlice(position: Int){
+    func generateImageSlice(position: Float) -> ModelEntity?{
         if let image = image{
             if let imageCache = imageCache {
-                if let img = imageCache[position] {
-                    let plane = ModelEntity(mesh: .generatePlane(width: Float(image.size.x), depth: Float(image.size.y)), materials: [img])
-                    plane.name = "image"
-                    imageSlices.append(plane)
-                }
+                var img = imageCache[min(max(Int(position/image.normal.z),0),Int(image.size.z)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
+                //fade near top and bottom
+                let opacity = min(0.5, min(0.5 + position / 20, 0.5 + (Float(image.size.z) * Float(image.normal.z) - position) / 20 ))
+                img.color.tint = .white.withAlphaComponent(CGFloat(opacity))
+                let plane = ModelEntity(mesh: .generatePlane(width: Float(image.size.x), depth: Float(image.size.y)), materials: [img])
+                plane.name = "image"
+                plane.position.y = position
+                imageSlices.append(plane)
+                return plane
+            }
+        }
+        return nil
+    }
+    
+    func updateImageEntityPosition(_ entity: Entity, position: Float){
+        if let image = image {
+            if let imageCache = imageCache{
+                var img = imageCache[min(max(Int(position/image.normal.z),0),Int(image.size.z)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
+                let opacity = min(0.5, min(0.5+position / 20, 0.5 + (Float(image.size.z) * Float(image.normal.z) - position) / 20 ))
+                img.color.tint = .white.withAlphaComponent(CGFloat(opacity))
+                (entity as? ModelEntity)?.model?.materials = [img]
             }
         }
     }
-    
-    func updateImageEntityPosition(_ entity: Entity, position: Int){
+
+    func generateImageSlices() {
         if let image = image {
-            if let imageCache = imageCache{
-                if let img = imageCache[position] {
-                    (entity as? ModelEntity)?.model?.materials = [img]
-                }
+            var pos = imageOffset - Float(image.size.z)*Float(image.normal.z) - 20
+            while (pos <= Float(image.size.z)*Float(image.normal.z) + 20) {
+                let plane = generateImageSlice(position: pos)
+                plane?.position.y = pos
+                pos += Float(image.normal.z) * Float(imageInterval)
             }
         }
     }
@@ -167,8 +185,7 @@ extension ModelData: OpenIGTDelegate {
                 }
             }
             Task.detached { @MainActor in
-                self.generateImageSlice(position: 0)
-
+                self.generateImageSlices()
             }
         }
     }

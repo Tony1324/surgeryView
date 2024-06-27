@@ -64,6 +64,7 @@ struct ModelManager: View {
 
                 for entity in originAnchor.children {
                     guard entity.name != "base" else {continue}
+                    guard !entity.name.hasPrefix("image") else {continue}
                     let bounds = entity.visualBounds(relativeTo: base)
                     centers = centers + (bounds.center - entity.convert(position: entity.position, to: base)) / max((Float(originAnchor.children.count - 1)),1)
                     lowestY = min(lowestY, (bounds.min.y - entity.convert(position: entity.position, to: base).y))
@@ -164,8 +165,11 @@ struct ModelManager: View {
 
                     let translation = value.convert(value.translation3D, from: .local, to: entity.parent!)
                     if entity.name.starts(with: "image"){
-                        entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D([0,translation.y,0])), relativeTo: entity.parent, duration: 0.1)
-                        modelData.updateImageEntityPosition(entity, position: min(max(Int(entity.transform.translation.y/(modelData.image?.normal.z ?? 1)), 0),Int(modelData.image?.size.z ?? 0) - 1))
+                        guard let image = modelData.image else {return}
+                        modelData.imageOffset = (dragStartLocation3d!.whenTranslatedBy(vector: Vector3D([0,translation.y,0])).translation.y + 10).truncatingRemainder(dividingBy: (Float(image.size.z) * Float(image.normal.z)))
+                        modelData.imageSlices = modelData.imageSlices.filter {$0 == entity}
+                        modelData.generateImageSlices()
+                        entity.components.set(OpacityComponent(opacity: 0))
                     } else {
                         entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D(translation)), relativeTo: entity.parent, duration: 0.1)
                     }

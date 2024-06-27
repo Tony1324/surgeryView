@@ -74,7 +74,6 @@
 		1BF411C92BBCE5330010CD1D /* Model_63_left_hip.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411952BBCE5330010CD1D /* Model_63_left_hip.usdz */; };
 		B75C70512BEAB3300019A527 /* NoneMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75C70502BEAB3300019A527 /* NoneMessage.swift */; };
 		B75C70542BFFC8710019A527 /* DataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75C70532BFFC8710019A527 /* DataReader.swift */; };
-		B790B74E2C24C7F30004FA4C /* test.png in Resources */ = {isa = PBXBuildFile; fileRef = B790B74D2C24C7F30004FA4C /* test.png */; };
 		B7B50D732BD1B0F9006733EF /* ModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B50D722BD1B0F9006733EF /* ModelData.swift */; };
 		B7D1ED7C2C18DC6C000473E7 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D1ED7B2C18DC6C000473E7 /* Image.swift */; };
 /* End PBXBuildFile section */
@@ -175,7 +174,6 @@
 		B7378D092BE183B9006EDCEC /* surgeryView-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "surgeryView-Bridging-Header.h"; sourceTree = "<group>"; };
 		B75C70502BEAB3300019A527 /* NoneMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoneMessage.swift; sourceTree = "<group>"; };
 		B75C70532BFFC8710019A527 /* DataReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataReader.swift; sourceTree = "<group>"; };
-		B790B74D2C24C7F30004FA4C /* test.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = test.png; path = ../../../../../var/folders/0p/zkbpbxqd7fd9g17x5wmpfvch0000gs/T/TemporaryItems/NSIRD_screencaptureui_aYwNvn/test.png; sourceTree = "<group>"; };
 		B7B50D722BD1B0F9006733EF /* ModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelData.swift; sourceTree = "<group>"; };
 		B7D1ED7B2C18DC6C000473E7 /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -224,7 +222,6 @@
 				1B6CEEC22BCDFDF1000E1162 /* sampleModels */,
 				1B3F570D2B957BB700753CBB /* surgeryViewApp.swift */,
 				B7B50D722BD1B0F9006733EF /* ModelData.swift */,
-				B790B74D2C24C7F30004FA4C /* test.png */,
 				1B3F570F2B957BB700753CBB /* ContentView.swift */,
 				1B11BFB62BA918B700E1DEB0 /* ModelManager.swift */,
 				1B0054512BB07D8E004697EE /* ControlPanel.swift */,
@@ -433,7 +430,6 @@
 				1BF411A62BBCE5330010CD1D /* Model_43_left_rib_5.usdz in Resources */,
 				1BF411B52BBCE5330010CD1D /* Model_49_left_rib_11.usdz in Resources */,
 				1BF411C02BBCE5330010CD1D /* Model_37_left_common_iliac_vein.usdz in Resources */,
-				B790B74E2C24C7F30004FA4C /* test.png in Resources */,
 				1BF411BF2BBCE5330010CD1D /* Model_53_right_rib_6.usdz in Resources */,
 				1BF411A42BBCE5330010CD1D /* Model_42_left_rib_4.usdz in Resources */,
 				1BF411962BBCE5330010CD1D /* Model_58_right_rib_11.usdz in Resources */,
