@@ -10,22 +10,41 @@ import Network
 
 
 class CommunicationsManager{
+    var listener: NWListener?
     var connection: NWConnection?
-    var endpoint: NWEndpoint
+    var port: NWEndpoint.Port
     var delegate: OpenIGTDelegate
     
-    init(host: NWEndpoint.Host, port: NWEndpoint.Port, delegate: OpenIGTDelegate) {
-        self.endpoint = NWEndpoint.hostPort(host: host, port: port)
+    init(port: NWEndpoint.Port, delegate: OpenIGTDelegate) {
+        self.port = port
         self.delegate = delegate
     }
     
     func startClient() {
-        connection = NWConnection(to: endpoint, using: .tcp)
-        if let connection {
-            connection.start(queue: .main)
+        listener = try? NWListener(using: .tcp, on: port)
+        if let listener {
+            listener.start(queue: .main)
             //after finishing connection to server, immediately begin listening for messages, and recursively calling itself to receive more messages
             //here data is parsed and the OpenIGTDelegate (ModelData) is called to handle the messages
-            func receiveM() {
+            listener.stateUpdateHandler = { state in
+                switch state{
+                case .setup:
+                    print("starting to listen")
+                case .ready:
+                    print("starting to listen")
+                case .failed:
+                    print("server failed")
+                default:
+                    break
+                }
+            }
+            listener.newConnectionHandler = { connection in
+                self.connection = connection
+                connection.start(queue: .main)
+                receiveM(connection: connection)
+                print("connection received")
+            }
+            func receiveM(connection: NWConnection) {
                 func receiveHeader(_ data: Data){
                     if(data.count == IGTHeader.messageSize) {
                         let header = IGTHeader.decode(data)
@@ -86,7 +105,7 @@ class CommunicationsManager{
                         default:
                             print("Unrecognized Message: \(header.messageType)")
                         }
-                        receiveM()
+                        receiveM(connection: connection)
                         return
                     }
                     connection.receive(minimumIncompleteLength: 0, maximumLength: Int(header.bodySize) - data.count) { content, contentContext, isComplete, error in
@@ -100,7 +119,6 @@ class CommunicationsManager{
                 }
                 receiveHeader(Data())
             }
-            receiveM()
         }
     }
     
@@ -119,7 +137,7 @@ class CommunicationsManager{
     }
     
     func disconnect(){
-        connection?.cancel()
+        listener?.cancel()
     }
 }
 
