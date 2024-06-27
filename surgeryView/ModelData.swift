@@ -14,7 +14,7 @@ import Network
 class ModelData{
     
     var imageOffset: Float = 0
-    var imageInterval: Int = 30
+    var imageCount: Int = 5
     var imageSlices: [Entity]
     var image: ImageMessage?
     var imageCache: [SimpleMaterial?]?
@@ -33,7 +33,7 @@ class ModelData{
         //this class, modelData, is used as a delegate to implement receiving messages, see extension below
         originTransform = Transform(scale: [0.001, 0.001, 0.001], rotation: simd_quatf.init(angle: Float.pi, axis: [0, 1, 0]))
         igtlClient?.disconnect()
-        igtlClient = CommunicationsManager(host: "10.0.0.174", port: 2200, delegate: self)
+        igtlClient = CommunicationsManager(host: "10.246.98.237", port: 2200, delegate: self)
         if let igtlClient {
             Task{
                 await igtlClient.startClient()
@@ -146,11 +146,11 @@ class ModelData{
 
     func generateImageSlices() {
         if let image = image {
-            var pos = imageOffset - Float(image.size.z)*Float(image.normal.z) - 20
-            while (pos <= Float(image.size.z)*Float(image.normal.z) + 20) {
+            var pos = Float(-20)
+            while (pos <= image.fullHeight + 20) {
                 let plane = generateImageSlice(position: pos)
                 plane?.position.y = pos
-                pos += Float(image.normal.z) * Float(imageInterval)
+                pos += image.fullHeight / Float(imageCount)
             }
         }
     }

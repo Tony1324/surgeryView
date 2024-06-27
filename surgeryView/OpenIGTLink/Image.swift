@@ -25,6 +25,10 @@ struct ImageMessage: OpenIGTDecodable {
     let subvolume_size: SIMD3<UInt16>
     var image_data: Data
     
+    var fullHeight: Float {
+        Float(size.z) * Float(normal.z)
+    }
+    
     static func decode(_ data: Data) -> ImageMessage? {
         let data = DataReader(data)
         
