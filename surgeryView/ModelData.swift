@@ -13,8 +13,6 @@ import Network
 @Observable
 class ModelData{
     
-    var imageOffset: Float = 0
-    var imageCount: Int = 5
     var imageSlices: [Entity]
     var image: ImageMessage?
     var imageCache: [SimpleMaterial?]?
@@ -121,8 +119,6 @@ class ModelData{
             if let imageCache = imageCache {
                 var img = imageCache[min(max(Int(position/image.normal.z),0),Int(image.size.z)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
                 //fade near top and bottom
-                let opacity = min(0.5, min(0.5 + position / 20, 0.5 + (Float(image.size.z) * Float(image.normal.z) - position) / 20 ))
-                img.color.tint = .white.withAlphaComponent(CGFloat(opacity))
                 let plane = ModelEntity(mesh: .generatePlane(width: Float(image.size.x), depth: Float(image.size.y)), materials: [img])
                 plane.name = "image"
                 plane.position.y = position
@@ -137,23 +133,21 @@ class ModelData{
         if let image = image {
             if let imageCache = imageCache{
                 var img = imageCache[min(max(Int(position/image.normal.z),0),Int(image.size.z)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
-                let opacity = min(0.5, min(0.5+position / 20, 0.5 + (Float(image.size.z) * Float(image.normal.z) - position) / 20 ))
-                img.color.tint = .white.withAlphaComponent(CGFloat(opacity))
                 (entity as? ModelEntity)?.model?.materials = [img]
             }
         }
     }
 
-    func generateImageSlices() {
-        if let image = image {
-            var pos = Float(-20)
-            while (pos <= image.fullHeight + 20) {
-                let plane = generateImageSlice(position: pos)
-                plane?.position.y = pos
-                pos += image.fullHeight / Float(imageCount)
-            }
-        }
-    }
+//    func generateImageSlices() {
+//        if let image = image {
+//            var pos = Float(-20)
+//            while (pos <= image.fullHeight + 20) {
+//                let plane = generateImageSlice(position: pos)
+//                plane?.position.y = pos
+//                pos += image.fullHeight / Float(imageCount)
+//            }
+//        }
+//    }
 }
 
 
@@ -185,7 +179,8 @@ extension ModelData: OpenIGTDelegate {
                 }
             }
             Task.detached { @MainActor in
-                self.generateImageSlices()
+//                self.generateImageSlices()
+                self.generateImageSlice(position: 0)
             }
         }
     }

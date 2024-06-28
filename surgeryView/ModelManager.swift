@@ -166,33 +166,9 @@ struct ModelManager: View {
                     let translation = value.convert(value.translation3D, from: .local, to: entity.parent!)
                     if entity.name.starts(with: "image"){
                         guard let image = modelData.image else {return}
-//                        modelData.generateImageSlices()
-                        let _offset = dragStartLocation3d!.whenTranslatedBy(vector: Vector3D([0,translation.y,0])).translation.y
-                        
-                        for slice in (modelData.imageSlices.filter{$0 != entity} ) {
-                            slice.position.y += (_offset - entity.position.y)
-                            modelData.updateImageEntityPosition(slice, position: slice.position.y)
-                            
-                            if slice.position.y < -20 {
-                                slice.position.y += image.fullHeight + 40
-                            }
-                            
-                            if slice.position.y > image.fullHeight + 20 {
-                                slice.position.y -= image.fullHeight + 40
-                            }
-                        }
-                        entity.position.y = _offset
+                        entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D([0,translation.y,0])), relativeTo: entity.parent)
                         modelData.updateImageEntityPosition(entity, position: entity.position.y)
                         
-                        if entity.position.y < -20 {
-                            entity.position.y += image.fullHeight + 40
-                        }
-                        
-                        if entity.position.y > image.fullHeight + 20 {
-                            entity.position.y -= image.fullHeight + 40
-                        }
-                    
-                        modelData.imageOffset = _offset
                         
                     } else {
                         entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D(translation)), relativeTo: entity.parent)

@@ -83,17 +83,6 @@ struct ControlPanel: View {
                 } label: {
                     Text("Models")
                 }
-                Slider(value: Binding<Float>(get: {
-                    Float(modelData.imageCount)
-                }, set: { val, _ in
-                    modelData.imageCount = Int(val)
-                    print(val)
-                }) , in: 1...15, step: 1, onEditingChanged: { _ in
-                    modelData.imageSlices = []
-                    modelData.generateImageSlices()
-                }) {
-                    Text("Number of Slices")
-                }
                 
             }
             

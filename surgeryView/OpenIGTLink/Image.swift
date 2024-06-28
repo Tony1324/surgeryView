@@ -80,32 +80,34 @@ struct ImageMessage: OpenIGTDecodable {
     }
     
     func createImage(position: Int) -> CGImage? {
-        let colorSpace = CGColorSpaceCreateDeviceGray()
-        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.none.rawValue|CGBitmapInfo.byteOrder32Big.rawValue)
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipLast.rawValue)
         let bytePosition = Int(size.x)*Int(size.y)*scalarSize()*Int(num_components)*position
         let byteEndPosition = Int(size.x)*Int(size.y)*scalarSize()*Int(num_components)*(position + 1)
-        guard let providerRef = CGDataProvider(data: image_data.subdata(in: image_data.startIndex + bytePosition ..< image_data.startIndex + byteEndPosition) as CFData) else {return nil}
-        guard let image = CGImage(width: Int(size.x), height: Int(size.y), bitsPerComponent: scalarSize() * 8, bitsPerPixel: scalarSize()*Int(num_components) * 8, bytesPerRow: Int(size.x)*scalarSize()*Int(num_components), space: colorSpace, bitmapInfo: bitmapInfo, provider: providerRef, decode: nil, shouldInterpolate: true, intent: .defaultIntent) else {return nil}
+        let rawData = image_data.subdata(in: image_data.startIndex + bytePosition ..< image_data.startIndex + byteEndPosition)
+        var data = Data()
+        for i in stride(from: rawData.startIndex, to: rawData.endIndex, by: scalarSize()) {
+            let pixel = Int(Int32(littleEndian: rawData.subdata(in: i..<i + MemoryLayout<Int32>.size).withUnsafeBytes{$0.load(as: Int32.self)}) )
+            let byte = mapColorRange(num: pixel, low: -1000, high: 1000)
+            data.append(byte)
+            data.append(byte)
+            data.append(byte)
+            data.append(255)
+        }
+        
+        guard let providerRef = CGDataProvider(data: data as CFData) else {return nil}
+        guard let image = CGImage(width: Int(size.x), height: Int(size.y), bitsPerComponent: scalarSize() * 8 / 4, bitsPerPixel: scalarSize()*Int(num_components) * 8, bytesPerRow: Int(size.x)*scalarSize()*Int(num_components), space: colorSpace, bitmapInfo: bitmapInfo, provider: providerRef, decode: nil, shouldInterpolate: true, intent: .defaultIntent) else {return nil}
         
         //although image is grayscale, scalar pixels get colored as red, so we have to convert to full rgb, but with r,g, and b being the same values
-        return convertGrayToRGB(image: image)
+        return image
     }
     
-    
-    func convertGrayToRGB(image: CGImage) -> CGImage? {
-        let width = image.width
-        let height = image.height
+    func mapColorRange(num: Int, low: Int, high: Int) -> UInt8 {
+        guard low < high else { return 0 }
+        let clampedNum = max(min(num, high), low)
         
-        guard let context = CGContext(data: nil,width: width,height: height,bitsPerComponent: 8,bytesPerRow: width * 4,space: CGColorSpaceCreateDeviceRGB(),bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue) else {return nil}
-        
-        //invert image
-        context.setFillColor(CGColor.init(gray: 1, alpha: 1))
-        context.fill([CGRect(x: 0, y: 0, width: width, height: height)])
-        context.setBlendMode(.difference)
-        context.draw(image, in: CGRect(x: 0, y: 0, width: width, height: height))
-        
-        return context.makeImage()
+        var normalized = Float(clampedNum - low) / Float(high - low)
+
+        return UInt8(normalized * 255)
     }
-    
-    
 }
