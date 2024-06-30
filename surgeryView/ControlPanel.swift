@@ -43,14 +43,6 @@ struct ControlPanel: View {
                         Button {
                             Task{
                                 modelData.clearAll()
-                                modelData.loadShaderTest()
-                            }
-                        } label: {
-                            Text("Image Test")
-                        }
-                        Button {
-                            Task{
-                                modelData.clearAll()
                                 modelData.stressTestCubeGrid()
                             }
                         } label: {
