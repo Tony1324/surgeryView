@@ -62,7 +62,7 @@ struct ModelManager: View {
                 var centers: SIMD3<Float> = [0,0,0]
                 var lowestY: Float = 0
 
-                for entity in originAnchor.children {
+                for entity in modelData.models {
                     guard entity.name != "base" else {continue}
                     guard !entity.name.hasPrefix("image") else {continue}
                     let bounds = entity.visualBounds(relativeTo: base)
@@ -171,7 +171,7 @@ struct ModelManager: View {
                     } else if entity.name == "coronal-image"{
                         guard let image = modelData.image else {return}
                         entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D([0,0,translation.z])), relativeTo: entity.parent)
-                        modelData.updateCoronalSlice(position: entity.position.z - Float(image.size.y/2))
+                        modelData.updateCoronalSlice(position: entity.position.z + Float(image.size.y/2))
                     } else if entity.name == "sagittal-image"{
                         guard let image = modelData.image else {return}
                         entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D([translation.x,0,0])), relativeTo: entity.parent)

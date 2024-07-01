@@ -143,7 +143,8 @@ class ModelData{
                 //fade near top and bottom
                 let plane = ModelEntity(mesh: .generatePlane(width: Float(image.size.x), depth: Float(image.size.z) * image.normal.z), materials: [img])
                 plane.name = "coronal-image"
-                plane.position.z = position
+                plane.position.z = Float(image.size.x/2) - position
+                plane.position.y = Float(image.size.z) * Float(image.normal.z) / 2
                 plane.transform.rotation = .init(angle: -Float.pi/2, axis: [1,0,0])
                 coronalSlice = plane
                 return plane
@@ -155,7 +156,7 @@ class ModelData{
     func updateCoronalSlice(position: Float){
         if let image = image {
             if let imageCache = coronalImageCache{
-                let img = imageCache[min(max(Int(position/image.traverse_j.y),0),Int(image.size.y)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
+                let img = imageCache[min(max(Int(position),0),Int(image.size.y)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
                 (coronalSlice as? ModelEntity)?.model?.materials = [img]
             }
         }
@@ -163,12 +164,13 @@ class ModelData{
     func generateSagittalSlice(position: Float) -> ModelEntity?{
         if let image = image{
             if let imageCache = sagittalImageCache {
-                let img = imageCache[min(max(Int(position/image.traverse_i.x),0),Int(image.size.x)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
+                let img = imageCache[min(max(Int(position),0),Int(image.size.x)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
                 //fade near top and bottom
                 let plane = ModelEntity(mesh: .generatePlane(width: Float(image.size.y), depth: Float(image.size.z) * image.normal.z), materials: [img])
                 plane.name = "sagittal-image"
-                plane.position.x = position
-                plane.transform.rotation = .init(angle: -Float.pi/2, axis: [0,0,1])
+                plane.position.x = Float(image.size.x)/2 - position
+                plane.position.y = Float(image.size.z) * Float(image.normal.z) / 2
+                plane.transform.rotation = .init(angle: -Float.pi/2, axis: [0,0,1]) * .init(angle: -Float.pi/2, axis: [0, 1, 0])
                 sagittalSlice = plane
                 return plane
             }
@@ -187,16 +189,16 @@ class ModelData{
 
 }
 
-
 extension ModelData: OpenIGTDelegate {
-    func receiveImageMessage(header: IGTHeader, image: ImageMessage) {
-        self.image = image
+    func receiveImageMessage(header: IGTHeader, image img: ImageMessage) {
+        self.image = img
+        self.image?.scaleImageData()
         Task {
             await withTaskGroup(of: Optional<(SimpleMaterial,Int)>.self) { group in
                 axialImageCache = []
-                for i in 0..<image.size.z {
+                for i in 0..<image!.size.z {
                     group.addTask {
-                        if let img = image.createAxialImage(position: Int(i)) {
+                        if let img = self.image!.createAxialImage(position: Int(i)) {
                             if let texture = try? await TextureResource.generate(from: img, options: .init(semantic: .color)){
                                 var material = SimpleMaterial()
                                 material.color =  .init(texture: .init(texture))
@@ -206,7 +208,7 @@ extension ModelData: OpenIGTDelegate {
                         return nil
                     }
                 }
-                for _ in 0..<image.size.z {
+                for _ in 0..<image!.size.z {
                     axialImageCache?.append(nil)
                 }
                 for await result in group {
@@ -216,16 +218,18 @@ extension ModelData: OpenIGTDelegate {
                 }
             }
             Task.detached { @MainActor in
-//                self.generateImageSlices()
+                //                self.generateImageSlices()
                 self.generateAxialSlice(position: 0)
             }
         }
         Task {
+            self.image?.coronalTranposedImage()
+
             await withTaskGroup(of: Optional<(SimpleMaterial,Int)>.self) { group in
                 coronalImageCache = []
-                for i in 0..<image.size.y {
+                for i in 0..<image!.size.y {
                     group.addTask {
-                        if let img = image.createCoronalImage(position: Int(i)) {
+                        if let img = self.image!.createCoronalImage(position: Int(i)) {
                             if let texture = try? await TextureResource.generate(from: img, options: .init(semantic: .color)){
                                 var material = SimpleMaterial()
                                 material.color =  .init(texture: .init(texture))
@@ -235,7 +239,7 @@ extension ModelData: OpenIGTDelegate {
                         return nil
                     }
                 }
-                for _ in 0..<image.size.y {
+                for _ in 0..<image!.size.y {
                     coronalImageCache?.append(nil)
                 }
                 for await result in group {
@@ -245,16 +249,17 @@ extension ModelData: OpenIGTDelegate {
                 }
             }
             Task.detached { @MainActor in
-//                self.generateImageSlices()
+                //                self.generateImageSlices()
                 self.generateCoronalSlice(position: 0)
             }
         }
         Task {
+            self.image?.sagittalTransposedImage()
             await withTaskGroup(of: Optional<(SimpleMaterial,Int)>.self) { group in
                 sagittalImageCache = []
-                for i in 0..<image.size.x {
+                for i in 0..<image!.size.x {
                     group.addTask {
-                        if let img = image.createSagittalImage(position: Int(i)) {
+                        if let img = self.image!.createSagittalImage(position: Int(i)) {
                             if let texture = try? await TextureResource.generate(from: img, options: .init(semantic: .color)){
                                 var material = SimpleMaterial()
                                 material.color =  .init(texture: .init(texture))
@@ -264,7 +269,7 @@ extension ModelData: OpenIGTDelegate {
                         return nil
                     }
                 }
-                for _ in 0..<image.size.x {
+                for _ in 0..<image!.size.x {
                     sagittalImageCache?.append(nil)
                 }
                 for await result in group {

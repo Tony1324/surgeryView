@@ -142,7 +142,7 @@ class CommunicationsManager{
 }
 
 protocol OpenIGTDecodable{
-    static func decode(_ data: Data) -> Self?
+    static func decode(_ data: Data) -> (Self?)
 }
 
 protocol OpenIGTEncodable{
