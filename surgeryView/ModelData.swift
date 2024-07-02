@@ -36,7 +36,7 @@ class ModelData{
         //this class, modelData, is used as a delegate to implement receiving messages, see extension below
         originTransform = Transform(scale: [0.001, 0.001, 0.001], rotation: simd_quatf.init(angle: Float.pi, axis: [0, 1, 0]))
         igtlClient?.disconnect()
-        igtlClient = CommunicationsManager(port: 2500, delegate: self)
+        igtlClient = CommunicationsManager(port: 18944, delegate: self)
         if let igtlClient {
             Task{
                 await igtlClient.startClient()

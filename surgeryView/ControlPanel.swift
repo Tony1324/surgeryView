@@ -12,10 +12,23 @@ struct ControlPanel: View {
     @Environment(ModelData.self) var modelData: ModelData
     var body: some View {
         NavigationStack{
-            Text("Local Ip Address: \(getLocalIPAddress() ?? "None found")")
-                .font(.title3)
+            
             
             List{
+                Section{
+                    VStack(alignment: .leading, content: {
+                        Text("Local Ip Address:")
+                            .opacity(0.8)
+                            .fontWeight(.bold)
+                        Text("\(getLocalIPAddress() ?? "None found")")
+                            .font(.system(size: 30, design: .monospaced))
+                        Text("Port:")
+                            .opacity(0.8)
+                            .fontWeight(.bold)
+                        Text("\(modelData.igtlClient?.port.debugDescription ?? "Default: 18944")")
+                            .font(.system(size: 30, design: .monospaced))
+                    })
+                }
                 NavigationLink {
                     List{
                         

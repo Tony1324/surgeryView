@@ -22,8 +22,7 @@ struct ToolbarView: View {
                 Label("Explode Models", systemImage: "arrow.up.backward.and.arrow.down.forward.square")
             }
         }
-        .tint(.white)
-        .foregroundStyle(.black)
+        .tint(.black.opacity(0.5))
         .padding()
         .background(.ultraThickMaterial)
         .clipShape(.capsule)
