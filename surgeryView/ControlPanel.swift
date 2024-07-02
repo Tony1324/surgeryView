@@ -12,6 +12,9 @@ struct ControlPanel: View {
     @Environment(ModelData.self) var modelData: ModelData
     var body: some View {
         NavigationStack{
+            Text("Local Ip Address: \(getLocalIPAddress() ?? "None found")")
+                .font(.title3)
+            
             List{
                 NavigationLink {
                     List{
@@ -81,7 +84,30 @@ struct ControlPanel: View {
             .listStyle(.sidebar)
             .navigationTitle("Controls")
         }
+    }
+    func getLocalIPAddress() -> String? {
+        var address: String?
+        var ifaddr: UnsafeMutablePointer<ifaddrs>? = nil
         
+        if getifaddrs(&ifaddr) == 0 {
+            var ptr = ifaddr
+            while ptr != nil {
+                let interface = ptr!.pointee
+                let addrFamily = interface.ifa_addr.pointee.sa_family
+                if addrFamily == UInt8(AF_INET) {
+                    let name = String(cString: interface.ifa_name)
+                    if name == "en0" {
+                        var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
+                        getnameinfo(interface.ifa_addr, socklen_t(interface.ifa_addr.pointee.sa_len), &hostname, socklen_t(hostname.count), nil, socklen_t(0), NI_NUMERICHOST)
+                        address = String(cString: hostname)
+                    }
+                }
+                ptr = interface.ifa_next
+            }
+            freeifaddrs(ifaddr)
+        }
+        
+        return address
     }
 }
 

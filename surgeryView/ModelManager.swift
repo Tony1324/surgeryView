@@ -175,7 +175,7 @@ struct ModelManager: View {
                     } else if entity.name == "sagittal-image"{
                         guard let image = modelData.image else {return}
                         entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D([translation.x,0,0])), relativeTo: entity.parent)
-                        modelData.updateSagittalSlice(position: entity.position.x - Float(image.size.x/2))
+                        modelData.updateSagittalSlice(position: entity.position.x + Float(image.size.x/2))
                     } else {
                         entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D(translation)), relativeTo: entity.parent)
                     }

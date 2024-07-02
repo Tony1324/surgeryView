@@ -112,12 +112,65 @@ class ModelData{
         }
     }
     
+    func generateDoubleSidedPlane(width: Float, height: Float, materials: [SimpleMaterial]) -> ModelEntity {
+        let halfWidth = width / 2
+        let halfHeight = height / 2
+
+        let vertices: [SIMD3<Float>] = [
+            // Front face
+            SIMD3(-halfWidth, 0, -halfHeight),
+            SIMD3(halfWidth, 0, -halfHeight),
+            SIMD3(halfWidth, 0, halfHeight),
+            SIMD3(-halfWidth, 0, halfHeight),
+            // Back face
+            SIMD3(-halfWidth, 0, -halfHeight),
+            SIMD3(halfWidth, 0, -halfHeight),
+            SIMD3(halfWidth, 0, halfHeight),
+            SIMD3(-halfWidth, 0, halfHeight)
+        ]
+
+        let normals: [SIMD3<Float>] = [
+            SIMD3(0, 1, 0),
+            SIMD3(0, 1, 0),
+            SIMD3(0, 1, 0),
+            SIMD3(0, 1, 0),
+            SIMD3(0, -1, 0),
+            SIMD3(0, -1, 0),
+            SIMD3(0, -1, 0),
+            SIMD3(0, -1, 0)
+        ]
+
+        let uvs: [SIMD2<Float>] = [
+            SIMD2(0, 1),
+            SIMD2(1, 1),
+            SIMD2(1, 0),
+            SIMD2(0, 0),
+            SIMD2(0, 1),
+            SIMD2(1, 1),
+            SIMD2(1, 0),
+            SIMD2(0, 0)
+        ]
+
+        let indices: [UInt32] = [
+            0, 1, 2, 0, 2, 3, // Front face
+            4, 6, 5, 4, 7, 6  // Back face (reversed winding order)
+        ]
+
+        var meshDescriptor = MeshDescriptor()
+        meshDescriptor.positions = MeshBuffer(vertices)
+        meshDescriptor.normals = MeshBuffer(normals)
+        meshDescriptor.textureCoordinates = MeshBuffer(uvs)
+        meshDescriptor.primitives = .triangles(indices)
+
+        return ModelEntity(mesh: try! .generate(from: [meshDescriptor]), materials: materials)
+    }
+    
     func generateAxialSlice(position: Float) -> ModelEntity?{
         if let image = image{
             if let imageCache = axialImageCache {
                 let img = imageCache[min(max(Int(position/image.normal.z),0),Int(image.size.z)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
                 //fade near top and bottom
-                let plane = ModelEntity(mesh: .generatePlane(width: Float(image.size.x), depth: Float(image.size.y)), materials: [img])
+                let plane = generateDoubleSidedPlane(width: Float(image.size.x), height: Float(image.size.x), materials: [img])
                 plane.name = "axial-image"
                 plane.position.y = position
                 axialSlice = plane
@@ -140,12 +193,11 @@ class ModelData{
         if let image = image{
             if let imageCache = coronalImageCache {
                 let img = imageCache[min(max(Int(position/image.traverse_j.y),0),Int(image.size.y)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
-                //fade near top and bottom
-                let plane = ModelEntity(mesh: .generatePlane(width: Float(image.size.x), depth: Float(image.size.z) * image.normal.z), materials: [img])
+                let plane = generateDoubleSidedPlane(width: Float(image.size.x), height: Float(image.size.z) * image.normal.z, materials: [img])
                 plane.name = "coronal-image"
                 plane.position.z = Float(image.size.x/2) - position
                 plane.position.y = Float(image.size.z) * Float(image.normal.z) / 2
-                plane.transform.rotation = .init(angle: -Float.pi/2, axis: [1,0,0])
+                plane.transform.rotation = simd_quatf.init(angle: -Float.pi/2, axis: [1,0,0])
                 coronalSlice = plane
                 return plane
             }
@@ -166,7 +218,7 @@ class ModelData{
             if let imageCache = sagittalImageCache {
                 let img = imageCache[min(max(Int(position),0),Int(image.size.x)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
                 //fade near top and bottom
-                let plane = ModelEntity(mesh: .generatePlane(width: Float(image.size.y), depth: Float(image.size.z) * image.normal.z), materials: [img])
+                let plane = generateDoubleSidedPlane(width: Float(image.size.y), height: Float(image.size.z) * image.normal.z, materials: [img])
                 plane.name = "sagittal-image"
                 plane.position.x = Float(image.size.x)/2 - position
                 plane.position.y = Float(image.size.z) * Float(image.normal.z) / 2
@@ -181,7 +233,7 @@ class ModelData{
     func updateSagittalSlice(position: Float){
         if let image = image {
             if let imageCache = sagittalImageCache{
-                let img = imageCache[min(max(Int(position/image.traverse_i.x),0),Int(image.size.x)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
+                let img = imageCache[min(max(Int(position),0),Int(image.size.x)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
                 (sagittalSlice as? ModelEntity)?.model?.materials = [img]
             }
         }
