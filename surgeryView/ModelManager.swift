@@ -164,21 +164,22 @@ struct ModelManager: View {
                     }
 
                     let translation = value.convert(value.translation3D, from: .local, to: entity.parent!)
-                    if entity.name == "axial-image" {
-                        guard let image = modelData.image else {return}
-                        entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D([0,translation.y,0])), relativeTo: entity.parent)
-                        modelData.updateAxialSlice(position: entity.position.y)
-                    } else if entity.name == "coronal-image"{
-                        guard let image = modelData.image else {return}
-                        entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D([0,0,translation.z])), relativeTo: entity.parent)
-                        modelData.updateCoronalSlice(position: entity.position.z + Float(image.size.y/2))
-                    } else if entity.name == "sagittal-image"{
-                        guard let image = modelData.image else {return}
-                        entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D([translation.x,0,0])), relativeTo: entity.parent)
-                        modelData.updateSagittalSlice(position: entity.position.x + Float(image.size.x/2))
-                    } else {
-                        entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D(translation)), relativeTo: entity.parent)
+                    if let image = modelData.image {
+                        if entity.name == "axial-image" {
+                            entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D([0,translation.y,0])), relativeTo: entity.parent)
+                            modelData.updateAxialSlice(position: entity.position.y)
+                            return
+                        } else if entity.name == "coronal-image"{
+                            entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D([0,0,translation.z])), relativeTo: entity.parent)
+                            modelData.updateCoronalSlice(position: entity.position.z/image.traverse_j.y + Float(image.size.y/2))
+                            return
+                        } else if entity.name == "sagittal-image"{
+                            entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D([translation.x,0,0])), relativeTo: entity.parent)
+                            modelData.updateSagittalSlice(position: entity.position.x/image.traverse_i.x + Float(image.size.x/2))
+                            return
+                        }
                     }
+                    entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D(translation)), relativeTo: entity.parent)
                 })
                 .onEnded({ _ in
                     dragStartLocation3d = nil
