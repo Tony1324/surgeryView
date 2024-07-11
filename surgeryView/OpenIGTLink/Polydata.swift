@@ -140,7 +140,7 @@ struct PolyDataMessage: OpenIGTDecodable {
         
         // Create model component
         if let mesh = try? MeshResource.generate(from: [meshDescriptor]) {
-            var model = ModelEntity(mesh: mesh, materials: [PhysicallyBasedMaterial()])
+            let model = ModelEntity(mesh: mesh, materials: [SimpleMaterial(color: .blue, isMetallic: true)])
             return model
         }
         return nil

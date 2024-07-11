@@ -89,6 +89,10 @@ class ModelData{
         models = []
         axialSlice = nil
         coronalSlice = nil
+        sagittalSlice = nil
+        axialImageCache = nil
+        coronalImageCache = nil
+        sagittalImageCache = nil
         image = nil
     }
     

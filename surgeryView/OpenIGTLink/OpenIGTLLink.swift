@@ -138,6 +138,7 @@ class CommunicationsManager{
     
     func disconnect(){
         listener?.cancel()
+//        connection?.cancel()
     }
 }
 

@@ -179,7 +179,7 @@ struct ModelManager: View {
                             return
                         }
                     }
-                    entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D(translation)), relativeTo: entity.parent)
+                    entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D(translation)), relativeTo: entity.parent, duration: 0.1)
                 })
                 .onEnded({ _ in
                     dragStartLocation3d = nil

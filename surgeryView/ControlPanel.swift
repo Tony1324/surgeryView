@@ -31,14 +31,6 @@ struct ControlPanel: View {
                 }
                 NavigationLink {
                     List{
-                        
-                        Button {
-                            Task{
-                                modelData.clearAll()
-                            }
-                        } label: {
-                            Text("Clear all models")
-                        }
                         Button {
                             Task{
                                 modelData.clearAll()
@@ -56,14 +48,14 @@ struct ControlPanel: View {
                         } label: {
                             Text("OpenIGTLink Connection")
                         }
-                        Button {
-                            Task{
-                                modelData.clearAll()
-                                modelData.stressTestCubeGrid()
-                            }
-                        } label: {
-                            Text("Performance Test")
-                        }
+//                        Button {
+//                            Task{
+//                                modelData.clearAll()
+//                                modelData.stressTestCubeGrid()
+//                            }
+//                        } label: {
+//                            Text("Performance Test")
+//                        }
                         
                     }
                     .navigationTitle("Scenes")
@@ -73,6 +65,15 @@ struct ControlPanel: View {
                 NavigationLink {
                     //TODO: update to multiselect
                         List{
+                            Section {
+                                Button {
+                                    Task{
+                                        modelData.clearAll()
+                                    }
+                                } label: {
+                                    Text("Clear all models")
+                                }
+                            }
                             ForEach(modelData.models){ entity in
                                 Button{
                                     if(modelData.selectedEntity == entity) {
