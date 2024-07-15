@@ -64,6 +64,7 @@ struct ModelManager: View {
 
                 for entity in modelData.models {
                     guard entity.name != "base" else {continue}
+                    guard entity.name != "pointer" else {continue}
                     guard !entity.name.hasPrefix("image") else {continue}
                     let bounds = entity.visualBounds(relativeTo: base)
                     centers = centers + (bounds.center - entity.convert(position: entity.position, to: base)) / max((Float(originAnchor.children.count - 1)),1)
@@ -85,14 +86,18 @@ struct ModelManager: View {
             
             let base = addBase(content: content, attachments: attachments)
             base.position = [0, 1, -1.5]
-
+            
             let originAnchor = Entity()
-
+            
             originAnchor.name = "origin"
             originAnchor.transform = modelData.originTransform
             base.addChild(originAnchor)
-
-
+            
+            let pointer = ModelEntity(mesh: .generateSphere(radius: 0.005),materials: [SimpleMaterial(color: .red.withAlphaComponent(1), isMetallic: false)])
+            pointer.name = "pointer"
+            pointer.transform = modelData.pointerTransform
+            originAnchor.addChild(pointer)
+            pointer.setScale([1,1,1], relativeTo: nil)
 
             for entity in (modelData.models + modelData.imageSlices) {
                 addEntity(content: content, entity: entity)
@@ -111,6 +116,9 @@ struct ModelManager: View {
                     }
                 }
                 for entity in originAnchor.children.reversed(){
+                    if entity.name == "pointer" {
+                        continue
+                    }
                     if !(modelData.models + modelData.imageSlices).contains(entity){
                         originAnchor.removeChild(entity)
                     }
@@ -123,6 +131,9 @@ struct ModelManager: View {
                 originAnchor.transform.scale = modelData.originTransform.scale
                 originAnchor.transform.rotation = .init(angle: baseRotation, axis: [0,1,0]) * modelData.originTransform.rotation
                 content.entities.first?.findEntity(named: "rotate")?.transform.rotation = .init(angle: baseRotation, axis: [0,1,0]) * .init(angle: Float.pi/2, axis: [1, 0, 0])
+                originAnchor.findEntity(named: "pointer")?.transform = modelData.pointerTransform
+                originAnchor.findEntity(named: "pointer")?.setScale([1,1,1], relativeTo: nil)
+                print(originAnchor.findEntity(named: "pointer"))
             }
             positionModels(content: content, attachment: attachments)
             if let update {

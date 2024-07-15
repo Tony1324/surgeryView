@@ -13,6 +13,7 @@ import Network
 @Observable
 class ModelData{
     var image: ImageMessage?
+    var pointerTransform: Transform = Transform.identity
     var imageSlices: [Entity] {
         [axialSlice, coronalSlice, sagittalSlice].compactMap{$0}
     }
@@ -346,10 +347,24 @@ extension ModelData: OpenIGTDelegate {
     }
     func receiveTransformMessage(header: IGTHeader, transform: TransformMessage) {
         print("Transform recieved!")
+        pointerTransform = transform.realityKitTransform()
     }
     func receivePolyDataMessage(header: IGTHeader, polydata: PolyDataMessage) {
         print("polydata recieved!")
         if let model = polydata.generateModelEntityFromPolys() {
+            let colorInfo = header.deviceName
+            var color = UIColor.white
+            if colorInfo.count >= 3{
+                var rgbValue:UInt64 = 0
+                Scanner(string: colorInfo.trimmingCharacters(in: ["#","\0"]).uppercased()).scanHexInt64(&rgbValue)
+                color = UIColor(
+                    red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
+                    green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
+                    blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
+                    alpha: CGFloat(1)
+                )
+            }
+            model.model?.materials = [SimpleMaterial(color: color, isMetallic: false)]
             models.append(model)
         }
     }
