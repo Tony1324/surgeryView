@@ -131,8 +131,10 @@ struct ModelManager: View {
                 originAnchor.transform.scale = modelData.originTransform.scale
                 originAnchor.transform.rotation = .init(angle: baseRotation, axis: [0,1,0]) * modelData.originTransform.rotation
                 content.entities.first?.findEntity(named: "rotate")?.transform.rotation = .init(angle: baseRotation, axis: [0,1,0]) * .init(angle: Float.pi/2, axis: [1, 0, 0])
-                originAnchor.findEntity(named: "pointer")?.transform = modelData.pointerTransform
-                originAnchor.findEntity(named: "pointer")?.setScale([1,1,1], relativeTo: nil)
+                if let pointer = originAnchor.findEntity(named: "pointer") {
+                    pointer.move(to: Transform(scale: pointer.transform.scale, translation: modelData.pointerTransform.translation), relativeTo: originAnchor)
+                    pointer.setScale([1,1,1], relativeTo: nil)
+                }
                 print(originAnchor.findEntity(named: "pointer"))
             }
             positionModels(content: content, attachment: attachments)

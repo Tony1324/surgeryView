@@ -72,10 +72,10 @@ class CommunicationsManager{
                         if(header.v >= 2){
                             let ext_header = IGTExtendedHeader.decode(data)
                             if let ext_header {
-                                ext_header_data = data.subdata(in: 0..<Data.Index(ext_header.ext_header_size))
+                                ext_header_data = data.subdata(in: data.startIndex + 0 ..< data.startIndex + Data.Index(ext_header.ext_header_size))
                                 let content_size = Int(header.bodySize) - Int(ext_header.ext_header_size) - Int(ext_header.meta_data_size)
-                                content_data = data.subdata(in: Data.Index(ext_header.ext_header_size)..<content_size + Int(ext_header.ext_header_size))
-                                meta_data_data = data.subdata(in: content_size + Int(ext_header.ext_header_size)..<Int(header.bodySize))
+                                content_data = data.subdata(in: data.startIndex + Data.Index(ext_header.ext_header_size) ..< data.startIndex + content_size + Int(ext_header.ext_header_size))
+                                meta_data_data = data.subdata(in: data.startIndex +  content_size + Int(ext_header.ext_header_size) ..< data.startIndex + Int(header.bodySize))
                             }
                         }else{
                             content_data = data
@@ -101,6 +101,13 @@ class CommunicationsManager{
                                 delegate.receiveImageMessage(header: header, image: image)
                             } else {
                                 print("Unable to decode Image")
+                            }
+                        case "STRING":
+                            let string = StringMessage.decode(content_data)
+                            if let string {
+                                delegate.receiveStringMessage(header: header, string: string)
+                            } else {
+                                print("Unable to decode Command")
                             }
                         default:
                             print("Unrecognized Message: \(header.messageType)")
@@ -154,16 +161,21 @@ protocol OpenIGTDelegate{
     func receivePolyDataMessage(header: IGTHeader, polydata: PolyDataMessage)
     func receiveTransformMessage(header: IGTHeader, transform: TransformMessage)
     func receiveImageMessage(header: IGTHeader, image: ImageMessage)
+    func receiveStringMessage(header: IGTHeader, string: StringMessage)
+
 }
 
 extension OpenIGTDelegate{
     func receivePolyDataMessage(header: IGTHeader, polydata: PolyDataMessage) {
-        print("No implementation for recieving PolyData")
+        print("No implementation for receiving PolyData")
     }
     func receiveTransformMessage(header: IGTHeader, transform: TransformMessage) {
-        print("No implementation for recieving Transform")
+        print("No implementation for receiving Transform")
     }
     func receiveImageMessage(header: IGTHeader, image: ImageMessage) {
-        print("No implementation for recieving Image")
+        print("No implementation for receiving Image")
+    }
+    func receiveStringMessage(header: IGTHeader, string: StringMessage) {
+        print("No implementation for receiving String")
     }
 }

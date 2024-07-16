@@ -74,6 +74,7 @@
 		1BF411C92BBCE5330010CD1D /* Model_63_left_hip.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411952BBCE5330010CD1D /* Model_63_left_hip.usdz */; };
 		B75C70512BEAB3300019A527 /* NoneMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75C70502BEAB3300019A527 /* NoneMessage.swift */; };
 		B75C70542BFFC8710019A527 /* DataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75C70532BFFC8710019A527 /* DataReader.swift */; };
+		B78206CF2C46FD6900E75B84 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78206CE2C46FD6900E75B84 /* String.swift */; };
 		B7B50D732BD1B0F9006733EF /* ModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B50D722BD1B0F9006733EF /* ModelData.swift */; };
 		B7D1ED7C2C18DC6C000473E7 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D1ED7B2C18DC6C000473E7 /* Image.swift */; };
 /* End PBXBuildFile section */
@@ -174,6 +175,7 @@
 		B7378D092BE183B9006EDCEC /* surgeryView-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "surgeryView-Bridging-Header.h"; sourceTree = "<group>"; };
 		B75C70502BEAB3300019A527 /* NoneMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoneMessage.swift; sourceTree = "<group>"; };
 		B75C70532BFFC8710019A527 /* DataReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataReader.swift; sourceTree = "<group>"; };
+		B78206CE2C46FD6900E75B84 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		B7B50D722BD1B0F9006733EF /* ModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelData.swift; sourceTree = "<group>"; };
 		B7D1ED7B2C18DC6C000473E7 /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -326,6 +328,7 @@
 				1BA9652E2BE709B90019B819 /* IGTHeader.swift */,
 				B75C70502BEAB3300019A527 /* NoneMessage.swift */,
 				1BA965312BE709BA0019B819 /* Polydata.swift */,
+				B78206CE2C46FD6900E75B84 /* String.swift */,
 				B7D1ED7B2C18DC6C000473E7 /* Image.swift */,
 				1BA9652F2BE709BA0019B819 /* Transform.swift */,
 			);
@@ -500,6 +503,7 @@
 				1BA965532BE70B5F0019B819 /* Polydata.swift in Sources */,
 				B75C70542BFFC8710019A527 /* DataReader.swift in Sources */,
 				B7D1ED7C2C18DC6C000473E7 /* Image.swift in Sources */,
+				B78206CF2C46FD6900E75B84 /* String.swift in Sources */,
 				1BA965542BE70B5F0019B819 /* Transform.swift in Sources */,
 				1BA965552BE70B5F0019B819 /* IGTHeader.swift in Sources */,
 			);

@@ -346,11 +346,11 @@ extension ModelData: OpenIGTDelegate {
         }
     }
     func receiveTransformMessage(header: IGTHeader, transform: TransformMessage) {
-        print("Transform recieved!")
+        print("Transform received!")
         pointerTransform = transform.realityKitTransform()
     }
     func receivePolyDataMessage(header: IGTHeader, polydata: PolyDataMessage) {
-        print("polydata recieved!")
+        print("polydata received!")
         if let model = polydata.generateModelEntityFromPolys() {
             let colorInfo = header.deviceName
             var color = UIColor.white
@@ -366,6 +366,20 @@ extension ModelData: OpenIGTDelegate {
             }
             model.model?.materials = [SimpleMaterial(color: color, isMetallic: false)]
             models.append(model)
+        }
+    }
+    func receiveStringMessage(header: IGTHeader, string: StringMessage) {
+        switch header.deviceName.trimmingCharacters(in: ["\0"]) {
+        case "CLEAR":
+            clearAll()
+        case "AXIAL":
+            pos = Int(string.str) ?? 0
+        case "CORONAL":
+            pos = Int(string.str) ?? 0
+        case "SAGGITAL":
+            pos = Int(string.str) ?? 0
+        default:
+            break
         }
     }
 }
