@@ -197,6 +197,7 @@ class ModelData{
                 let index = (position - image.position.z + image.fullHeight/2)/image.normal.z
                 let img = imageCache[min(max(Int(index),0),Int(image.size.z)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
                 (axialSlice as? ModelEntity)?.model?.materials = [img]
+                axialSlice?.position.y = position
             }
         }
     }
@@ -225,6 +226,7 @@ class ModelData{
                 let index = (-position - image.position.y + image.fullLength/2)/image.traverse_j.y
                 let img = imageCache[min(max(Int(index),0),Int(image.size.y)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
                 (coronalSlice as? ModelEntity)?.model?.materials = [img]
+                coronalSlice?.position.z = position
             }
         }
     }
@@ -253,6 +255,7 @@ class ModelData{
                 let index = (position-image.position.x + image.fullWidth/2)/image.traverse_i.x
                 let img = imageCache[min(max(Int(index),0),Int(image.size.x)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
                 (sagittalSlice as? ModelEntity)?.model?.materials = [img]
+                sagittalSlice?.position.x = position
             }
         }
     }
@@ -262,7 +265,6 @@ class ModelData{
 extension ModelData: OpenIGTDelegate {
     func receiveImageMessage(header: IGTHeader, image img: ImageMessage) {
         self.image = img
-        print(image)
         Task{
             self.image?.scaleImageData()
             Task {
@@ -380,16 +382,19 @@ extension ModelData: OpenIGTDelegate {
         }
     }
     func receiveStringMessage(header: IGTHeader, string: StringMessage) {
+        print(string)
         switch header.deviceName.trimmingCharacters(in: ["\0"]) {
         case "CLEAR":
             clearAll()
         case "AXIAL":
-            print(image)
-            let pos = Int(string.str) ?? 0
+            let pos = Float(string.str) ?? 0
+            updateAxialSlice(position: pos)
         case "CORONAL":
-            let pos = Int(string.str) ?? 0
+            let pos = Float(string.str) ?? 0
+            updateCoronalSlice(position: -pos)
         case "SAGGITAL":
-            let pos = Int(string.str) ?? 0
+            let pos = Float(string.str) ?? 0
+            updateSagittalSlice(position: pos)
         default:
             break
         }
