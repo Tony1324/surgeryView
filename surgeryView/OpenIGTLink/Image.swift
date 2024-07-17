@@ -32,7 +32,13 @@ struct ImageMessage: OpenIGTDecodable {
     var fullHeight: Float {
         Float(size.z) * Float(normal.z)
     }
-    
+    var fullWidth: Float {
+        Float(size.x) * Float(traverse_i.x)
+    }
+    var fullLength: Float {
+        Float(size.y) * Float(traverse_j.y)
+    }
+
     static func decode(_ data: Data) -> ImageMessage? {
         let data = DataReader(data)
         

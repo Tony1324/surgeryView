@@ -146,16 +146,16 @@ class ModelData{
         ]
 
         let uvs: [SIMD2<Float>] = [
-            SIMD2(0, 1),
-            SIMD2(1, 1),
-            SIMD2(1, 0),
             SIMD2(0, 0),
-            SIMD2(0, 1),
-            SIMD2(1, 1),
             SIMD2(1, 0),
-            SIMD2(0, 0)
+            SIMD2(1, 1),
+            SIMD2(0, 1),
+            SIMD2(0, 0),
+            SIMD2(1, 0),
+            SIMD2(1, 1),
+            SIMD2(0, 1)
         ]
-
+        
         let indices: [UInt32] = [
             0, 1, 2, 0, 2, 3, // Front face
             4, 6, 5, 4, 7, 6  // Back face (reversed winding order)
@@ -176,11 +176,14 @@ class ModelData{
     func generateAxialSlice(position: Float) -> ModelEntity?{
         if let image = image{
             if let imageCache = axialImageCache {
-                let img = imageCache[min(max(Int(position/image.normal.z),0),Int(image.size.z)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
+                let index = (position - image.position.z + image.fullHeight/2)/image.normal.z
+                let img = imageCache[min(max(Int(index),0),Int(image.size.z)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
                 //fade near top and bottom
                 let plane = generateDoubleSidedPlane(width: Float(image.size.x)*image.traverse_i.x, height: Float(image.size.x)*image.traverse_j.y, materials: [img])
                 plane.name = "axial-image"
                 plane.position.y = position
+                plane.position.x = image.position.x
+                plane.position.z = -image.position.y
                 axialSlice = plane
                 return plane
             }
@@ -191,7 +194,8 @@ class ModelData{
     func updateAxialSlice(position: Float){
         if let image = image {
             if let imageCache = axialImageCache{
-                let img = imageCache[min(max(Int(position/image.normal.z),0),Int(image.size.z)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
+                let index = (position - image.position.z + image.fullHeight/2)/image.normal.z
+                let img = imageCache[min(max(Int(index),0),Int(image.size.z)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
                 (axialSlice as? ModelEntity)?.model?.materials = [img]
             }
         }
@@ -200,12 +204,14 @@ class ModelData{
     func generateCoronalSlice(position: Float) -> ModelEntity?{
         if let image = image{
             if let imageCache = coronalImageCache {
-                let img = imageCache[min(max(Int(position/image.traverse_j.y),0),Int(image.size.y)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
+                let index = (-position - image.position.y + image.fullLength/2)/image.traverse_j.y
+                let img = imageCache[min(max(Int(index),0),Int(image.size.y)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
                 let plane = generateDoubleSidedPlane(width: Float(image.size.x)*image.traverse_i.x, height: Float(image.size.z) * image.normal.z, materials: [img])
                 plane.name = "coronal-image"
-                plane.position.z = (Float(image.size.x/2) - position)*image.traverse_j.y
-                plane.position.y = Float(image.size.z) * Float(image.normal.z) / 2
-                plane.transform.rotation = simd_quatf.init(angle: -Float.pi/2, axis: [1,0,0])
+                plane.position.z = position
+                plane.position.x = image.position.x
+                plane.position.y = image.position.z
+                plane.transform.rotation = simd_quatf.init(angle: Float.pi/2, axis: [1,0,0])
                 coronalSlice = plane
                 return plane
             }
@@ -216,7 +222,8 @@ class ModelData{
     func updateCoronalSlice(position: Float){
         if let image = image {
             if let imageCache = coronalImageCache{
-                let img = imageCache[min(max(Int(position),0),Int(image.size.y)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
+                let index = (-position - image.position.y + image.fullLength/2)/image.traverse_j.y
+                let img = imageCache[min(max(Int(index),0),Int(image.size.y)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
                 (coronalSlice as? ModelEntity)?.model?.materials = [img]
             }
         }
@@ -224,13 +231,15 @@ class ModelData{
     func generateSagittalSlice(position: Float) -> ModelEntity?{
         if let image = image{
             if let imageCache = sagittalImageCache {
-                let img = imageCache[min(max(Int(position/image.traverse_i.x),0),Int(image.size.x)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
+                let index = (position-image.position.x + image.fullWidth/2)/image.traverse_i.x
+                let img = imageCache[min(max(Int(index),0),Int(image.size.x)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
                 //fade near top and bottom
                 let plane = generateDoubleSidedPlane(width: Float(image.size.y)*image.traverse_j.y, height: Float(image.size.z) * image.normal.z, materials: [img])
                 plane.name = "sagittal-image"
-                plane.position.x = (Float(image.size.x)/2 - position)*image.traverse_i.x
-                plane.position.y = Float(image.size.z) * Float(image.normal.z) / 2
-                plane.transform.rotation = .init(angle: -Float.pi/2, axis: [0,0,1]) * .init(angle: -Float.pi/2, axis: [0, 1, 0])
+                plane.position.x = (position)
+                plane.position.y = image.position.z
+                plane.position.z = -image.position.y
+                plane.transform.rotation = .init(angle: -Float.pi/2, axis: [0,0,1]) * .init(angle: Float.pi/2, axis: [0, 1, 0])
                 sagittalSlice = plane
                 return plane
             }
@@ -241,7 +250,8 @@ class ModelData{
     func updateSagittalSlice(position: Float){
         if let image = image {
             if let imageCache = sagittalImageCache{
-                let img = imageCache[min(max(Int(position),0),Int(image.size.x)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
+                let index = (position-image.position.x + image.fullWidth/2)/image.traverse_i.x
+                let img = imageCache[min(max(Int(index),0),Int(image.size.x)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
                 (sagittalSlice as? ModelEntity)?.model?.materials = [img]
             }
         }
@@ -252,6 +262,7 @@ class ModelData{
 extension ModelData: OpenIGTDelegate {
     func receiveImageMessage(header: IGTHeader, image img: ImageMessage) {
         self.image = img
+        print(image)
         Task{
             self.image?.scaleImageData()
             Task {
@@ -280,7 +291,7 @@ extension ModelData: OpenIGTDelegate {
                 }
                 Task.detached { @MainActor in
                     //                self.generateImageSlices()
-                    self.generateAxialSlice(position: 0)
+                    self.generateAxialSlice(position: self.image!.position.z)
                 }
             }
             Task {
@@ -311,7 +322,7 @@ extension ModelData: OpenIGTDelegate {
                 }
                 Task.detached { @MainActor in
                     //                self.generateImageSlices()
-                    self.generateCoronalSlice(position: 0)
+                    self.generateCoronalSlice(position: -self.image!.position.y)
                 }
             }
             Task {
@@ -340,7 +351,7 @@ extension ModelData: OpenIGTDelegate {
                     }
                 }
                 Task.detached { @MainActor in
-                    self.generateSagittalSlice(position: 0)
+                    self.generateSagittalSlice(position: self.image!.position.x)
                 }
             }
         }
@@ -354,7 +365,7 @@ extension ModelData: OpenIGTDelegate {
         if let model = polydata.generateModelEntityFromPolys() {
             let colorInfo = header.deviceName
             var color = UIColor.white
-            if colorInfo.count >= 3{
+            if colorInfo.count >= 3 {
                 var rgbValue:UInt64 = 0
                 Scanner(string: colorInfo.trimmingCharacters(in: ["#","\0"]).uppercased()).scanHexInt64(&rgbValue)
                 color = UIColor(
@@ -373,11 +384,12 @@ extension ModelData: OpenIGTDelegate {
         case "CLEAR":
             clearAll()
         case "AXIAL":
-            pos = Int(string.str) ?? 0
+            print(image)
+            let pos = Int(string.str) ?? 0
         case "CORONAL":
-            pos = Int(string.str) ?? 0
+            let pos = Int(string.str) ?? 0
         case "SAGGITAL":
-            pos = Int(string.str) ?? 0
+            let pos = Int(string.str) ?? 0
         default:
             break
         }
