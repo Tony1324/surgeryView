@@ -132,11 +132,34 @@ struct PolyDataMessage: OpenIGTDecodable {
         meshDescriptor.positions = MeshBuffers.Positions(points)
         var counts: [UInt8] = []
         var polys: [UInt32] = []
-        for poly in polygons.structs {
-            counts.append(UInt8(poly.indices.count))
-            polys.append(contentsOf: poly.indices)
+        if npolygons != 0 {
+            for poly in polygons.structs {
+                counts.append(UInt8(poly.indices.count))
+                polys.append(contentsOf: poly.indices)
+            }
+            meshDescriptor.primitives = .polygons(counts, polys)
+        } else if ntriangle_strips != 0 {
+            var polys: [UInt32] = []
+            for tri_strip in triangle_strips.structs {
+                let stripIndices = tri_strip.indices
+                
+                // Generate triangles from the triangle strip
+                for i in 2..<stripIndices.count {
+                    if i % 2 == 0 {
+                        // Even index: triangle vertices in order
+                        polys.append(stripIndices[i - 2])
+                        polys.append(stripIndices[i - 1])
+                        polys.append(stripIndices[i])
+                    } else {
+                        // Odd index: triangle vertices in reverse order
+                        polys.append(stripIndices[i - 1])
+                        polys.append(stripIndices[i - 2])
+                        polys.append(stripIndices[i])
+                    }
+                }
+            }
+            meshDescriptor.primitives = .triangles(polys)
         }
-        meshDescriptor.primitives = .polygons(counts, polys)
         
         // Create model component
         if let mesh = try? MeshResource.generate(from: [meshDescriptor]) {

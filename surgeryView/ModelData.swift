@@ -179,7 +179,7 @@ class ModelData{
                 let index = (position - image.position.z + image.fullHeight/2)/image.normal.z
                 let img = imageCache[min(max(Int(index),0),Int(image.size.z)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
                 //fade near top and bottom
-                let plane = generateDoubleSidedPlane(width: Float(image.size.x)*image.traverse_i.x, height: Float(image.size.x)*image.traverse_j.y, materials: [img])
+                let plane = generateDoubleSidedPlane(width: Float(image.size.x)*image.traverse_i.x, height: Float(image.size.y)*image.traverse_j.y, materials: [img])
                 plane.name = "axial-image"
                 plane.position.y = position
                 plane.position.x = image.position.x

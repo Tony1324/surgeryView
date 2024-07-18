@@ -27,6 +27,7 @@ struct ImageMessage: OpenIGTDecodable {
     var processed_image: Data = Data()
     var coronal_transposed_image: Data = Data()
     var sagittal_transposed_image: Data = Data()
+    var alt_mode = false
 
     
     var fullHeight: Float {
@@ -47,14 +48,29 @@ struct ImageMessage: OpenIGTDecodable {
         guard let scalar_type: UInt8 = data.readInt() else {return nil}
         guard let endianness: UInt8 = data.readInt() else {return nil}
         guard let image_coordinate: UInt8 = data.readInt() else {return nil}
-        guard let size: SIMD3<UInt16> = readIndex() else {return nil}
+        guard var size: SIMD3<UInt16> = readIndex() else {return nil}
         guard let traverse_i: SIMD3<Float32> = readPosition() else {return nil}
-        guard let traverse_j: SIMD3<Float32> = readPosition() else {return nil}
-        guard let normal: SIMD3<Float32> = readPosition() else {return nil}
-        guard let position: SIMD3<Float32> = readPosition() else {return nil}
+        guard var traverse_j: SIMD3<Float32> = readPosition() else {return nil}
+        guard var normal: SIMD3<Float32> = readPosition() else {return nil}
+        guard var position: SIMD3<Float32> = readPosition() else {return nil}
         guard let subvolume_index: SIMD3<UInt16> = readIndex() else {return nil}
         guard let subvolume_size: SIMD3<UInt16> = readIndex() else {return nil}
         let image_data: Data = data.remainingData()
+        
+        var alt_mode = false
+        if abs(normal.z) <= 0.01 {
+            alt_mode = true
+            traverse_j.y = normal.y
+            normal.z = traverse_j.z
+            traverse_j.z = 0
+            normal.y = 0
+            let _sizey = size.y
+//            size.y = size.z
+//            size.z = _sizey
+//            let _posy = position.y
+//            position.y = position.z
+//            position.z = _posy
+        }
         
         func readPosition() -> SIMD3<Float32>? {
             guard let x = data.readFloat() else {return nil}
@@ -70,7 +86,8 @@ struct ImageMessage: OpenIGTDecodable {
             return [x,y,z]
         }
         
-        return ImageMessage(v: v, num_components: num_components, scalar_type: scalar_type, endianness: endianness, image_coordinate: image_coordinate, size: size, traverse_i: traverse_i, traverse_j: traverse_j, normal: normal, position: position, subvolume_index: subvolume_index, subvolume_size: subvolume_size, image_data: image_data)
+        print(size)
+        return ImageMessage(v: v, num_components: num_components, scalar_type: scalar_type, endianness: endianness, image_coordinate: image_coordinate, size: size, traverse_i: traverse_i, traverse_j: traverse_j, normal: normal, position: position, subvolume_index: subvolume_index, subvolume_size: subvolume_size, image_data: image_data, alt_mode: alt_mode)
     }
     
     func scalarSize() -> Int {

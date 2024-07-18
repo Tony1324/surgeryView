@@ -134,7 +134,6 @@ struct ModelManager: View {
                     pointer.move(to: Transform(scale: pointer.transform.scale, translation: modelData.pointerTransform.translation), relativeTo: originAnchor)
                     pointer.setScale([1,1,1], relativeTo: nil)
                 }
-                print(originAnchor.findEntity(named: "pointer"))
             }
             positionModels(content: content, attachment: attachments)
             if let update {
