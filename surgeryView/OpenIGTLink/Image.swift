@@ -65,8 +65,8 @@ struct ImageMessage: OpenIGTDecodable {
             traverse_j.z = 0
             normal.y = 0
             let _sizey = size.y
-//            size.y = size.z
-//            size.z = _sizey
+            size.y = size.z
+            size.z = _sizey
 //            let _posy = position.y
 //            position.y = position.z
 //            position.z = _posy
@@ -144,15 +144,22 @@ struct ImageMessage: OpenIGTDecodable {
         axial_transposed_image = Data(count: image_data.count)
         coronal_transposed_image = Data(count: image_data.count)
         sagittal_transposed_image = Data(count: image_data.count)
+        var size = size
+        if alt_mode {
+            let _sizey = size.y
+            size.y = size.z
+            size.z = _sizey
+        }
+        print(alt_mode)
         for z in 0..<Int(size.z){
             for y in 0..<Int(size.y) {
                 for x in 0..<Int(size.x) {
                     let i = (z * Int(size.x) * Int(size.y) + y * Int(size.x) + x) * scalarSize()
                     let pixel = Int(Int32(littleEndian: image_data.subdata(in: image_data.startIndex + i ..<  image_data.startIndex + i + MemoryLayout<Int32>.size).withUnsafeBytes{$0.load(as: Int32.self)}) )
                     let byte = mapColorRange(num: pixel, low: -1000, high: 1000)
-                    let axialI = (z * Int(size.x) * Int(size.y) + y * Int(size.x) + x) * scalarSize()
-                    let coronalI = (y * Int(size.x) * Int(size.z) + z * Int(size.x) + x) * scalarSize()
-                    let sagittalI = (x * Int(size.z) * Int(size.y) + z * Int(size.y) + y) * scalarSize()
+                    let axialI = alt_mode ? (y * Int(size.x) * Int(size.z) + z * Int(size.x) + x) * scalarSize() : (z * Int(size.x) * Int(size.y) + y * Int(size.x) + x) * scalarSize()
+                    let coronalI = alt_mode ? (z * Int(size.x) * Int(size.y) + y * Int(size.x) + x) * scalarSize() : (y * Int(size.x) * Int(size.z) + z * Int(size.x) + x) * scalarSize()
+                    let sagittalI = alt_mode ? (x * Int(size.z) * Int(size.y) + y * Int(size.z) + z) * scalarSize() : (x * Int(size.z) * Int(size.y) + z * Int(size.y) + y) * scalarSize()
                     axial_transposed_image[axialI] = byte
                     axial_transposed_image[axialI+1] = byte
                     axial_transposed_image[axialI+2] = byte
