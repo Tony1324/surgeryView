@@ -297,8 +297,6 @@ extension ModelData: OpenIGTDelegate {
                 }
             }
             Task {
-                self.image?.coronalTranposedImage()
-                
                 await withTaskGroup(of: Optional<(SimpleMaterial,Int)>.self) { group in
                     coronalImageCache = []
                     for i in 0..<image!.size.y {
@@ -328,7 +326,6 @@ extension ModelData: OpenIGTDelegate {
                 }
             }
             Task {
-                self.image?.sagittalTransposedImage()
                 await withTaskGroup(of: Optional<(SimpleMaterial,Int)>.self) { group in
                     sagittalImageCache = []
                     for i in 0..<image!.size.x {

@@ -24,7 +24,7 @@ struct ImageMessage: OpenIGTDecodable {
     let subvolume_index: SIMD3<UInt16>
     let subvolume_size: SIMD3<UInt16>
     var image_data: Data
-    var processed_image: Data = Data()
+    var axial_transposed_image: Data = Data()
     var coronal_transposed_image: Data = Data()
     var sagittal_transposed_image: Data = Data()
     var alt_mode = false
@@ -110,21 +110,10 @@ struct ImageMessage: OpenIGTDecodable {
         let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipLast.rawValue)
         let bytePosition = Int(size.x)*Int(size.y)*scalarSize()*Int(num_components)*position
         let byteEndPosition = Int(size.x)*Int(size.y)*scalarSize()*Int(num_components)*(position + 1)
-        let rawData = processed_image.subdata(in: processed_image.startIndex + bytePosition ..< processed_image.startIndex + byteEndPosition)
+        let rawData = axial_transposed_image.subdata(in: axial_transposed_image.startIndex + bytePosition ..< axial_transposed_image.startIndex + byteEndPosition)
         guard let providerRef = CGDataProvider(data: rawData as CFData) else {return nil}
         guard let image = CGImage(width: Int(size.x), height: Int(size.y), bitsPerComponent: scalarSize() * 8 / 4, bitsPerPixel: scalarSize()*Int(num_components) * 8, bytesPerRow: Int(size.x)*scalarSize()*Int(num_components), space: colorSpace, bitmapInfo: bitmapInfo, provider: providerRef, decode: nil, shouldInterpolate: true, intent: .defaultIntent) else {return nil}
-        
-        //although image is grayscale, scalar pixels get colored as red, so we have to convert to full rgb, but with r,g, and b being the same values
         return image
-    }
-    
-    mutating func coronalTranposedImage(){
-        for y in 0..<Int(size.y){
-            for z in 0..<Int(size.z) {
-                let pixelPosition = (z * Int(size.x) * Int(size.y) + y * Int(size.x)) * scalarSize()
-                coronal_transposed_image.append(processed_image.subdata(in: processed_image.startIndex + pixelPosition ..< processed_image.startIndex  + pixelPosition + Int(size.x) * scalarSize()))
-            }
-        }
     }
     
     func createCoronalImage(position: Int) -> CGImage? {
@@ -135,20 +124,7 @@ struct ImageMessage: OpenIGTDecodable {
         let rawData = coronal_transposed_image.subdata(in: coronal_transposed_image.startIndex + bytePosition ..< coronal_transposed_image.startIndex + byteEndPosition)
         guard let providerRef = CGDataProvider(data: rawData as CFData) else {return nil}
         guard let image = CGImage(width: Int(size.x), height: Int(size.z), bitsPerComponent: scalarSize() * 8 / 4, bitsPerPixel: scalarSize()*Int(num_components) * 8, bytesPerRow: Int(size.x)*scalarSize()*Int(num_components), space: colorSpace, bitmapInfo: bitmapInfo, provider: providerRef, decode: nil, shouldInterpolate: true, intent: .defaultIntent) else {return nil}
-        
-        //although image is grayscale, scalar pixels get colored as red, so we have to convert to full rgb, but with r,g, and b being the same values
         return image
-    }
-    
-    mutating func sagittalTransposedImage(){
-        for x in 0..<Int(size.x){
-            for z in 0..<Int(size.z) {
-                for y in 0..<Int(size.y) {
-                    let pixelPosition = (z * Int(size.x) * Int(size.y) + y * Int(size.x) + x) * scalarSize()
-                    sagittal_transposed_image.append(processed_image.subdata(in: processed_image.startIndex + pixelPosition ..< processed_image.startIndex  + pixelPosition + scalarSize()))
-                }
-            }
-        }
     }
     
     func createSagittalImage(position: Int) -> CGImage? {
@@ -165,25 +141,40 @@ struct ImageMessage: OpenIGTDecodable {
     }
     
     mutating func scaleImageData(){
-        var data = Data(count: image_data.count)
-        for i in stride(from: image_data.startIndex, to: image_data.endIndex, by: scalarSize()) {
-            guard i + MemoryLayout<Int32>.size < image_data.count else {break}
-            let pixel = Int(Int32(littleEndian: image_data.subdata(in: i..<i + MemoryLayout<Int32>.size).withUnsafeBytes{$0.load(as: Int32.self)}) )
-            let byte = mapColorRange(num: pixel, low: -1000, high: 1000)
-            data[i] = (byte)
-            data[i+1] = (byte)
-            data[i+2] = (byte)
-            data[i+3] = 255
-
+        axial_transposed_image = Data(count: image_data.count)
+        coronal_transposed_image = Data(count: image_data.count)
+        sagittal_transposed_image = Data(count: image_data.count)
+        for z in 0..<Int(size.z){
+            for y in 0..<Int(size.y) {
+                for x in 0..<Int(size.x) {
+                    let i = (z * Int(size.x) * Int(size.y) + y * Int(size.x) + x) * scalarSize()
+                    let pixel = Int(Int32(littleEndian: image_data.subdata(in: image_data.startIndex + i ..<  image_data.startIndex + i + MemoryLayout<Int32>.size).withUnsafeBytes{$0.load(as: Int32.self)}) )
+                    let byte = mapColorRange(num: pixel, low: -1000, high: 1000)
+                    let axialI = (z * Int(size.x) * Int(size.y) + y * Int(size.x) + x) * scalarSize()
+                    let coronalI = (y * Int(size.x) * Int(size.z) + z * Int(size.x) + x) * scalarSize()
+                    let sagittalI = (x * Int(size.z) * Int(size.y) + z * Int(size.y) + y) * scalarSize()
+                    axial_transposed_image[axialI] = byte
+                    axial_transposed_image[axialI+1] = byte
+                    axial_transposed_image[axialI+2] = byte
+                    axial_transposed_image[axialI+3] = 255
+                    coronal_transposed_image[coronalI] = byte
+                    coronal_transposed_image[coronalI+1] = byte
+                    coronal_transposed_image[coronalI+2] = byte
+                    coronal_transposed_image[coronalI+3] = 255
+                    sagittal_transposed_image[sagittalI] = byte
+                    sagittal_transposed_image[sagittalI+1] = byte
+                    sagittal_transposed_image[sagittalI+2] = byte
+                    sagittal_transposed_image[sagittalI+3] = 255
+                }
+            }
         }
-        processed_image = data
     }
     
     func mapColorRange(num: Int, low: Int, high: Int) -> UInt8 {
         guard low < high else { return 0 }
         let clampedNum = max(min(num, high), low)
         
-        var normalized = Float(clampedNum - low) / Float(high - low)
+        let normalized = Float(clampedNum - low) / Float(high - low)
 
         return UInt8(normalized * 255)
     }
