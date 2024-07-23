@@ -27,6 +27,8 @@ class ModelData{
     var selectedEntity: Entity?
     var originTransform: Transform = Transform.identity
     var igtlClient: CommunicationsManager?
+    
+    private var _igtlRotation = simd_quatf.init(angle: Float.pi, axis: [0, 1, 0])
 
     init(models: [Entity] = []) {
         self.models = models
@@ -35,7 +37,7 @@ class ModelData{
     func startServer() {
         //The communications manager handles networking and parsing
         //this class, modelData, is used as a delegate to implement receiving messages, see extension below
-        originTransform = Transform(scale: [0.001, 0.001, 0.001], rotation: simd_quatf.init(angle: Float.pi, axis: [0, 1, 0]))
+        originTransform = Transform(scale: [0.001, 0.001, 0.001], rotation: _igtlRotation)
         igtlClient?.disconnect()
         igtlClient = CommunicationsManager(port: 18944, delegate: self)
         if let igtlClient {
@@ -356,13 +358,26 @@ extension ModelData: OpenIGTDelegate {
         }
     }
     func receiveTransformMessage(header: IGTHeader, transform: TransformMessage) {
-        print("Transform received!")
+        if header.deviceName.trimmingCharacters(in: ["\0"]) == "CAMERA" {
+            originTransform.rotation = transform.realityKitTransform().rotation * _igtlRotation
+        }
         pointerTransform = transform.realityKitTransform()
     }
     func receivePolyDataMessage(header: IGTHeader, polydata: PolyDataMessage) {
-        print("polydata received!")
         if let model = polydata.generateModelEntityFromPolys() {
-            let colorInfo = header.deviceName
+            model.name = header.deviceName
+            model.model?.materials = [SimpleMaterial(color: .white, isMetallic: false)]
+            models.append(model)
+        }
+    }
+    func receiveStringMessage(header: IGTHeader, string: StringMessage) {
+        switch header.deviceName.trimmingCharacters(in: ["\0"]) {
+        case "CLEAR":
+            clearAll()
+        case "MODELCOLOR":
+            let str = string.str
+            let _split = str.split(separator: "---")
+            let colorInfo = _split[1]
             var color = UIColor.white
             if colorInfo.count >= 3 {
                 var rgbValue:UInt64 = 0
@@ -374,15 +389,8 @@ extension ModelData: OpenIGTDelegate {
                     alpha: CGFloat(1)
                 )
             }
-            model.model?.materials = [SimpleMaterial(color: color, isMetallic: false)]
-            models.append(model)
-        }
-    }
-    func receiveStringMessage(header: IGTHeader, string: StringMessage) {
-        print(string)
-        switch header.deviceName.trimmingCharacters(in: ["\0"]) {
-        case "CLEAR":
-            clearAll()
+            print((models.filter{_split[0].hasPrefix( $0.name)}.first as? ModelEntity))
+            (models.filter{_split[0].hasPrefix( $0.name)}.first as? ModelEntity)?.model?.materials = [SimpleMaterial(color: color, isMetallic: false)]
         case "AXIAL":
             let pos = Float(string.str) ?? 0
             updateAxialSlice(position: pos)

@@ -19,7 +19,6 @@ struct IGTHeader: OpenIGTDecodable, OpenIGTEncodable{
     static func decode(_ data: Data) -> IGTHeader?{
         guard data.count == messageSize else {return nil}
         var data = DataReader(data)
-        data.prettyPrint()
 
         guard let v: UInt16 = data.readInt() else {return nil}
 
@@ -43,7 +42,6 @@ struct IGTHeader: OpenIGTDecodable, OpenIGTEncodable{
         withUnsafeBytes(of: timeStamp.bigEndian) { data.append(contentsOf: $0 )}
         withUnsafeBytes(of: bodySize.bigEndian) { data.append(contentsOf: $0 )}
         withUnsafeBytes(of: CRC.bigEndian) { data.append(contentsOf: $0 )}
-        print(data.map { String(format: "%02x", $0) }.joined(separator: " "))
         return data
     }
 }

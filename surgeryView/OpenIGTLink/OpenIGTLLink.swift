@@ -49,8 +49,8 @@ class CommunicationsManager{
                     if(data.count == IGTHeader.messageSize) {
                         let header = IGTHeader.decode(data)
                         if let header {
-                            print(header)
                             receiveBody(Data(), header: header)
+                            print(header.messageType, header.deviceName)
                         }
                         return
                     }
