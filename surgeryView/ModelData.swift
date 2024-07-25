@@ -359,7 +359,8 @@ extension ModelData: OpenIGTDelegate {
     }
     func receiveTransformMessage(header: IGTHeader, transform: TransformMessage) {
         if header.deviceName.trimmingCharacters(in: ["\0"]) == "CAMERA" {
-            originTransform.rotation = transform.realityKitTransform().rotation * _igtlRotation
+            
+            originTransform.rotation = transform.realityKitTransform().rotation
         }
         pointerTransform = transform.realityKitTransform()
     }
@@ -389,7 +390,6 @@ extension ModelData: OpenIGTDelegate {
                     alpha: CGFloat(1)
                 )
             }
-            print((models.filter{_split[0].hasPrefix( $0.name)}.first as? ModelEntity))
             (models.filter{_split[0].hasPrefix( $0.name)}.first as? ModelEntity)?.model?.materials = [SimpleMaterial(color: color, isMetallic: false)]
         case "AXIAL":
             let pos = Float(string.str) ?? 0

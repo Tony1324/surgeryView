@@ -102,9 +102,6 @@ struct ModelManager: View {
                 addEntity(content: content, entity: entity)
             }
 
-
-
-
         } update: { content, attachments in
             if let originAnchor = content.entities.first?.findEntity(named: "origin"){
                 for entity in modelData.models + modelData.imageSlices {

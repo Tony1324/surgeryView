@@ -51,9 +51,9 @@ struct TransformMessage: OpenIGTEncodable{
         guard let c3 = data.readFloat() else {return nil}
         
         return TransformMessage(transform: simd_float4x4(columns: (
-            simd_float4(a0, c0, -b0, 0),
-            simd_float4(a1, c1, -b1, 0),
-            simd_float4(a2, c2, -b2, 0),
+            simd_float4(a0, b0, c0, 0),
+            simd_float4(a2, b2, c2, 0),
+            simd_float4(-a1, -b1, -c1, 0),
             simd_float4(a3, c3, -b3, 1)
         )))
     }
