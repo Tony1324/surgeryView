@@ -391,6 +391,14 @@ extension ModelData: OpenIGTDelegate {
                 )
             }
             (models.filter{_split[0].hasPrefix( $0.name)}.first as? ModelEntity)?.model?.materials = [SimpleMaterial(color: color, isMetallic: false)]
+        case "MODELVISIBILITY":
+            let str = string.str
+            let _split = str.split(separator: "---")
+            let opacity = (_split[1] as NSString).floatValue
+            print(opacity)
+            let model = (models.filter{_split[0].hasPrefix( $0.name)}.first as? ModelEntity)
+            let color = (model?.model?.materials.first as? SimpleMaterial)?.color
+            model?.model?.materials = [SimpleMaterial(color: (color?.tint ?? .white).withAlphaComponent(CGFloat(opacity)), isMetallic: false)]
         case "AXIAL":
             let pos = Float(string.str) ?? 0
             updateAxialSlice(position: pos)
