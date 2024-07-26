@@ -13,7 +13,10 @@ import Network
 @Observable
 class ModelData{
     var image: ImageMessage?
+    
     var pointerTransform: Transform = Transform.identity
+    var pointerIsVisibile = false
+    
     var imageSlices: [Entity] {
         [axialSlice, coronalSlice, sagittalSlice].compactMap{$0}
     }
@@ -29,7 +32,7 @@ class ModelData{
     var igtlClient: CommunicationsManager?
     
     private var _igtlRotation = simd_quatf.init(angle: Float.pi, axis: [0, 1, 0])
-
+    
     init(models: [Entity] = []) {
         self.models = models
     }
@@ -359,15 +362,17 @@ extension ModelData: OpenIGTDelegate {
     }
     func receiveTransformMessage(header: IGTHeader, transform: TransformMessage) {
         if header.deviceName.trimmingCharacters(in: ["\0"]) == "CAMERA" {
-            
             originTransform.rotation = transform.realityKitTransform().rotation
+        } else {
+            pointerIsVisibile = true
+            pointerTransform = transform.realityKitTransform()
         }
-        pointerTransform = transform.realityKitTransform()
     }
     func receivePolyDataMessage(header: IGTHeader, polydata: PolyDataMessage) {
         if let model = polydata.generateModelEntityFromPolys() {
             model.name = header.deviceName
-            model.model?.materials = [SimpleMaterial(color: .white, isMetallic: false)]
+            //expecting a second color message, so temporarily no visibility
+            model.model?.materials = [UnlitMaterial(color: .clear)]
             models.append(model)
         }
     }
@@ -391,14 +396,19 @@ extension ModelData: OpenIGTDelegate {
                 )
             }
             (models.filter{_split[0].hasPrefix( $0.name)}.first as? ModelEntity)?.model?.materials = [SimpleMaterial(color: color, isMetallic: false)]
+            
         case "MODELVISIBILITY":
             let str = string.str
             let _split = str.split(separator: "---")
             let opacity = (_split[1] as NSString).floatValue
-            print(opacity)
+            
             let model = (models.filter{_split[0].hasPrefix( $0.name)}.first as? ModelEntity)
+//            model?.components.set(OpacityComponent(opacity: opacity))
+            model?.isEnabled = opacity != 0
             let color = (model?.model?.materials.first as? SimpleMaterial)?.color
             model?.model?.materials = [SimpleMaterial(color: (color?.tint ?? .white).withAlphaComponent(CGFloat(opacity)), isMetallic: false)]
+            
+            
         case "AXIAL":
             let pos = Float(string.str) ?? 0
             updateAxialSlice(position: pos)

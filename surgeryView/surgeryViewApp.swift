@@ -24,7 +24,9 @@ struct surgeryViewApp: App {
             ContentView()
                 .environment(modelData)
                 .task {
-                    await modelData.loadSampleModels()
+                    if(modelData.igtlClient == nil){
+                        modelData.startServer()
+                    }
                 }
         }
         .immersionStyle(selection: $style, in: .mixed)

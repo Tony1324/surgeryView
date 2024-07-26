@@ -118,18 +118,20 @@ struct ModelManager: View {
                     if !(modelData.models + modelData.imageSlices).contains(entity){
                         originAnchor.removeChild(entity)
                     }
-                    if (modelData.selectedEntity == entity || modelData.selectedEntity == nil) {
-                        entity.components.set(OpacityComponent(opacity: 1))
-                    } else {
-                        entity.components.set(OpacityComponent(opacity: 0.2))
-                    }
+//                    if (modelData.selectedEntity == entity || modelData.selectedEntity == nil) {
+//                        entity.components.set(OpacityComponent(opacity: 1))
+//                    } else {
+//                        entity.components.set(OpacityComponent(opacity: 0.2))
+//                    }
                 }
                 originAnchor.transform.scale = modelData.originTransform.scale
                 originAnchor.transform.rotation = .init(angle: baseRotation, axis: [0,1,0]) * modelData.originTransform.rotation
                 content.entities.first?.findEntity(named: "rotate")?.transform.rotation = .init(angle: baseRotation, axis: [0,1,0]) * .init(angle: Float.pi/2, axis: [1, 0, 0])
+                
                 if let pointer = originAnchor.findEntity(named: "pointer") {
                     pointer.move(to: Transform(scale: pointer.transform.scale, translation: modelData.pointerTransform.translation), relativeTo: originAnchor)
                     pointer.setScale([1,1,1], relativeTo: nil)
+                    pointer.isEnabled = modelData.pointerIsVisibile
                 }
             }
             positionModels(content: content, attachment: attachments)
