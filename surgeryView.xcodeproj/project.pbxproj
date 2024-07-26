@@ -172,7 +172,6 @@
 		1BF411932BBCE5330010CD1D /* Model_26_T9_vertebra.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Model_26_T9_vertebra.usdz; sourceTree = "<group>"; };
 		1BF411942BBCE5330010CD1D /* Model_18_L5_vertebra.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Model_18_L5_vertebra.usdz; sourceTree = "<group>"; };
 		1BF411952BBCE5330010CD1D /* Model_63_left_hip.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Model_63_left_hip.usdz; sourceTree = "<group>"; };
-		B7378D092BE183B9006EDCEC /* surgeryView-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "surgeryView-Bridging-Header.h"; sourceTree = "<group>"; };
 		B75C70502BEAB3300019A527 /* NoneMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoneMessage.swift; sourceTree = "<group>"; };
 		B75C70532BFFC8710019A527 /* DataReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataReader.swift; sourceTree = "<group>"; };
 		B78206CE2C46FD6900E75B84 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
@@ -232,7 +231,6 @@
 				1B3F57132B957BB900753CBB /* Assets.xcassets */,
 				1B3F57182B957BB900753CBB /* Info.plist */,
 				1B3F57152B957BB900753CBB /* Preview Content */,
-				B7378D092BE183B9006EDCEC /* surgeryView-Bridging-Header.h */,
 			);
 			path = surgeryView;
 			sourceTree = "<group>";
@@ -587,7 +585,7 @@
 				SDKROOT = xros;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				XROS_DEPLOYMENT_TARGET = 1.0;
+				XROS_DEPLOYMENT_TARGET = 1.2;
 			};
 			name = Debug;
 		};
@@ -643,7 +641,7 @@
 				SDKROOT = xros;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
-				XROS_DEPLOYMENT_TARGET = 1.0;
+				XROS_DEPLOYMENT_TARGET = 1.2;
 			};
 			name = Release;
 		};
@@ -669,7 +667,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "surgeryView/surgeryView-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
@@ -699,7 +696,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "surgeryView/surgeryView-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				XROS_DEPLOYMENT_TARGET = 1.0;
