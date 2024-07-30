@@ -19,8 +19,7 @@ struct surgeryViewApp: App {
 
     var body: some SwiftUI.Scene {
 
-
-        ImmersiveSpace(id: "3d-immersive") {
+        WindowGroup {
             ContentView()
                 .environment(modelData)
                 .task {
@@ -29,6 +28,18 @@ struct surgeryViewApp: App {
                     }
                 }
         }
-        .immersionStyle(selection: $style, in: .mixed)
+        .windowStyle(.volumetric)
+        .defaultSize(width: 0.8, height: 2, depth: 0.8, in: .meters)
+
+//        ImmersiveSpace(id: "3d-immersive") {
+//            ContentView()
+//                .environment(modelData)
+//                .task {
+//                    if(modelData.igtlClient == nil){
+//                        modelData.startServer()
+//                    }
+//                }
+//        }
+//        .immersionStyle(selection: $style, in: .mixed)
     }
 }
