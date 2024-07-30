@@ -139,38 +139,95 @@ struct ImageMessage: OpenIGTDecodable {
         return image
     }
     
-    mutating func scaleImageData(){
+    mutating func scaleImageData() async {
         axial_transposed_image = Data(count: image_data.count)
         coronal_transposed_image = Data(count: image_data.count)
         sagittal_transposed_image = Data(count: image_data.count)
-        var size = size
-        for z in 0..<Int(size.z){
-            for y in 0..<Int(size.y) {
-                for x in 0..<Int(size.x) {
-                    let i = alt_mode ? (y * Int(size.x) * Int(size.z) + z * Int(size.x) + x) * scalarSize() : (z * Int(size.x) * Int(size.y) + y * Int(size.x) + x) * scalarSize()
-                    let pixel = Int(Int32(littleEndian: image_data.subdata(in: image_data.startIndex + i ..<  image_data.startIndex + i + MemoryLayout<Int32>.size).withUnsafeBytes{$0.load(as: Int32.self)}) )
-                    let byte = mapColorRange(num: pixel, low: -1000, high: 1000)
-                    
-                    let axialI = (z * Int(size.x) * Int(size.y) + y * Int(size.x) + x) * scalarSize()
-                    let coronalI = (y * Int(size.x) * Int(size.z) + z * Int(size.x) + x) * scalarSize()
-                    let sagittalI = (x * Int(size.z) * Int(size.y) + z * Int(size.y) + y) * scalarSize()
-                    
-                    axial_transposed_image[axialI] = byte
-                    axial_transposed_image[axialI+1] = byte
-                    axial_transposed_image[axialI+2] = byte
-                    axial_transposed_image[axialI+3] = 255
-                    coronal_transposed_image[coronalI] = byte
-                    coronal_transposed_image[coronalI+1] = byte
-                    coronal_transposed_image[coronalI+2] = byte
-                    coronal_transposed_image[coronalI+3] = 255
-                    sagittal_transposed_image[sagittalI] = byte
-                    sagittal_transposed_image[sagittalI+1] = byte
-                    sagittal_transposed_image[sagittalI+2] = byte
-                    sagittal_transposed_image[sagittalI+3] = 255
+        let size = size
+
+        await withTaskGroup(of: (Data, Data, Data).self) { group in
+            let concurrentTaskCount = 8 // You can adjust this based on your use case and system capabilities
+            
+            // Calculate chunk size
+            let count = Int(size.x * size.y * size.z)
+            let chunkSize = count / concurrentTaskCount
+
+            for chunk in 0..<concurrentTaskCount {
+                let startIndex = chunk * chunkSize
+                let endIndex = (chunk == concurrentTaskCount - 1) ? count : (chunk + 1) * chunkSize
+                
+                // Add task to the group
+                group.addTask {
+                    for _i in startIndex..<endIndex {
+                        let axial_transposed_image = Data(count: image_data.count)
+                        let coronal_transposed_image = Data(count: image_data.count)
+                        let sagittal_transposed_image = Data(count: image_data.count)
+                        let z = _i / Int(size.y * size.x)
+                        let y = (_i / Int(size.y)) % Int(size.z)
+                        let x = _i % Int(size.z * size.y)
+                        let i = alt_mode ? (y * Int(size.x) * Int(size.z) + z * Int(size.x) + x) * scalarSize() : (z * Int(size.x) * Int(size.y) + y * Int(size.x) + x) * scalarSize()
+                        let pixel = Int(Int32(littleEndian: image_data.subdata(in: image_data.startIndex + i ..<  image_data.startIndex + i + MemoryLayout<Int32>.size).withUnsafeBytes{$0.load(as: Int32.self)}) )
+                        let byte = mapColorRange(num: pixel, low: -1000, high: 1000)
+                        
+                        let axialI = (z * Int(size.x) * Int(size.y) + y * Int(size.x) + x) * scalarSize()
+                        let coronalI = (y * Int(size.x) * Int(size.z) + z * Int(size.x) + x) * scalarSize()
+                        let sagittalI = (x * Int(size.z) * Int(size.y) + z * Int(size.y) + y) * scalarSize()
+                        
+                        // Directly update the Data objects
+                        axial_transposed_image[axialI] = byte
+                        axial_transposed_image[axialI+1] = byte
+                        axial_transposed_image[axialI+2] = byte
+                        axial_transposed_image[axialI+3] = 255
+                        coronal_transposed_image[coronalI] = byte
+                        coronal_transposed_image[coronalI+1] = byte
+                        coronal_transposed_image[coronalI+2] = byte
+                        coronal_transposed_image[coronalI+3] = 255
+                        sagittal_transposed_image[sagittalI] = byte
+                        sagittal_transposed_image[sagittalI+1] = byte
+                        sagittal_transposed_image[sagittalI+2] = byte
+                        sagittal_transposed_image[sagittalI+3] = 255
+                    }
+                    return (axial_transposed_image, coronal_transposed_image, sagittal_transposed_image)
+                }
+                for await result in group {
+                    axial_transposed_image = axial_transposed_image & result.0
                 }
             }
+            
+            // Wait for all tasks to complete
+            await group.waitForAll()
         }
+//        for _i in 0..<Int(size.z*size.y*size.x){
+//            //        for z in 0..<Int(size.z){
+//            //            for y in 0..<Int(size.y) {
+//            //                for x in 0..<Int(size.x) {
+//            let z = _i / Int(size.y * size.x)
+//            let y = (_i / Int(size.y)) % Int(size.z)
+//            let x = _i % Int(size.z * size.y)
+//            let i = alt_mode ? (y * Int(size.x) * Int(size.z) + z * Int(size.x) + x) * scalarSize() : (z * Int(size.x) * Int(size.y) + y * Int(size.x) + x) * scalarSize()
+//            let pixel = Int(Int32(littleEndian: image_data.subdata(in: image_data.startIndex + i ..<  image_data.startIndex + i + MemoryLayout<Int32>.size).withUnsafeBytes{$0.load(as: Int32.self)}) )
+//            let byte = mapColorRange(num: pixel, low: -1000, high: 1000)
+//            
+//            let axialI = (z * Int(size.x) * Int(size.y) + y * Int(size.x) + x) * scalarSize()
+//            let coronalI = (y * Int(size.x) * Int(size.z) + z * Int(size.x) + x) * scalarSize()
+//            let sagittalI = (x * Int(size.z) * Int(size.y) + z * Int(size.y) + y) * scalarSize()
+//            
+//            axial_transposed_image[axialI] = byte
+//            axial_transposed_image[axialI+1] = byte
+//            axial_transposed_image[axialI+2] = byte
+//            axial_transposed_image[axialI+3] = 255
+//            coronal_transposed_image[coronalI] = byte
+//            coronal_transposed_image[coronalI+1] = byte
+//            coronal_transposed_image[coronalI+2] = byte
+//            coronal_transposed_image[coronalI+3] = 255
+//            sagittal_transposed_image[sagittalI] = byte
+//            sagittal_transposed_image[sagittalI+1] = byte
+//            sagittal_transposed_image[sagittalI+2] = byte
+//            sagittal_transposed_image[sagittalI+3] = 255
+//        }
     }
+    
+    
     
     func mapColorRange(num: Int, low: Int, high: Int) -> UInt8 {
         guard low < high else { return 0 }

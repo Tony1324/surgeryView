@@ -15,9 +15,11 @@ struct ModelManager: View {
     
     func addEntity(content: RealityViewContent ,entity: Entity){
         if let originAnchor = content.entities.first?.findEntity(named: "origin") {
-            entity.components.set(InputTargetComponent())
-            entity.components.set(HoverEffectComponent())
-            entity.generateCollisionShapes(recursive: true)
+            if !modelData.minimalUI || modelData.imageSlices.contains(entity){
+                entity.components.set(InputTargetComponent())
+                entity.components.set(HoverEffectComponent())
+                entity.generateCollisionShapes(recursive: true)
+            }
 //            var textLabel = ModelEntity(mesh: MeshResource.generateText("untitled entity"), materials: [SimpleMaterial(color: .white, isMetallic: false)])
             originAnchor.addChild(entity)
 //            entity.addChild(textLabel)
@@ -29,7 +31,7 @@ struct ModelManager: View {
     }
     
     func addBase(content: RealityViewContent, attachments: RealityViewAttachments) -> ModelEntity {
-        let base = ModelEntity(mesh: .generateCylinder(height: 0.02, radius: 0.2), materials: [SimpleMaterial.init(color: .white, isMetallic: false)])
+        let base = ModelEntity(mesh: .generateCylinder(height: 0.02, radius: 0.2), materials: [SimpleMaterial.init(color: .black, isMetallic: false)])
         base.name = "base"
         base.components.set(InputTargetComponent())
         base.components.set(GroundingShadowComponent(castsShadow: true))
@@ -87,7 +89,8 @@ struct ModelManager: View {
         RealityView { content, attachments in
             
             let base = addBase(content: content, attachments: attachments)
-            base.position = [0, -0.90, 0]
+            
+            base.position = [0, -0.80, 0]
             
             let originAnchor = Entity()
             
@@ -132,7 +135,8 @@ struct ModelManager: View {
                 content.entities.first?.findEntity(named: "rotate")?.transform.rotation = .init(angle: baseRotation, axis: [0,1,0]) * .init(angle: Float.pi/2, axis: [1, 0, 0])
                 
                 if let pointer = originAnchor.findEntity(named: "pointer") {
-                    pointer.move(to: Transform(scale: pointer.transform.scale, translation: modelData.pointerTransform.translation), relativeTo: originAnchor)
+                    let tempScale:SIMD3<Float> = [1,1,1]
+                    pointer.move(to: Transform(scale: tempScale, translation: modelData.pointerTransform.translation), relativeTo: originAnchor)
                     pointer.setScale([1,1,1], relativeTo: nil)
                     pointer.isEnabled = modelData.pointerIsVisibile
                 }

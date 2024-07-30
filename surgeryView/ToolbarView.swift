@@ -12,7 +12,7 @@ struct ToolbarView: View {
     var body: some View {
         HStack{
             if modelData.minimalUI {
-                Text(modelData.getLocalIPAddress() ?? "No IP Address found, check wifi settings")
+                Text(modelData.localIPAddress ?? "No IP Address found, check wifi settings")
                     .font(.title)
             } else {
                 Button {
@@ -27,10 +27,10 @@ struct ToolbarView: View {
                 }
             }
         }
-        .tint(.black.opacity(0.5))
         .padding()
-        .background(.ultraThickMaterial)
+        .background(.regularMaterial)
         .clipShape(.capsule)
+        .glassBackgroundEffect(displayMode: .always)
     }
 }
 

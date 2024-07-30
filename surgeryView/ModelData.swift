@@ -30,6 +30,7 @@ class ModelData{
     var selectedEntity: Entity?
     var originTransform: Transform = Transform.identity
     var igtlClient: CommunicationsManager?
+    var localIPAddress: String? 
     
     var minimalUI = true
     
@@ -37,6 +38,11 @@ class ModelData{
     
     init(models: [Entity] = []) {
         self.models = models
+        
+        localIPAddress = self.getLocalIPAddress()
+        Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { _ in
+            self.localIPAddress = self.getLocalIPAddress()
+        }
     }
     
     func startServer() {
@@ -299,7 +305,7 @@ extension ModelData: OpenIGTDelegate {
     func receiveImageMessage(header: IGTHeader, image img: ImageMessage) {
         self.image = img
         Task{
-            self.image?.scaleImageData()
+            await self.image?.scaleImageData()
             Task {
                 await withTaskGroup(of: Optional<(SimpleMaterial,Int)>.self) { group in
                     axialImageCache = []
