@@ -246,15 +246,15 @@ class ModelData{
     func generateSagittalSlice(position: Float) -> ModelEntity?{
         if let image = image{
             if let imageCache = sagittalImageCache {
-                let index = (position-image.position.x + image.fullWidth/2)/image.traverse_i.x
+                let index = (position - image.position.x + image.fullWidth/2)/image.traverse_i.x
                 let img = imageCache[min(max(Int(index),0),Int(image.size.x)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
                 //fade near top and bottom
-                let plane = generateDoubleSidedPlane(width: Float(image.size.y)*image.traverse_j.y, height: Float(image.size.z) * image.normal.z, materials: [img])
+                let plane = generateDoubleSidedPlane(width: image.fullHeight, height: image.fullLength, materials: [img])
                 plane.name = "sagittal-image"
                 plane.position.x = (position)
                 plane.position.y = image.position.z
                 plane.position.z = -image.position.y
-                plane.transform.rotation = .init(angle: -Float.pi/2, axis: [0,0,1]) * .init(angle: Float.pi/2, axis: [0, 1, 0])
+                plane.transform.rotation = .init(angle: Float.pi/2, axis: [0,0,1])
                 sagittalSlice = plane
                 return plane
             }
@@ -265,7 +265,7 @@ class ModelData{
     func updateSagittalSlice(position: Float){
         if let image = image {
             if let imageCache = sagittalImageCache{
-                let index = (position-image.position.x + image.fullWidth/2)/image.traverse_i.x
+                let index = (position - image.position.x + image.fullWidth/2)/image.traverse_i.x
                 let img = imageCache[min(max(Int(index),0),Int(image.size.x)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
                 (sagittalSlice as? ModelEntity)?.model?.materials = [img]
                 sagittalSlice?.position.x = position
@@ -305,7 +305,7 @@ extension ModelData: OpenIGTDelegate {
     func receiveImageMessage(header: IGTHeader, image img: ImageMessage) {
         self.image = img
         Task{
-            await self.image?.scaleImageData()
+            await self.image?.setImageData()
             Task {
                 await withTaskGroup(of: Optional<(SimpleMaterial,Int)>.self) { group in
                     axialImageCache = []
@@ -452,7 +452,7 @@ extension ModelData: OpenIGTDelegate {
             updateCoronalSlice(position: -pos)
         case "SAGGITAL":
             let pos = Float(string.str) ?? 0
-            updateSagittalSlice(position: pos)
+            updateSagittalSlice(position: -pos)
         default:
             break
         }
