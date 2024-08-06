@@ -26,6 +26,8 @@ class ModelData{
     var axialImageCache: [SimpleMaterial?]?
     var coronalImageCache: [SimpleMaterial?]?
     var sagittalImageCache: [SimpleMaterial?]?
+    var slicesIsVisible = true
+    
     var models: [Entity]
     var selectedEntity: Entity?
     var originTransform: Transform = Transform.identity
@@ -453,6 +455,10 @@ extension ModelData: OpenIGTDelegate {
         case "SAGGITAL":
             let pos = Float(string.str) ?? 0
             updateSagittalSlice(position: -pos)
+        case "DICOM":
+            if string.str == "DISABLE"{
+                slicesIsVisible = false
+            } else { slicesIsVisible = true }
         default:
             break
         }

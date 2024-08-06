@@ -67,7 +67,7 @@ struct ModelManager: View {
                 var centers: SIMD3<Float> = [0,0,0]
                 var lowestY: Float = 0
 
-                for entity in modelData.models + modelData.imageSlices{
+                for entity in modelData.models{
                     guard entity.name != "base" else {continue}
                     guard entity.name != "pointer" else {continue}
                     let bounds = entity.visualBounds(relativeTo: base)
@@ -139,6 +139,9 @@ struct ModelManager: View {
                     pointer.move(to: Transform(scale: tempScale, translation: modelData.pointerTransform.translation), relativeTo: originAnchor)
                     pointer.setScale([1,1,1], relativeTo: nil)
                     pointer.isEnabled = modelData.pointerIsVisibile
+                }
+                for slice in modelData.imageSlices {
+                    slice.isEnabled = modelData.slicesIsVisible
                 }
             }
             positionModels(content: content, attachment: attachments)
