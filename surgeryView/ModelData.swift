@@ -29,7 +29,6 @@ class ModelData{
     var slicesIsVisible = true
     
     var models: [Entity]
-    var selectedEntity: Entity?
     var originTransform: Transform = Transform.identity
     var igtlClient: CommunicationsManager?
     var localIPAddress: String? 
@@ -101,7 +100,6 @@ class ModelData{
     }
     
     func clearAll() {
-        selectedEntity = nil
         models = []
         axialSlice = nil
         coronalSlice = nil
@@ -440,7 +438,6 @@ extension ModelData: OpenIGTDelegate {
             let opacity = (_split[1] as NSString).floatValue
             
             let model = (models.filter{_split[0].hasPrefix( $0.name)}.first as? ModelEntity)
-//            model?.components.set(OpacityComponent(opacity: opacity))
             model?.isEnabled = opacity != 0
             let color = (model?.model?.materials.first as? SimpleMaterial)?.color
             model?.model?.materials = [SimpleMaterial(color: (color?.tint ?? .white).withAlphaComponent(CGFloat(opacity)), isMetallic: false)]

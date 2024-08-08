@@ -48,22 +48,12 @@ struct ControlPanel: View {
                         } label: {
                             Text("OpenIGTLink Connection")
                         }
-//                        Button {
-//                            Task{
-//                                modelData.clearAll()
-//                                modelData.stressTestCubeGrid()
-//                            }
-//                        } label: {
-//                            Text("Performance Test")
-//                        }
-                        
                     }
                     .navigationTitle("Scenes")
                 } label: {
                     Text("Scenes")
                 }
                 NavigationLink {
-                    //TODO: update to multiselect
                         List{
                             Section {
                                 Button {
@@ -75,16 +65,7 @@ struct ControlPanel: View {
                                 }
                             }
                             ForEach(modelData.models){ entity in
-                                Button{
-                                    if(modelData.selectedEntity == entity) {
-                                        modelData.selectedEntity = nil
-                                    } else {
-                                        modelData.selectedEntity = entity
-                                    }
-                                }label:{
-                                    Text(entity.name.isEmpty ? "Unnamed Object" : entity.name)
-                                }
-                                
+                                Text(entity.name.isEmpty ? "Unnamed Object" : entity.name)
                             }
                         }
                         .navigationTitle("Models")

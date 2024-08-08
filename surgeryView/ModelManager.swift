@@ -31,11 +31,13 @@ struct ModelManager: View {
     }
     
     func addBase(content: RealityViewContent, attachments: RealityViewAttachments) -> ModelEntity {
-        let base = ModelEntity(mesh: .generateCylinder(height: 0.02, radius: 0.2), materials: [SimpleMaterial.init(color: .black, isMetallic: false)])
+//        let base = ModelEntity(mesh: .generateCylinder(height: 0.02, radius: 0.2), materials: [SimpleMaterial.init(color: .black, isMetallic: false)])
+        var base = ModelEntity()
+        if !modelData.minimalUI {
+            base = ModelEntity(mesh: .generateCylinder(height: 0.02, radius: 0.2), materials: [SimpleMaterial.init(color: .black, isMetallic: false)])
+        }
         base.name = "base"
-        base.components.set(InputTargetComponent())
         base.components.set(GroundingShadowComponent(castsShadow: true))
-        base.generateCollisionShapes(recursive: true)
         content.add(base)
         if !modelData.minimalUI {
             if let panel = attachments.entity(for: "controls") {
@@ -49,12 +51,20 @@ struct ModelManager: View {
                 rotation.transform.rotation = .init(angle: Float.pi/2, axis: [1, 0, 0])
                 base.addChild(rotation)
             }
+        } else {
+            if let loading = attachments.entity(for: "loading"){
+                loading.name = "loading"
+                base.addChild(loading)
+            }
         }
         
         if let toolbar = attachments.entity(for: "toolbar") {
             toolbar.name = "toolbar"
-            toolbar.move(to: Transform(translation: [0, -0.05, 0.25]), relativeTo: base)
-            toolbar.move(to: Transform(translation: [0, -0.05, 0.25]), relativeTo: base)
+            if !modelData.minimalUI {
+                toolbar.move(to: Transform(translation: [0, -0.05, 0.25]), relativeTo: base)
+            } else {
+                toolbar.move(to: Transform(translation: [0, -0.35, 0.35]), relativeTo: base)
+            }
             toolbar.transform.rotation = .init(angle: -Float.pi/8, axis: [1, 0, 0])
             base.addChild(toolbar)
         }
@@ -74,10 +84,10 @@ struct ModelManager: View {
                     centers = centers + (bounds.center - entity.convert(position: entity.position, to: base)) / max((Float(originAnchor.children.count - 1)),1)
                     lowestY = min(lowestY, (bounds.min.y - entity.convert(position: entity.position, to: base).y))
                 }
-
-                centers.y = lowestY - 0.05
+                if !modelData.minimalUI {
+                    centers.y = lowestY - 0.05
+                }
                 originAnchor.position = [0,0,0] - centers
-
             }
         }
     }
@@ -89,8 +99,9 @@ struct ModelManager: View {
         RealityView { content, attachments in
             
             let base = addBase(content: content, attachments: attachments)
-            
-            base.position = [0, -0.80, 0]
+            if !modelData.minimalUI {
+                base.position = [0, -0.80, 0]
+            }
             
             let originAnchor = Entity()
             
@@ -124,12 +135,8 @@ struct ModelManager: View {
                     if !(modelData.models + modelData.imageSlices).contains(entity){
                         originAnchor.removeChild(entity)
                     }
-//                    if (modelData.selectedEntity == entity || modelData.selectedEntity == nil) {
-//                        entity.components.set(OpacityComponent(opacity: 1))
-//                    } else {
-//                        entity.components.set(OpacityComponent(opacity: 0.2))
-//                    }
                 }
+                                
                 originAnchor.transform.scale = modelData.originTransform.scale
                 originAnchor.transform.rotation = .init(angle: baseRotation, axis: [0,1,0]) * modelData.originTransform.rotation
                 content.entities.first?.findEntity(named: "rotate")?.transform.rotation = .init(angle: baseRotation, axis: [0,1,0]) * .init(angle: Float.pi/2, axis: [1, 0, 0])
@@ -172,6 +179,20 @@ struct ModelManager: View {
                     .environment(modelData)
             }
             
+            Attachment(id: "loading") {
+                VStack{
+                    if(modelData.models.count + modelData.imageSlices.count == 0){
+                        ProgressView("Waiting for content...")
+                            .padding(30)
+                            .glassBackgroundEffect()
+                            .font(.largeTitle)
+                            .transition(.opacity)
+                    }
+                }
+                .animation(.easeInOut)
+                    
+            }
+            
         }
         .gesture(
             DragGesture()
@@ -207,19 +228,6 @@ struct ModelManager: View {
                     dragStartLocation3d = nil
                 })
         )
-//        .gesture(
-//            RotateGesture3D()
-//                .targetedToAnyEntity()
-//                .onChanged({ value in
-//                    let entity = value.entity
-//                    let rot = value.rotation.
-//
-//                    entity.transform.rotation = entity.parent?.convert(transform: Transform(rotation: .init(ix: Float(-rot.x), iy: Float(rot.y), iz: Float(-rot.z), r: Float(rot.w))), from: nil).rotation ?? .init(ix: Float(-rot.x), iy: Float(rot.y), iz: Float(-rot.z), r: Float(rot.w))
-//                    let eulers = value.rotation.eulerAngles(order: .xyz)
-//                    let rotTransform = Transform(rotation: .)
-//                    entity.transform.rotation = .init(ix: Float(rot.x), iy: Float(rot.y), iz: Float(rot.z), r: Float(rot.w))
-//                }))
-
     }
 
 }

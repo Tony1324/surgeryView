@@ -19,7 +19,7 @@ struct ContentView: View {
     @Environment(ModelData.self) var modelData
     @Environment(\.openWindow) private var openWindow
     var body: some View {
-            ModelManager()
+        ModelManager()
     }
 }
 
