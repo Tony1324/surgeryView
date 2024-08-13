@@ -23,10 +23,9 @@ struct surgeryViewApp: App {
             ContentView()
                 .environment(modelData)
                 .task {
-//                    if(modelData.igtlClient == nil){
-//                        modelData.startServer()
-//                    }
-                    await modelData.loadSampleModels()
+                    if(modelData.igtlClient == nil){
+                        modelData.startServer()
+                    }
                 }
                 .ornament(attachmentAnchor: .scene(.bottomFront)) {
                     ToolbarView()
@@ -35,6 +34,7 @@ struct surgeryViewApp: App {
         }
         .windowStyle(.volumetric)
         .defaultWorldScaling(.dynamic)
+        .volumeWorldAlignment(.gravityAligned)
         .defaultSize(width: 0.8, height: 0.8, depth: 0.8, in: .meters)
         
 

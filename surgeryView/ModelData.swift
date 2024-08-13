@@ -403,13 +403,24 @@ extension ModelData: OpenIGTDelegate {
         }
     }
     func receivePolyDataMessage(header: IGTHeader, polydata: PolyDataMessage) {
-        if let model = polydata.generateModelEntityFromPolys() {
-            model.name = header.deviceName
-            //expecting a second color message, so temporarily no visibility
-            model.model?.materials = [UnlitMaterial(color: .clear)]
-            model.components.set(GroundingShadowComponent(castsShadow: true))
-            models.append(model)
+        let model = ModelEntity()
+        model.model = ModelComponent(mesh: .generateBox(size: 0), materials: [UnlitMaterial(color: .clear)])
+        Task(priority: .high){
+            if let mesh = polydata.generateMeshFromPolys() {
+                Task.detached { @MainActor in
+                    model.model?.mesh = mesh
+                }
+            }
         }
+        model.components.set(OpacityComponent(opacity: 0))
+        model.name = header.deviceName
+        //expecting a second color message, so temporarily no visibility
+        model.components.set(GroundingShadowComponent(castsShadow: true))
+        
+        
+        models.append(model)
+    
+
     }
     func receiveStringMessage(header: IGTHeader, string: StringMessage) {
         switch header.deviceName.trimmingCharacters(in: ["\0"]) {
@@ -441,6 +452,11 @@ extension ModelData: OpenIGTDelegate {
             model?.isEnabled = opacity != 0
             let color = (model?.model?.materials.first as? SimpleMaterial)?.color
             model?.model?.materials = [SimpleMaterial(color: (color?.tint ?? .white).withAlphaComponent(CGFloat(opacity)), isMetallic: false)]
+            
+            let animationDefinition = FromToByAnimation(from: Float(0.0), to: Float(1.0), duration: 0.2, bindTarget: .opacity)
+            if let animationResource = try? AnimationResource.generate(with: animationDefinition) {
+                model?.playAnimation(animationResource)
+            }
             
             
         case "AXIAL":

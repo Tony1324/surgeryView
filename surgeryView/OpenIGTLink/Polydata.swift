@@ -104,7 +104,7 @@ struct PolyDataMessage: OpenIGTDecodable {
         return PolyDataMessage(npoints: npoints, nvertices: nvertices, size_vertices: size_vertices, nlines: nlines, size_lines: size_lines, npolygons: npolygons, size_polygons: size_polygons, ntriangle_strips: ntriangle_strips, size_triangle_strips: size_triangle_strips, nattributes: nattributes, points: points, vertices: vertices, lines: lines, polygons: polygons, triangle_strips: triangle_strips, attribute_header: attribute_header, attribute_names: attribute_names, attribute_data: attribute_data)
     }
     
-    func generateModelEntityFromTris() -> ModelEntity? {
+    func generateMeshFromTris() -> MeshResource? {
         // Create mesh vertices
         var meshDescriptor = MeshDescriptor(name: "mesh")
         meshDescriptor.positions = MeshBuffers.Positions(points)
@@ -120,13 +120,12 @@ struct PolyDataMessage: OpenIGTDecodable {
         meshDescriptor.primitives = .triangles(triangles)
         
         if let mesh = try? MeshResource.generate(from: [meshDescriptor]) {
-            var model = ModelEntity(mesh: mesh, materials: [SimpleMaterial(color: .blue, isMetallic: false)])
-            return model
+            return mesh
         }
         return nil
     }
     
-    func generateModelEntityFromPolys() -> ModelEntity? {
+    func generateMeshFromPolys() -> MeshResource? {
         // Create mesh vertices
         var meshDescriptor = MeshDescriptor(name: "mesh")
         meshDescriptor.positions = MeshBuffers.Positions(points)
@@ -161,10 +160,10 @@ struct PolyDataMessage: OpenIGTDecodable {
             meshDescriptor.primitives = .triangles(polys)
         }
         
+
         // Create model component
         if let mesh = try? MeshResource.generate(from: [meshDescriptor]) {
-            let model = ModelEntity(mesh: mesh, materials: [SimpleMaterial(color: .blue, isMetallic: true)])
-            return model
+            return mesh
         }
         return nil
     }

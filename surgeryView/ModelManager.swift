@@ -65,19 +65,15 @@ struct ModelManager: View {
         if let base = content.entities.first{
             if let originAnchor = base.findEntity(named: "origin"){
                 var centers: SIMD3<Float> = [0,0,0]
-                var lowestY: Float = 0
-
-                for entity in modelData.models{
-                    guard entity.name != "base" else {continue}
-                    guard entity.name != "pointer" else {continue}
-                    let bounds = entity.visualBounds(relativeTo: base)
-                    centers = centers + (bounds.center - entity.convert(position: entity.position, to: base)) / max((Float(originAnchor.children.count - 1)),1)
-                    lowestY = min(lowestY, (bounds.min.y - entity.convert(position: entity.position, to: base).y))
+                
+                let prevR = originAnchor.transform.rotation
+                originAnchor.transform.rotation = .init(angle: baseRotation, axis: [0,1,0]) * modelData.originTransform.rotation
+                centers = originAnchor.visualBounds(relativeTo: base).center - originAnchor.position
+                originAnchor.transform.rotation = prevR
+                let animationDefinition = FromToByAnimation(from: originAnchor.transform, to: Transform(scale: originAnchor.scale, rotation: .init(angle: baseRotation, axis: [0,1,0]) * modelData.originTransform.rotation, translation: [0,0,0] - centers), duration: 0.3, timing: .easeOut, bindTarget: .transform)
+                if let animationResource = try? AnimationResource.generate(with: animationDefinition) {
+                    originAnchor.playAnimation(animationResource)
                 }
-                if !modelData.minimalUI {
-                    centers.y = lowestY - 0.05
-                }
-                originAnchor.position = [0,0,0] - centers
             }
         }
     }
@@ -128,13 +124,14 @@ struct ModelManager: View {
                 }
                                 
                 originAnchor.transform.scale = modelData.originTransform.scale
-                originAnchor.transform.rotation = .init(angle: baseRotation, axis: [0,1,0]) * modelData.originTransform.rotation
                 content.entities.first?.findEntity(named: "rotate")?.transform.rotation = .init(angle: baseRotation, axis: [0,1,0]) * .init(angle: Float.pi/2, axis: [1, 0, 0])
                 
                 if let pointer = originAnchor.findEntity(named: "pointer") {
-                    let tempScale:SIMD3<Float> = [1,1,1]
-                    pointer.move(to: Transform(scale: tempScale, translation: modelData.pointerTransform.translation), relativeTo: originAnchor)
                     pointer.setScale([1,1,1], relativeTo: nil)
+                    let animationDefinition = FromToByAnimation(from: pointer.transform, to: Transform(scale: pointer.scale, rotation: pointer.transform.rotation, translation: modelData.pointerTransform.translation), duration: 0.1, timing: .linear, bindTarget: .transform)
+                    if let animationResource = try? AnimationResource.generate(with: animationDefinition) {
+                        pointer.playAnimation(animationResource)
+                    }
                     pointer.isEnabled = modelData.pointerIsVisibile
                 }
                 for slice in modelData.imageSlices {
