@@ -58,16 +58,6 @@ struct ModelManager: View {
             }
         }
         
-        if let toolbar = attachments.entity(for: "toolbar") {
-            toolbar.name = "toolbar"
-            if !modelData.minimalUI {
-                toolbar.move(to: Transform(translation: [0, -0.05, 0.25]), relativeTo: base)
-            } else {
-                toolbar.move(to: Transform(translation: [0, -0.35, 0.35]), relativeTo: base)
-            }
-            toolbar.transform.rotation = .init(angle: -Float.pi/8, axis: [1, 0, 0])
-            base.addChild(toolbar)
-        }
         return base
     }
     
