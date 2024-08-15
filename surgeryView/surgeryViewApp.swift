@@ -27,15 +27,15 @@ struct surgeryViewApp: App {
                         modelData.startServer()
                     }
                 }
-                .ornament(attachmentAnchor: .scene(.bottomFront)) {
-                    ToolbarView()
-                        .environment(modelData)
-                }
+//                .ornament(attachmentAnchor: .scene(.bottomFront)) {
+//                    ToolbarView()
+//                        .environment(modelData)
+//                }
         }
         .windowStyle(.volumetric)
-        .defaultWorldScaling(.dynamic)
-        .volumeWorldAlignment(.gravityAligned)
-        .defaultSize(width: 0.8, height: 0.8, depth: 0.8, in: .meters)
+//        .defaultWorldScaling(.dynamic)
+//        .volumeWorldAlignment(.gravityAligned)
+//        .defaultSize(width: 0.8, height: 0.8, depth: 0.8, in: .meters)
         
 
 //        ImmersiveSpace(id: "3d-immersive") {

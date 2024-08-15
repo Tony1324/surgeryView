@@ -147,16 +147,18 @@ struct ImageMessage: OpenIGTDecodable {
     }
     
     func scaleImageData() async ->  (Data, Data, Data){
-        var axial_transposed_image = Data(count: image_data.count)
-        var coronal_transposed_image = Data(count: image_data.count)
-        var sagittal_transposed_image = Data(count: image_data.count)
         let size = SIMD3<Int>(Int(size.x), Int(size.y), Int(size.z))
+
+        let count = size.x*size.y*size.z * 4
+        var axial_transposed_image = Data(count: count)
+        var coronal_transposed_image = Data(count: count)
+        var sagittal_transposed_image = Data(count: count)
         
         await withTaskGroup(of: (Int, Int, Data, Data, Data).self) { group in
-            let concurrentTaskCount = 8
+            let concurrentTaskCount = 3
             
             // Calculate chunk size
-            let count = Int(size.x) * Int(size.y) * Int(size.z)
+            let count = size.x * size.y * size.z
             let chunkSize = count / concurrentTaskCount
             
             for chunk in 0..<concurrentTaskCount {
@@ -164,42 +166,40 @@ struct ImageMessage: OpenIGTDecodable {
                 let endIndex = (chunk == concurrentTaskCount - 1) ? count : (chunk + 1) * chunkSize
                 let scalarSize = scalarSize()
                 // Add task to the group
-                let totalSize = (endIndex - startIndex) * scalarSize
+                let totalSize = (endIndex - startIndex) * 4
                 group.addTask {
                     var axial_transposed_image = Data(count: totalSize)
                     var coronal_transposed_image = Data(count: totalSize)
                     var sagittal_transposed_image = Data(count: totalSize)
-                    image_data.withUnsafeBytes { rawPointer in
-                        let baseAddress = rawPointer.baseAddress!.assumingMemoryBound(to: Int32.self)
-                        for _i in startIndex..<endIndex{
-                            let axialPos = indexToPos(_i, a: size.x, b: size.y, c: size.z)
-                            let axialI = posToIndex([axialPos.x, axialPos.y, axialPos.z])
-                            let coronalPos = indexToPos(_i, a: size.x, b: size.z, c: size.y)
-                            let coronalI = posToIndex([coronalPos.x, coronalPos.z, coronalPos.y])
-                            let sagittalPos = indexToPos(_i, a: size.z, b: size.y, c: size.x)
-                            let sagittalI = posToIndex([sagittalPos.z, sagittalPos.y, sagittalPos.x])
-                            
-                            let pixelA = Int(Int32(littleEndian: baseAddress[axialI]))
-                            let byteA = mapColorRange(num: pixelA, low: -1000, high: 1000)
-                            let pixelC = Int(Int32(littleEndian: baseAddress[coronalI]))
-                            let byteC = mapColorRange(num: pixelC, low: -1000, high: 1000)
-                            let pixelS = Int(Int32(littleEndian: baseAddress[sagittalI]))
-                            let byteS = mapColorRange(num: pixelS, low: -1000, high: 1000)
-                                                    
-                            let i = (_i - startIndex) * scalarSize
-                            axial_transposed_image[i] = byteA
-                            axial_transposed_image[i+1] = byteA
-                            axial_transposed_image[i+2] = byteA
-                            axial_transposed_image[i+3] = 255
-                            coronal_transposed_image[i] = byteC
-                            coronal_transposed_image[i+1] = byteC
-                            coronal_transposed_image[i+2] = byteC
-                            coronal_transposed_image[i+3] = 255
-                            sagittal_transposed_image[i] = byteS
-                            sagittal_transposed_image[i+1] = byteS
-                            sagittal_transposed_image[i+2] = byteS
-                            sagittal_transposed_image[i+3] = 255
-                        }
+                    for _i in startIndex..<endIndex{
+                        let axialPos = indexToPos(_i, a: size.x, b: size.y, c: size.z)
+                        let axialI = posToIndex([axialPos.x, axialPos.y, axialPos.z])
+                        let coronalPos = indexToPos(_i, a: size.x, b: size.z, c: size.y)
+                        let coronalI = posToIndex([coronalPos.x, coronalPos.z, coronalPos.y])
+                        let sagittalPos = indexToPos(_i, a: size.z, b: size.y, c: size.x)
+                        let sagittalI = posToIndex([sagittalPos.z, sagittalPos.y, sagittalPos.x])
+                        
+                        let byteA = mapColorRange(index: axialI, low: -1000, high: 1000)
+                        let byteC = mapColorRange(index: coronalI, low: -1000, high: 1000)
+                        let byteS = mapColorRange(index: sagittalI, low: -1000, high: 1000)
+                                                
+                        let i = (_i - startIndex) * 4
+                        axial_transposed_image[i] = byteA
+                        axial_transposed_image[i+1] = byteA
+                        axial_transposed_image[i+2] = byteA
+                        axial_transposed_image[i+3] = 255
+                        print(axial_transposed_image[i])
+                        print(axial_transposed_image[i+1])
+                        print(axial_transposed_image[i+2])
+                        print(axial_transposed_image[i+3])
+                        coronal_transposed_image[i] = byteC
+                        coronal_transposed_image[i+1] = byteC
+                        coronal_transposed_image[i+2] = byteC
+                        coronal_transposed_image[i+3] = 255
+                        sagittal_transposed_image[i] = byteS
+                        sagittal_transposed_image[i+1] = byteS
+                        sagittal_transposed_image[i+2] = byteS
+                        sagittal_transposed_image[i+3] = 255
                     }
                     return (startIndex, endIndex, axial_transposed_image, coronal_transposed_image, sagittal_transposed_image)
                 }
@@ -207,7 +207,7 @@ struct ImageMessage: OpenIGTDecodable {
             for await result in group {
                 let startIndex = result.0
                 let endIndex = result.1
-                let range = startIndex * scalarSize() ..< endIndex * scalarSize()
+                let range = startIndex * 4 ..< endIndex * 4
                 
                 axial_transposed_image.replaceSubrange(range, with: result.2)
                 coronal_transposed_image.replaceSubrange(range, with: result.3)
@@ -236,8 +236,22 @@ struct ImageMessage: OpenIGTDecodable {
     
     
     
-    func mapColorRange(num: Int, low: Int, high: Int) -> UInt8 {
+    func mapColorRange(index: Int, low: Int, high: Int) -> UInt8 {
         guard low < high else { return 0 }
+        let data = image_data.subdata(in: image_data.startIndex + index*scalarSize() ..< image_data.startIndex + index*scalarSize() + scalarSize())
+        let num = data.withUnsafeBytes { pointer in
+            return switch scalar_type {
+            case 2: Int(pointer.load(as: Int8.self))
+            case 3: Int(pointer.load(as: UInt8.self))
+            case 4: Int(pointer.load(as: Int16.self))
+            case 5: Int(pointer.load(as: UInt16.self))
+            case 6: Int(pointer.load(as: Int32.self))
+            case 7: Int(pointer.load(as: UInt32.self))
+            case 10: Int(pointer.load(as: Float32.self))
+            case 11: Int(pointer.load(as: Float64.self))
+            default: 0
+            }
+        }
         let clampedNum = max(min(num, high), low)
         
         let normalized = (clampedNum - low) * 255 / (high - low)
