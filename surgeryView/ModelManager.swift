@@ -11,6 +11,7 @@ import RealityKit
 struct ModelManager: View {
     // custom content handling
     @Environment(ModelData.self) var modelData
+    @State var base: Entity = Entity()
     var update: ((RealityViewContent) -> ())?
     
     func addEntity(content: RealityViewContent ,entity: Entity){
@@ -30,9 +31,8 @@ struct ModelManager: View {
         }
     }
     
-    func addBase(content: RealityViewContent, attachments: RealityViewAttachments) -> ModelEntity {
+    func addBase(content: RealityViewContent, attachments: RealityViewAttachments) {
 //        let base = ModelEntity(mesh: .generateCylinder(height: 0.02, radius: 0.2), materials: [SimpleMaterial.init(color: .black, isMetallic: false)])
-        var base = ModelEntity()
         if !modelData.minimalUI {
             base = ModelEntity(mesh: .generateCylinder(height: 0.02, radius: 0.2), materials: [SimpleMaterial.init(color: .black, isMetallic: false)])
         }
@@ -54,26 +54,19 @@ struct ModelManager: View {
         } else {
             if let loading = attachments.entity(for: "loading"){
                 loading.name = "loading"
-                base.addChild(loading)
+                content.add(loading)
             }
         }
-        
-        return base
     }
     
     func positionModels(content: RealityViewContent, attachment: RealityViewAttachments){
-        if let base = content.entities.first{
-            if let originAnchor = base.findEntity(named: "origin"){
-                var centers: SIMD3<Float> = [0,0,0]
-                
-                let prevR = originAnchor.transform.rotation
-                originAnchor.transform.rotation = .init(angle: baseRotation, axis: [0,1,0]) * modelData.originTransform.rotation
-                centers = originAnchor.visualBounds(relativeTo: base).center - originAnchor.position
-                originAnchor.transform.rotation = prevR
-                let animationDefinition = FromToByAnimation(from: originAnchor.transform, to: Transform(scale: originAnchor.scale, rotation: .init(angle: baseRotation, axis: [0,1,0]) * modelData.originTransform.rotation, translation: [0,0,0] - centers), duration: 0.3, timing: .easeOut, bindTarget: .transform)
-                if let animationResource = try? AnimationResource.generate(with: animationDefinition) {
-                    originAnchor.playAnimation(animationResource)
-                }
+        if let originAnchor = base.findEntity(named: "origin"){
+            var centers: SIMD3<Float> = [0,0,0]
+            
+            centers = originAnchor.visualBounds(relativeTo: base).center - originAnchor.position
+            let animationDefinition = FromToByAnimation(from: originAnchor.transform, to: Transform(scale: originAnchor.scale, rotation: originAnchor.orientation, translation: [0,0,0] - centers), duration: 0.3, timing: .easeOut, bindTarget: .transform)
+            if let animationResource = try? AnimationResource.generate(with: animationDefinition) {
+                originAnchor.playAnimation(animationResource)
             }
         }
     }
@@ -84,7 +77,7 @@ struct ModelManager: View {
     var body: some View {
         RealityView { content, attachments in
             
-            let base = addBase(content: content, attachments: attachments)
+            addBase(content: content, attachments: attachments)
             if !modelData.minimalUI {
                 base.position = [0, -0.80, 0]
             }
@@ -92,7 +85,7 @@ struct ModelManager: View {
             let originAnchor = Entity()
             
             originAnchor.name = "origin"
-            originAnchor.transform = modelData.originTransform
+            originAnchor.scale = modelData.originTransform.scale
             base.addChild(originAnchor)
             
             let pointer = ModelEntity(mesh: .generateSphere(radius: 0.005),materials: [SimpleMaterial(color: .red.withAlphaComponent(1), isMetallic: false)])
@@ -106,12 +99,13 @@ struct ModelManager: View {
             }
 
         } update: { content, attachments in
-            if let originAnchor = content.entities.first?.findEntity(named: "origin"){
+            if let originAnchor = base.findEntity(named: "origin"){
                 for entity in modelData.models + modelData.imageSlices {
                     if originAnchor.children.contains(entity) {
                         continue
                     }else{
                         addEntity(content: content, entity: entity)
+                        positionModels(content: content, attachment: attachments)
                     }
                 }
                 for entity in originAnchor.children.reversed(){
@@ -120,11 +114,20 @@ struct ModelManager: View {
                     }
                     if !(modelData.models + modelData.imageSlices).contains(entity){
                         originAnchor.removeChild(entity)
+                        positionModels(content: content, attachment: attachments)
                     }
                 }
-                                
+                
                 originAnchor.transform.scale = modelData.originTransform.scale
-                content.entities.first?.findEntity(named: "rotate")?.transform.rotation = .init(angle: baseRotation, axis: [0,1,0]) * .init(angle: Float.pi/2, axis: [1, 0, 0])
+                
+                print(originAnchor.position)
+                
+                let animationDefinition = FromToByAnimation(from: base.transform, to: Transform(rotation: modelData.originTransform.rotation), duration: 0.3, timing: .easeOut, bindTarget: .transform)
+                if let animationResource = try? AnimationResource.generate(with: animationDefinition) {
+                    base.playAnimation(animationResource)
+                }
+
+                base.findEntity(named: "rotate")?.transform.rotation = .init(angle: baseRotation, axis: [0,1,0]) * .init(angle: Float.pi/2, axis: [1, 0, 0])
                 
                 if let pointer = originAnchor.findEntity(named: "pointer") {
                     pointer.setScale([1,1,1], relativeTo: nil)
@@ -138,7 +141,6 @@ struct ModelManager: View {
                     slice.isEnabled = modelData.slicesIsVisible
                 }
             }
-            positionModels(content: content, attachment: attachments)
             if let update {
                 update(content)
             }
