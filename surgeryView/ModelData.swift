@@ -305,7 +305,8 @@ extension ModelData: OpenIGTDelegate {
     func receiveImageMessage(header: IGTHeader, image img: ImageMessage) {
         self.image = img
         Task{
-            await self.image?.setImageData()
+//            await self.image?.setImageData()
+            self.image?.setImageData()
             Task {
                 await withTaskGroup(of: Optional<(SimpleMaterial,Int)>.self) { group in
                     axialImageCache = []
@@ -394,6 +395,7 @@ extension ModelData: OpenIGTDelegate {
             }
         }
     }
+    
     func receiveTransformMessage(header: IGTHeader, transform: TransformMessage) {
         if header.deviceName.trimmingCharacters(in: ["\0"]) == "CAMERA" {
             originTransform.rotation = transform.realityKitTransform().rotation
@@ -402,6 +404,7 @@ extension ModelData: OpenIGTDelegate {
             pointerTransform = transform.realityKitTransform()
         }
     }
+    
     func receivePolyDataMessage(header: IGTHeader, polydata: PolyDataMessage) {
         let model = ModelEntity()
         model.model = ModelComponent(mesh: .generateBox(size: 0), materials: [UnlitMaterial(color: .clear)])
@@ -417,11 +420,9 @@ extension ModelData: OpenIGTDelegate {
         //expecting a second color message, so temporarily no visibility
         model.components.set(GroundingShadowComponent(castsShadow: true))
         
-        
         models.append(model)
-    
-
     }
+    
     func receiveStringMessage(header: IGTHeader, string: StringMessage) {
         switch header.deviceName.trimmingCharacters(in: ["\0"]) {
         case "CLEAR":

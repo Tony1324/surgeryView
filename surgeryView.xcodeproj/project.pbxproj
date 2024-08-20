@@ -76,6 +76,7 @@
 		B75C70542BFFC8710019A527 /* DataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75C70532BFFC8710019A527 /* DataReader.swift */; };
 		B78206CF2C46FD6900E75B84 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78206CE2C46FD6900E75B84 /* String.swift */; };
 		B7B50D732BD1B0F9006733EF /* ModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B50D722BD1B0F9006733EF /* ModelData.swift */; };
+		B7BE9A502C75168300A02AC4 /* imageprocessing.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1B19AD342C74F2EF00205C8D /* imageprocessing.metal */; };
 		B7D1ED7C2C18DC6C000473E7 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D1ED7B2C18DC6C000473E7 /* Image.swift */; };
 /* End PBXBuildFile section */
 
@@ -203,7 +204,6 @@
 			isa = PBXGroup;
 			children = (
 				1B19AD332C74F2EF00205C8D /* ContentView.swift */,
-				1B19AD342C74F2EF00205C8D /* imageprocessing.metal */,
 			);
 			path = "metal scripts";
 			sourceTree = "<group>";
@@ -340,6 +340,7 @@
 				1BA965312BE709BA0019B819 /* Polydata.swift */,
 				B78206CE2C46FD6900E75B84 /* String.swift */,
 				B7D1ED7B2C18DC6C000473E7 /* Image.swift */,
+				1B19AD342C74F2EF00205C8D /* imageprocessing.metal */,
 				1BA9652F2BE709BA0019B819 /* Transform.swift */,
 			);
 			path = OpenIGTLink;
@@ -504,6 +505,7 @@
 			files = (
 				1B3F57102B957BB700753CBB /* ContentView.swift in Sources */,
 				1B0054522BB07D8F004697EE /* ControlPanel.swift in Sources */,
+				B7BE9A502C75168300A02AC4 /* imageprocessing.metal in Sources */,
 				1B0573B92C126C8A003905D4 /* ToolbarView.swift in Sources */,
 				B7B50D732BD1B0F9006733EF /* ModelData.swift in Sources */,
 				B75C70512BEAB3300019A527 /* NoneMessage.swift in Sources */,

@@ -8,6 +8,7 @@
 import Foundation
 import RealityKit
 import CoreGraphics
+import Metal
 
 struct ImageMessage: OpenIGTDecodable {
     
@@ -67,9 +68,6 @@ struct ImageMessage: OpenIGTDecodable {
             let _sizey = size.y
             size.y = size.z
             size.z = _sizey
-            //            let _posy = position.y
-            //            position.y = position.z
-            //            position.z = _posy
         }
         
         func readPosition() -> SIMD3<Float32>? {
@@ -134,124 +132,139 @@ struct ImageMessage: OpenIGTDecodable {
         let rawData = sagittal_transposed_image.subdata(in: sagittal_transposed_image.startIndex + bytePosition ..< sagittal_transposed_image.startIndex + byteEndPosition)
         guard let providerRef = CGDataProvider(data: rawData as CFData) else {return nil}
         guard let image = CGImage(width: Int(size.z), height: Int(size.y), bitsPerComponent: 8, bitsPerPixel: 4*Int(num_components) * 8, bytesPerRow: Int(size.z)*4*Int(num_components), space: colorSpace, bitmapInfo: bitmapInfo, provider: providerRef, decode: nil, shouldInterpolate: true, intent: .defaultIntent) else {return nil}
-        
-        //although image is grayscale, scalar pixels get colored as red, so we have to convert to full rgb, but with r,g, and b being the same values
         return image
     }
-    
-    mutating func setImageData() async {
-        let images = await scaleImageData()
-        axial_transposed_image = images.0
-        coronal_transposed_image = images.1
-        sagittal_transposed_image = images.2
-    }
-    
-    func scaleImageData() async ->  (Data, Data, Data){
+//    
+//    mutating func setImageData() async {
+//        let images = await scaleImageData()
+//        axial_transposed_image = images.0
+//        coronal_transposed_image = images.1
+//        sagittal_transposed_image = images.2
+//    }
+//    
+    mutating func setImageData(){
         let size = SIMD3<Int>(Int(size.x), Int(size.y), Int(size.z))
 
         let count = size.x*size.y*size.z * 4
-        var axial_transposed_image = Data(count: count)
-        var coronal_transposed_image = Data(count: count)
-        var sagittal_transposed_image = Data(count: count)
-        
-        await withTaskGroup(of: (Int, Int, Data, Data, Data).self) { group in
-            let concurrentTaskCount = 3
+
+        image_data.withUnsafeBytes { pointer in
             
-            // Calculate chunk size
-            let count = size.x * size.y * size.z
-            let chunkSize = count / concurrentTaskCount
+            //3 steps: 
+            //1) regularize all image scalar types into uint8 with colors 0-255
+            //2) convert to rgb data, but still gray (duplicate each value 3 times and add alpha)
+            //3) transpose into axial, coronal, and saggital
             
-            for chunk in 0..<concurrentTaskCount {
-                let startIndex = chunk * chunkSize
-                let endIndex = (chunk == concurrentTaskCount - 1) ? count : (chunk + 1) * chunkSize
-                let scalarSize = scalarSize()
-                // Add task to the group
-                let totalSize = (endIndex - startIndex) * 4
-                group.addTask {
-                    var axial_transposed_image = Data(count: totalSize)
-                    var coronal_transposed_image = Data(count: totalSize)
-                    var sagittal_transposed_image = Data(count: totalSize)
-                    for _i in startIndex..<endIndex{
-                        let axialPos = indexToPos(_i, a: size.x, b: size.y, c: size.z)
-                        let axialI = posToIndex([axialPos.x, axialPos.y, axialPos.z])
-                        let coronalPos = indexToPos(_i, a: size.x, b: size.z, c: size.y)
-                        let coronalI = posToIndex([coronalPos.x, coronalPos.z, coronalPos.y])
-                        let sagittalPos = indexToPos(_i, a: size.z, b: size.y, c: size.x)
-                        let sagittalI = posToIndex([sagittalPos.z, sagittalPos.y, sagittalPos.x])
-                        
-                        let byteA = mapColorRange(index: axialI, low: -1000, high: 1000)
-                        let byteC = mapColorRange(index: coronalI, low: -1000, high: 1000)
-                        let byteS = mapColorRange(index: sagittalI, low: -1000, high: 1000)
-                                                
-                        let i = (_i - startIndex) * 4
-                        axial_transposed_image[i] = byteA
-                        axial_transposed_image[i+1] = byteA
-                        axial_transposed_image[i+2] = byteA
-                        axial_transposed_image[i+3] = 255
-                        coronal_transposed_image[i] = byteC
-                        coronal_transposed_image[i+1] = byteC
-                        coronal_transposed_image[i+2] = byteC
-                        coronal_transposed_image[i+3] = 255
-                        sagittal_transposed_image[i] = byteS
-                        sagittal_transposed_image[i+1] = byteS
-                        sagittal_transposed_image[i+2] = byteS
-                        sagittal_transposed_image[i+3] = 255
-                    }
-                    return (startIndex, endIndex, axial_transposed_image, coronal_transposed_image, sagittal_transposed_image)
-                }
-            }
-            for await result in group {
-                let startIndex = result.0
-                let endIndex = result.1
-                let range = startIndex * 4 ..< endIndex * 4
-                
-                axial_transposed_image.replaceSubrange(range, with: result.2)
-                coronal_transposed_image.replaceSubrange(range, with: result.3)
-                sagittal_transposed_image.replaceSubrange(range, with: result.4)
-            }
-                    
             
-            // Wait for all tasks to complete
-            await group.waitForAll()
-        }
-        
-       
-        func indexToPos(_ i:Int, a sizeA: Int, b sizeB: Int, c sizeC: Int) -> SIMD3<Int> {
-            let z = i / (sizeA * sizeB)
-            let y = (i / sizeA) % (sizeB)
-            let x = i % (sizeA)
-            return [x,y,z]
-        }
-        
-        func posToIndex(_ pos: SIMD3<Int>) -> Int{
-            return alt_mode ? (pos.y * size.x * size.z + pos.z * size.x + pos.x) : (pos.z * size.x * size.y + pos.y * size.x + pos.x)
-        }
-        
-        return (axial_transposed_image, coronal_transposed_image, sagittal_transposed_image)
-    }
-    
-    
-    
-    func mapColorRange(index: Int, low: Int, high: Int) -> UInt8 {
-        guard low < high else { return 0 }
-        let data = image_data.subdata(in: image_data.startIndex + index*scalarSize() ..< image_data.startIndex + index*scalarSize() + scalarSize())
-        let num = data.withUnsafeBytes { pointer in
-            return switch scalar_type {
-            case 2: Int(pointer.load(as: Int8.self))
-            case 3: Int(pointer.load(as: UInt8.self))
-            case 4: Int(pointer.load(as: Int16.self))
-            case 5: Int(pointer.load(as: UInt16.self))
-            case 6: Int(pointer.load(as: Int32.self))
-            case 7: Int(pointer.load(as: UInt32.self))
-            case 10: Int(pointer.load(as: Float32.self))
-            case 11: Int(pointer.load(as: Float64.self))
-            default: 0
+            let adjustScale: MTLFunction?
+            guard let device = MTLCreateSystemDefaultDevice(),
+                  let library = device.makeDefaultLibrary(),
+                  let scalingCommandQueue = device.makeCommandQueue(),
+                  let scalingCommandBuffer = scalingCommandQueue.makeCommandBuffer(),
+                  let scalingEncoder = scalingCommandBuffer.makeComputeCommandEncoder()
+            else {return}
+            
+            
+            switch scalar_type {
+                case 6: adjustScale = library.makeFunction(name: "adjustSizeInt32")
+                default: return
+            }
+            
+            guard let adjustScale = adjustScale,
+                  let scalePipelineState = try? device.makeComputePipelineState(function: adjustScale),
+                  let imagePointer = pointer.baseAddress
+            else {return}
+            
+            let imageDataBuffer = device.makeBuffer(bytes: imagePointer, length: image_data.count)
+            let scaledDataBuffer = device.makeBuffer(length: size.x*size.y*size.z)
+
+            scalingEncoder.setComputePipelineState(scalePipelineState)
+            scalingEncoder.setBuffer(imageDataBuffer, offset: 0, index: 0)
+            scalingEncoder.setBuffer(scaledDataBuffer, offset: 0, index: 1)
+            
+            withUnsafeBytes(of: Int(-1000)) { pointer in
+                scalingEncoder.setBytes(pointer.baseAddress!, length: MemoryLayout<Int>.stride, index: 2)
+            }
+            withUnsafeBytes(of: Int(1000)) { pointer in
+                scalingEncoder.setBytes(pointer.baseAddress!, length: MemoryLayout<Int>.stride, index: 3)
+            }
+            
+            let threadGroupSize = MTLSize(width: scalePipelineState.maxTotalThreadsPerThreadgroup, height: 1, depth: 1)
+            let scalingThreadGroups = MTLSize(width: (image_data.count + scalePipelineState.maxTotalThreadsPerThreadgroup) / scalePipelineState.maxTotalThreadsPerThreadgroup, height: 1, depth: 1)
+            
+            scalingEncoder.dispatchThreadgroups(scalingThreadGroups, threadsPerThreadgroup: threadGroupSize)
+            scalingEncoder.endEncoding()
+            scalingCommandBuffer.commit()
+            scalingCommandBuffer.waitUntilCompleted()
+            
+            guard let grayscaleToRGB = library.makeFunction(name: "grayscaleToRGBA"),
+                  let rgbCommandQueue = device.makeCommandQueue(),
+                  let rgbPipelineState = try? device.makeComputePipelineState(function: grayscaleToRGB),
+                  let rgbCommandBuffer = rgbCommandQueue.makeCommandBuffer(),
+                  let rgbEncoder = rgbCommandBuffer.makeComputeCommandEncoder()
+            else {return}
+            
+            let rgbDataBuffer = device.makeBuffer(length: count)
+            rgbEncoder.setComputePipelineState(rgbPipelineState)
+            rgbEncoder.setBuffer(scaledDataBuffer, offset: 0, index: 0)
+            rgbEncoder.setBuffer(rgbDataBuffer, offset: 0, index: 1)
+            
+            let rgbThreadGroups = MTLSize(width: (size.x*size.y*size.z + threadGroupSize.width) / threadGroupSize.width, height: 1, depth: 1)
+            rgbEncoder.dispatchThreadgroups(rgbThreadGroups, threadsPerThreadgroup: threadGroupSize)
+            rgbEncoder.endEncoding()
+            rgbCommandBuffer.commit()
+            rgbCommandBuffer.waitUntilCompleted()
+            
+            guard let transpose = library.makeFunction(name: "transposeAll"),
+                  let transposeCommandQueue = device.makeCommandQueue(),
+                  let transposePipelineState = try? device.makeComputePipelineState(function: transpose),
+                  let transposeCommandBuffer = transposeCommandQueue.makeCommandBuffer(),
+                  let transposeEncoder = transposeCommandBuffer.makeComputeCommandEncoder()
+            else {return}
+            
+            let axialDataBuffer = device.makeBuffer(length: count)
+            let coronalDataBuffer = device.makeBuffer(length: count)
+            let sagittalDataBuffer = device.makeBuffer(length: count)
+            
+            transposeEncoder.setComputePipelineState(transposePipelineState)
+            transposeEncoder.setBuffer(rgbDataBuffer, offset: 0, index: 0)
+            transposeEncoder.setBuffer(axialDataBuffer, offset: 0, index: 1)
+            transposeEncoder.setBuffer(coronalDataBuffer, offset: 0, index: 2)
+            transposeEncoder.setBuffer(sagittalDataBuffer, offset: 0, index: 3)
+            
+            withUnsafeBytes(of: size.x) { pointer in
+                guard let address = pointer.baseAddress else {return}
+                transposeEncoder.setBytes(address, length: MemoryLayout<Int>.stride, index: 4)
+            }
+            
+            withUnsafeBytes(of: size.y) { pointer in
+                guard let address = pointer.baseAddress else {return}
+                transposeEncoder.setBytes(address, length: MemoryLayout<Int>.stride, index: 5)
+            }
+            
+            withUnsafeBytes(of: size.z) { pointer in
+                guard let address = pointer.baseAddress else {return}
+                transposeEncoder.setBytes(address, length: MemoryLayout<Int>.stride, index: 6)
+            }
+            
+            withUnsafeBytes(of: alt_mode) { pointer in
+                guard let address = pointer.baseAddress else {return}
+                transposeEncoder.setBytes(address, length: MemoryLayout<Bool>.stride, index: 7)
+            }
+            
+            let transposeThreadGroups = MTLSize(width: (size.x*size.y*size.z + transposePipelineState.maxTotalThreadsPerThreadgroup - 1) / transposePipelineState.maxTotalThreadsPerThreadgroup, height: 1, depth: 1)
+            transposeEncoder.dispatchThreadgroups(transposeThreadGroups, threadsPerThreadgroup: threadGroupSize)
+            
+            transposeEncoder.endEncoding()
+            transposeCommandBuffer.commit()
+            transposeCommandBuffer.waitUntilCompleted()
+            
+            if let axialPointer = axialDataBuffer?.contents(),
+               let coronalPointer = coronalDataBuffer?.contents(),
+               let sagittalPointer = sagittalDataBuffer?.contents() {
+                   axial_transposed_image = Data(bytes: axialPointer, count: count)
+                   coronal_transposed_image = Data(bytes: coronalPointer, count: count)
+                   sagittal_transposed_image = Data(bytes: sagittalPointer, count: count)
             }
         }
-        let clampedNum = max(min(num, high), low)
-        
-        let normalized = (clampedNum - low) * 255 / (high - low)
-        
-        return UInt8(normalized)
     }
 }

@@ -60,24 +60,29 @@ kernel void transposeAll(device const int32_t* image [[buffer(0)]],
                          device int32_t* axial [[buffer(1)]],
                          device int32_t* coronal [[buffer(2)]],
                          device int32_t* sagittal [[buffer(3)]],
-                         device const int3& size [[buffer(4)]],
-                         device const bool& alt [[buffer(5)]],
+                         device const int& x [[buffer(4)]],
+                         device const int& y [[buffer(5)]],
+                         device const int& z [[buffer(6)]],
+                         device const bool& alt [[buffer(7)]],
                          uint index [[thread_position_in_grid]]){
     
-    int3 axialPos = indexToPos(index, size.x, size.y, size.z);
-    int axialI = posToIndex(axialPos, size, alt);
-
-    // Calculate 3D position for the given 1D index in the coronal plane
-    int3 coronalPos = indexToPos(index, size.x, size.z, size.y);
-    int coronalI = posToIndex(coronalPos, int3(size.x, size.z, size.y), alt);
-
-    // Calculate 3D position for the given 1D index in the sagittal plane
-    int3 sagittalPos = indexToPos(index, size.z, size.y, size.x);
-    int sagittalI = posToIndex(sagittalPos, int3(size.z, size.y, size.x), alt);
+    if(int(index) >= x * y * z){
+        axial[index] = index;
+        return;
+    }
     
-    // Transpose the data from the original image into the different planes
-    axial[axialI] = image[index];
-    coronal[coronalI] = image[index];
-    sagittal[sagittalI] = image[index];
+    int3 size = int3(x,y,z);
     
+    int3 axialPos = indexToPos(index, x, y, z);
+    int axialI = posToIndex(int3(axialPos.x, axialPos.y, axialPos.z), size, alt);
+
+    int3 coronalPos = indexToPos(index, x, z, y);
+    int coronalI = posToIndex(int3(coronalPos.x, coronalPos.z, coronalPos.y), size, alt);
+
+    int3 sagittalPos = indexToPos(index, z, y, x);
+    int sagittalI = posToIndex(int3(sagittalPos.z, sagittalPos.y, sagittalPos.x), size, alt);
+    
+    axial[index] = image[axialI];
+    coronal[index] = image[coronalI];
+    sagittal[index] = image[sagittalI];
 }
