@@ -106,6 +106,8 @@
 		1B0054512BB07D8E004697EE /* ControlPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlPanel.swift; sourceTree = "<group>"; };
 		1B0573B82C126C8A003905D4 /* ToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarView.swift; sourceTree = "<group>"; };
 		1B11BFB62BA918B700E1DEB0 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
+		1B19AD332C74F2EF00205C8D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		1B19AD342C74F2EF00205C8D /* imageprocessing.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = imageprocessing.metal; sourceTree = "<group>"; };
 		1B3F57062B957BB700753CBB /* surgeryView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = surgeryView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B3F570A2B957BB700753CBB /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
 		1B3F570D2B957BB700753CBB /* surgeryViewApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = surgeryViewApp.swift; sourceTree = "<group>"; };
@@ -197,6 +199,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1B19AD352C74F2EF00205C8D /* metal scripts */ = {
+			isa = PBXGroup;
+			children = (
+				1B19AD332C74F2EF00205C8D /* ContentView.swift */,
+				1B19AD342C74F2EF00205C8D /* imageprocessing.metal */,
+			);
+			path = "metal scripts";
+			sourceTree = "<group>";
+		};
 		1B3F56FD2B957BB700753CBB = {
 			isa = PBXGroup;
 			children = (
@@ -238,6 +249,7 @@
 		1B3F57092B957BB700753CBB /* Packages */ = {
 			isa = PBXGroup;
 			children = (
+				1B19AD352C74F2EF00205C8D /* metal scripts */,
 				1B3F570A2B957BB700753CBB /* RealityKitContent */,
 			);
 			path = Packages;
