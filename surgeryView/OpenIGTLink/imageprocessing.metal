@@ -8,15 +8,17 @@
 #include <metal_stdlib>
 using namespace metal;
 
-kernel void adjustSizeInt32(device const int32_t* inData [[ buffer(0) ]],
-                            device uint8_t* outData [[ buffer(1) ]],
-                            device const int& lower [[ buffer(2) ]],
-                            device const int& upper [[ buffer(3) ]],
-                            uint index [[ thread_position_in_grid ]]) {
-    int lowerBound = lower;
-    int upperBound = upper;
-    
-    int32_t value = inData[index];
+
+template <typename T>
+void adjustSizeGeneric(device const T* inData [[ buffer(0) ]],
+                              device uint8_t* outData [[ buffer(1) ]],
+                              device const int& lower [[ buffer(2) ]],
+                              device const int& upper [[ buffer(3) ]],
+                              uint index [[ thread_position_in_grid ]]) {
+    // Convert the input value to float
+    float value = T(inData[index]);
+    float lowerBound = lower;
+    float upperBound = upper;
 
     // Clamp the value within the specified bounds
     if (value < lowerBound) {
@@ -25,10 +27,75 @@ kernel void adjustSizeInt32(device const int32_t* inData [[ buffer(0) ]],
         value = upperBound;
     }
 
-    float normalized = float(value - lowerBound) / float(upperBound - lowerBound);
-    uint8_t scaledValue = uint8_t(normalized * 255.0f);
+    // Normalize the value to a range of 0 to 1
+    uint8_t normalized = (value - lowerBound) * 255 / (upperBound - lowerBound);
+    
+    // Output the scaled value
+    outData[index] = normalized;
+}
 
-    outData[index] = scaledValue;
+kernel void adjustSizeInt8(device const int8_t* inData [[ buffer(0) ]],
+                           device uint8_t* outData [[ buffer(1) ]],
+                           device const int& lower [[ buffer(2) ]],
+                           device const int& upper [[ buffer(3) ]],
+                           uint index [[ thread_position_in_grid ]]) {
+    adjustSizeGeneric<int8_t>(inData, outData, lower, upper, index);
+}
+
+kernel void adjustSizeUint8(device const uint8_t* inData [[ buffer(0) ]],
+                            device uint8_t* outData [[ buffer(1) ]],
+                            device const int& lower [[ buffer(2) ]],
+                            device const int& upper [[ buffer(3) ]],
+                            uint index [[ thread_position_in_grid ]]) {
+    adjustSizeGeneric<uint8_t>(inData, outData, lower, upper, index);
+}
+
+kernel void adjustSizeInt16(device const int16_t* inData [[ buffer(0) ]],
+                            device uint8_t* outData [[ buffer(1) ]],
+                            device const int& lower [[ buffer(2) ]],
+                            device const int& upper [[ buffer(3) ]],
+                            uint index [[ thread_position_in_grid ]]) {
+    adjustSizeGeneric<int16_t>(inData, outData, lower, upper, index);
+}
+
+kernel void adjustSizeUint16(device const uint16_t* inData [[ buffer(0) ]],
+                             device uint8_t* outData [[ buffer(1) ]],
+                             device const int& lower [[ buffer(2) ]],
+                             device const int& upper [[ buffer(3) ]],
+                             uint index [[ thread_position_in_grid ]]) {
+    adjustSizeGeneric<uint16_t>(inData, outData, lower, upper, index);
+}
+
+kernel void adjustSizeInt32(device const int32_t* inData [[ buffer(0) ]],
+                            device uint8_t* outData [[ buffer(1) ]],
+                            device const int& lower [[ buffer(2) ]],
+                            device const int& upper [[ buffer(3) ]],
+                            uint index [[ thread_position_in_grid ]]) {
+    adjustSizeGeneric<int32_t>(inData, outData, lower, upper, index);
+}
+
+kernel void adjustSizeUint32(device const uint32_t* inData [[ buffer(0) ]],
+                             device uint8_t* outData [[ buffer(1) ]],
+                             device const int& lower [[ buffer(2) ]],
+                             device const int& upper [[ buffer(3) ]],
+                             uint index [[ thread_position_in_grid ]]) {
+    adjustSizeGeneric<uint32_t>(inData, outData, lower, upper, index);
+}
+
+kernel void adjustSizeFloat32(device const float* inData [[ buffer(0) ]],
+                              device uint8_t* outData [[ buffer(1) ]],
+                              device const int& lower [[ buffer(2) ]],
+                              device const int& upper [[ buffer(3) ]],
+                              uint index [[ thread_position_in_grid ]]) {
+    adjustSizeGeneric<float>(inData, outData, lower, upper, index);
+}
+
+kernel void adjustSizeFloat64(device const float* inData [[ buffer(0) ]],
+                              device uint8_t* outData [[ buffer(1) ]],
+                              device const int& lower [[ buffer(2) ]],
+                              device const int& upper [[ buffer(3) ]],
+                              uint index [[ thread_position_in_grid ]]) {
+    adjustSizeGeneric<float>(inData, outData,lower, upper, index);
 }
 
 kernel void grayscaleToRGBA(device const uint8_t* inData [[buffer(0)]],

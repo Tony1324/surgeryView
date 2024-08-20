@@ -165,8 +165,17 @@ struct ImageMessage: OpenIGTDecodable {
             
             
             switch scalar_type {
-                case 6: adjustScale = library.makeFunction(name: "adjustSizeInt32")
-                default: return
+            case 2: adjustScale = library.makeFunction(name: "adjustSizeInt8")
+            case 3: adjustScale = library.makeFunction(name: "adjustSizeUint8")
+            case 4: adjustScale = library.makeFunction(name: "adjustSizeInt16")
+            case 5: adjustScale = library.makeFunction(name: "adjustSizeUint16")
+            case 6: adjustScale = library.makeFunction(name: "adjustSizeInt32")
+            case 7: adjustScale = library.makeFunction(name: "adjustSizeUint32")
+            case 10: adjustScale = library.makeFunction(name: "adjustSizeFloat32")
+            case 11: adjustScale = library.makeFunction(name: "adjustSizeFloat64")
+            default:
+                print("Error: Unsupported scalar type \(scalar_type)")
+                adjustScale = nil
             }
             
             guard let adjustScale = adjustScale,
