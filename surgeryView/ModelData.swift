@@ -111,7 +111,6 @@ class ModelData{
         axialImageCache = nil
         coronalImageCache = nil
         sagittalImageCache = nil
-        originTransform = .identity
         image = nil
     }
     
