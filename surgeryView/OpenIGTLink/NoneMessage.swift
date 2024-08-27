@@ -7,6 +7,7 @@
 
 import Foundation
 
+//useful if a message is only a header
 struct NoneMessage: OpenIGTDecodable, OpenIGTEncodable{
     static func decode(_ data: Data) -> NoneMessage? {
         return NoneMessage()

@@ -6,6 +6,8 @@
 //
 
 import Foundation
+
+//see https://github.com/openigtlink/OpenIGTLink/blob/master/Documents/Protocol/string.md for protocol
 struct StringMessage: OpenIGTDecodable {
     var str: String
     static func decode(_ data: Data) -> StringMessage? {

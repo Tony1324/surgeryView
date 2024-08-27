@@ -2,20 +2,25 @@
 //  DataReader.swift
 //  surgeryView
 //
-//  Created by BreastCAD on 5/23/24.
+//  Created by Tony Zhang on 5/23/24.
 //
 
 import Foundation
 
+//helper library for displaying and processing data
 class DataReader {
     var data: Data
     init(_ data: Data) {
         self.data = data
     }
+    
+    //default printing of data only outputs its size, this shows actual content of the data
     func prettyPrint() {
         print("\(data.count) Bytes")
         print(data.map { String(format: "%02x", $0) }.joined(separator: " "))
     }
+    
+    //generic function allowing for Int32, Int64, UInt, etc
     func readInt<T:FixedWidthInteger>() -> T? {
         if data.count >= MemoryLayout<T>.size {
             let x = T(bigEndian: data.subdata(in: data.startIndex..<data.startIndex + MemoryLayout<T>.size).withUnsafeBytes{$0.load(as: T.self)})
@@ -44,6 +49,8 @@ class DataReader {
     }
     
     func remainingData() -> Data{
+        //when Data is deleted in above functions, it only shifts the start index,
+        //while this seems to return the entire Data, it actually successfully removes what was deleted
         data.suffix(from: data.startIndex)
     }
 }

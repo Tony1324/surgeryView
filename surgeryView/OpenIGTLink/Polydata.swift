@@ -8,7 +8,7 @@
 import Foundation
 import RealityKit
 
-
+//see https://github.com/openigtlink/OpenIGTLink/blob/master/Documents/Protocol/polydata.md for protocol
 struct PolyDataMessage: OpenIGTDecodable {
     
     var npoints: UInt32

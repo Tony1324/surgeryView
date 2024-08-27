@@ -15,7 +15,7 @@
 		1B3F57142B957BB900753CBB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1B3F57132B957BB900753CBB /* Assets.xcassets */; };
 		1B3F57172B957BB900753CBB /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1B3F57162B957BB900753CBB /* Preview Assets.xcassets */; };
 		1B7F9EC02BE70ED300D0CE52 /* surgeryViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B7F9EBF2BE70ED300D0CE52 /* surgeryViewTest.swift */; };
-		1BA965522BE70B5F0019B819 /* OpenIGTLLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BA965302BE709BA0019B819 /* OpenIGTLLink.swift */; };
+		1BA965522BE70B5F0019B819 /* CommunicationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BA965302BE709BA0019B819 /* CommunicationsManager.swift */; };
 		1BA965532BE70B5F0019B819 /* Polydata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BA965312BE709BA0019B819 /* Polydata.swift */; };
 		1BA965542BE70B5F0019B819 /* Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BA9652F2BE709BA0019B819 /* Transform.swift */; };
 		1BA965552BE70B5F0019B819 /* IGTHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BA9652E2BE709B90019B819 /* IGTHeader.swift */; };
@@ -120,7 +120,7 @@
 		1B7F9EBF2BE70ED300D0CE52 /* surgeryViewTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = surgeryViewTest.swift; sourceTree = "<group>"; };
 		1BA9652E2BE709B90019B819 /* IGTHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IGTHeader.swift; sourceTree = "<group>"; };
 		1BA9652F2BE709BA0019B819 /* Transform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transform.swift; sourceTree = "<group>"; };
-		1BA965302BE709BA0019B819 /* OpenIGTLLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenIGTLLink.swift; sourceTree = "<group>"; };
+		1BA965302BE709BA0019B819 /* CommunicationsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunicationsManager.swift; sourceTree = "<group>"; };
 		1BA965312BE709BA0019B819 /* Polydata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Polydata.swift; sourceTree = "<group>"; };
 		1BBF31312BFC3C0C007E63DE /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1BF411622BBCE5310010CD1D /* Model_58_right_rib_11.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Model_58_right_rib_11.usdz; sourceTree = "<group>"; };
@@ -333,7 +333,7 @@
 		1BA965562BE70BEB0019B819 /* OpenIGTLink */ = {
 			isa = PBXGroup;
 			children = (
-				1BA965302BE709BA0019B819 /* OpenIGTLLink.swift */,
+				1BA965302BE709BA0019B819 /* CommunicationsManager.swift */,
 				B75C70532BFFC8710019A527 /* DataReader.swift */,
 				1BA9652E2BE709B90019B819 /* IGTHeader.swift */,
 				B75C70502BEAB3300019A527 /* NoneMessage.swift */,
@@ -511,7 +511,7 @@
 				B75C70512BEAB3300019A527 /* NoneMessage.swift in Sources */,
 				1B11BFB72BA918B700E1DEB0 /* ModelManager.swift in Sources */,
 				1B3F570E2B957BB700753CBB /* surgeryViewApp.swift in Sources */,
-				1BA965522BE70B5F0019B819 /* OpenIGTLLink.swift in Sources */,
+				1BA965522BE70B5F0019B819 /* CommunicationsManager.swift in Sources */,
 				1BA965532BE70B5F0019B819 /* Polydata.swift in Sources */,
 				B75C70542BFFC8710019A527 /* DataReader.swift in Sources */,
 				B7D1ED7C2C18DC6C000473E7 /* Image.swift in Sources */,
@@ -668,7 +668,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"surgeryView/Preview Content\"";
-				DEVELOPMENT_TEAM = 68NKG8SS32;
+				DEVELOPMENT_TEAM = 4JW7JH8SFZ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
@@ -697,7 +697,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"surgeryView/Preview Content\"";
-				DEVELOPMENT_TEAM = 68NKG8SS32;
+				DEVELOPMENT_TEAM = 4JW7JH8SFZ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";

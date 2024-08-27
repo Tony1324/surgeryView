@@ -14,63 +14,6 @@ struct ModelManager: View {
     @State var base: Entity = Entity()
     var update: ((RealityViewContent) -> ())?
     
-    func addEntity(content: RealityViewContent ,entity: Entity){
-        if let originAnchor = content.entities.first?.findEntity(named: "origin") {
-            if !modelData.minimalUI || modelData.imageSlices.contains(entity){
-                entity.components.set(InputTargetComponent())
-                entity.components.set(HoverEffectComponent())
-                entity.generateCollisionShapes(recursive: true)
-            }
-//            var textLabel = ModelEntity(mesh: MeshResource.generateText("untitled entity"), materials: [SimpleMaterial(color: .white, isMetallic: false)])
-            originAnchor.addChild(entity)
-//            entity.addChild(textLabel)
-//            let bounds = entity.visualBounds(relativeTo: entity)
-//            var pos = entity.convert(position: bounds.center, to: nil)
-//            pos.z = entity.convert(position:bounds.min, to: nil).z + 0.01
-//            textLabel.move(to: Transform(scale: [0.001, 0.001, 0.001],translation: pos), relativeTo: nil)
-        }
-    }
-    
-    func addBase(content: RealityViewContent, attachments: RealityViewAttachments) {
-//        let base = ModelEntity(mesh: .generateCylinder(height: 0.02, radius: 0.2), materials: [SimpleMaterial.init(color: .black, isMetallic: false)])
-        if !modelData.minimalUI {
-            base = ModelEntity(mesh: .generateCylinder(height: 0.02, radius: 0.2), materials: [SimpleMaterial.init(color: .black, isMetallic: false)])
-        }
-        base.name = "base"
-        base.components.set(GroundingShadowComponent(castsShadow: true))
-        content.add(base)
-        if !modelData.minimalUI {
-            if let panel = attachments.entity(for: "controls") {
-                panel.name = "controls"
-                panel.move(to: Transform(translation: [-0.5, 0.2, 0]), relativeTo: base)
-                panel.transform.rotation = .init(angle: Float.pi/8, axis: [0, 1, 0])
-                base.addChild(panel)
-            }
-            if let rotation = attachments.entity(for: "rotate") {
-                rotation.name = "rotate"
-                rotation.transform.rotation = .init(angle: Float.pi/2, axis: [1, 0, 0])
-                base.addChild(rotation)
-            }
-        } else {
-            if let loading = attachments.entity(for: "loading"){
-                loading.name = "loading"
-                content.add(loading)
-            }
-        }
-    }
-    
-    func positionModels(content: RealityViewContent, attachment: RealityViewAttachments){
-        if let originAnchor = base.findEntity(named: "origin"){
-            var centers: SIMD3<Float> = [0,0,0]
-            
-            centers = originAnchor.visualBounds(relativeTo: base).center - originAnchor.position
-            let animationDefinition = FromToByAnimation(from: originAnchor.transform, to: Transform(scale: originAnchor.scale, rotation: originAnchor.orientation, translation: [0,0,0] - centers), duration: 0.3, timing: .easeOut, bindTarget: .transform)
-            if let animationResource = try? AnimationResource.generate(with: animationDefinition) {
-                originAnchor.playAnimation(animationResource)
-            }
-        }
-    }
-    
     @State var baseRotation: Float = 0
     @State var dragStartLocation3d: Transform? = nil
     
@@ -100,6 +43,8 @@ struct ModelManager: View {
 
         } update: { content, attachments in
             if let originAnchor = base.findEntity(named: "origin"){
+                
+                //add and delete entities in sync with modelData
                 for entity in modelData.models + modelData.imageSlices {
                     if originAnchor.children.contains(entity) {
                         continue
@@ -135,10 +80,12 @@ struct ModelManager: View {
                     }
                     pointer.isEnabled = modelData.pointerIsVisibile
                 }
+                
                 for slice in modelData.imageSlices {
                     slice.isEnabled = modelData.slicesIsVisible
                 }
             }
+            //allows parent views to also respond to updates
             if let update {
                 update(content)
             }
@@ -177,9 +124,7 @@ struct ModelManager: View {
                     }
                 }
                 .animation(.easeInOut)
-                    
             }
-            
         }
         .gesture(
             DragGesture()
@@ -215,6 +160,56 @@ struct ModelManager: View {
                     dragStartLocation3d = nil
                 })
         )
+    }
+    
+    func addEntity(content: RealityViewContent ,entity: Entity){
+        if let originAnchor = content.entities.first?.findEntity(named: "origin") {
+            if !modelData.minimalUI || modelData.imageSlices.contains(entity){
+                entity.components.set(InputTargetComponent())
+                entity.components.set(HoverEffectComponent())
+                entity.generateCollisionShapes(recursive: true)
+            }
+            originAnchor.addChild(entity)
+        }
+    }
+    
+    func addBase(content: RealityViewContent, attachments: RealityViewAttachments) {
+        if !modelData.minimalUI {
+            base = ModelEntity(mesh: .generateCylinder(height: 0.02, radius: 0.2), materials: [SimpleMaterial.init(color: .black, isMetallic: false)])
+        }
+        base.name = "base"
+        base.components.set(GroundingShadowComponent(castsShadow: true))
+        content.add(base)
+        if !modelData.minimalUI {
+            if let panel = attachments.entity(for: "controls") {
+                panel.name = "controls"
+                panel.move(to: Transform(translation: [-0.5, 0.2, 0]), relativeTo: base)
+                panel.transform.rotation = .init(angle: Float.pi/8, axis: [0, 1, 0])
+                base.addChild(panel)
+            }
+            if let rotation = attachments.entity(for: "rotate") {
+                rotation.name = "rotate"
+                rotation.transform.rotation = .init(angle: Float.pi/2, axis: [1, 0, 0])
+                base.addChild(rotation)
+            }
+        } else {
+            if let loading = attachments.entity(for: "loading"){
+                loading.name = "loading"
+                content.add(loading)
+            }
+        }
+    }
+    
+    func positionModels(content: RealityViewContent, attachment: RealityViewAttachments){
+        if let originAnchor = base.findEntity(named: "origin"){
+            var centers: SIMD3<Float> = [0,0,0]
+            
+            centers = originAnchor.visualBounds(relativeTo: base).center - originAnchor.position
+            let animationDefinition = FromToByAnimation(from: originAnchor.transform, to: Transform(scale: originAnchor.scale, rotation: originAnchor.orientation, translation: [0,0,0] - centers), duration: 0.3, timing: .easeOut, bindTarget: .transform)
+            if let animationResource = try? AnimationResource.generate(with: animationDefinition) {
+                originAnchor.playAnimation(animationResource)
+            }
+        }
     }
 
 }

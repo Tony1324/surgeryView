@@ -9,6 +9,8 @@
 using namespace metal;
 
 
+//the following adjustSize functions essentially normalize input data to a common format,
+//regardless of the type or range of values
 template <typename T>
 void adjustSizeGeneric(device const T* inData [[ buffer(0) ]],
                               device uint8_t* outData [[ buffer(1) ]],
@@ -109,7 +111,9 @@ kernel void grayscaleToRGBA(device const uint8_t* inData [[buffer(0)]],
 }
 
 
-
+//returns 3d position when the dimensions of the 3d image are given
+//dimensions can be reordered for different transpositions
+//returns 3d coordinate in terms of the transposition, so x,y,z must be adjusted again for real location in original image
 int3 indexToPos(const int i, const int a, const int b, const int c) {
     int z = i / (a * b);
     int y = (i / a) % b;
@@ -118,6 +122,7 @@ int3 indexToPos(const int i, const int a, const int b, const int c) {
     return pos;
 }
 
+//only intended to be called for the original, non-transposed dicom matrix
 int posToIndex(const int3 pos, const int3 size, const bool alt){
     return alt ? (pos.y * size.x * size.z + pos.z * size.x + pos.x) : (pos.z * size.x * size.y + pos.y * size.x + pos.x);
 }
@@ -148,6 +153,12 @@ kernel void transposeAll(device const int32_t* image [[buffer(0)]],
 
     int3 sagittalPos = indexToPos(index, z, y, x);
     int sagittalI = posToIndex(int3(sagittalPos.z, sagittalPos.y, sagittalPos.x), size, alt);
+    
+    //The above code finds different pixels in the original image for the pixel at "index" in each of the transposed images
+    //That is, the output matrices are computed in order, while jumping around the original
+    //A prior version of the code required the ability to compute the output in contiguous batches
+    
+    //An alternative would be to read the same pixel from the original image, but insert it at different positions in the transposed images
     
     axial[index] = image[axialI];
     coronal[index] = image[coronalI];

@@ -10,6 +10,10 @@ import SwiftUI
 import RealityKit
 import Network
 
+
+//This class and only this class controls the display and processing of all data and events
+//ModelManager.swift "listens" to this class automatically for all changes to models, imageSlices, etc
+
 @Observable
 class ModelData{
     var image: ImageMessage?
@@ -30,9 +34,10 @@ class ModelData{
     
     var models: [Entity]
     var originTransform: Transform = Transform.identity
-    var igtlClient: CommunicationsManager?
+    var openIGTLinkServer: CommunicationsManager?
     var localIPAddress: String? 
     
+    //one version of the code which shows an more detailed control panel, allowing for greater user interation
     var minimalUI = true
     
     private var _igtlRotation = simd_quatf.init(angle: Float.pi, axis: [0, 1, 0])
@@ -50,17 +55,16 @@ class ModelData{
         //The communications manager handles networking and parsing
         //this class, modelData, is used as a delegate to implement receiving messages, see extension below
         originTransform = Transform(scale: [0.001, 0.001, 0.001], rotation: _igtlRotation)
-        igtlClient?.disconnect()
-        igtlClient = CommunicationsManager(port: 18944, delegate: self)
-        if let igtlClient {
+        openIGTLinkServer?.disconnect()
+        openIGTLinkServer = CommunicationsManager(port: 18944, delegate: self)
+        if let openIGTLinkServer {
             Task{
-                await igtlClient.startClient()
-//                let message = IGTHeader(v: 2, messageType: "GET_POLYDATA", deviceName: "Client", timeStamp: 0, bodySize: 0, CRC: 0)
-//                igtlClient.sendMessage(header: message, content: NoneMessage())
+                await openIGTLinkServer.startServer()
             }
         }
     }
 
+    //Can be used for debug / demo purposes, instead of receiving models from network, it displays pre installed files
     func loadSampleModels() async{
         originTransform = Transform(scale: [0.1, 0.1, 0.1], rotation: simd_quatf.init(angle: -Float.pi/2, axis: [1, 0, 0]))
         let testModels = Bundle.main.urls(forResourcesWithExtension: "usdz", subdirectory: "")
@@ -73,7 +77,6 @@ class ModelData{
                         }
                         return nil
                     }
-                    
                 }
                 var models:[Entity?] = []
                 for try await result in group {
@@ -99,6 +102,7 @@ class ModelData{
         }
     }
     
+    //clears view, but preserves server connection, etc
     func clearAll() {
         models = []
         axialSlice = nil
@@ -107,9 +111,14 @@ class ModelData{
         axialImageCache = nil
         coronalImageCache = nil
         sagittalImageCache = nil
+        originTransform = .identity
         image = nil
     }
     
+    //only relevant with minimalUI = false, where the user can reposition models
+    
+    //otherwise, models are all positioned at the origin,
+    //the actual positions of vertices determines where each model appears to be
     func resetPositions() {
         for entity in models {
             if let parent = entity.parent{
@@ -130,6 +139,7 @@ class ModelData{
         }
     }
     
+    //used to display DICOM slices with visibility on both sides
     func generateDoubleSidedPlane(width: Float, height: Float, materials: [SimpleMaterial]) -> ModelEntity {
         let halfWidth = width / 2
         let halfHeight = height / 2
@@ -185,7 +195,7 @@ class ModelData{
     
     //The following functions show DICOM IMAGES in all 3 directions
     //code for processing images is in OpenIGTLink/Image.swift
-    
+
     func generateAxialSlice(position: Float) -> ModelEntity?{
         if let image = image{
             if let imageCache = axialImageCache {
@@ -290,6 +300,7 @@ class ModelData{
                         var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
                         
                         getnameinfo(interface.ifa_addr, socklen_t((interface.ifa_addr.pointee.sa_len)), &hostname, socklen_t(hostname.count), nil, socklen_t(0), NI_NUMERICHOST)
+                        //checks if address is ipv4
                         guard interface.ifa_addr.pointee.sa_family == 2 else {continue}
                         address = String(cString: hostname)
                     }
@@ -305,11 +316,9 @@ extension ModelData: OpenIGTDelegate {
     func receiveImageMessage(header: IGTHeader, image img: ImageMessage) {
         self.image = img
         Task{
-//            await self.image?.setImageData()
             self.image?.setImageData()
             Task {
                 await withTaskGroup(of: Optional<(SimpleMaterial,Int)>.self) { group in
-                    axialImageCache = []
                     for i in 0..<image!.size.z {
                         group.addTask {
                             if let img = self.image!.createAxialImage(position: Int(i)) {
@@ -322,9 +331,8 @@ extension ModelData: OpenIGTDelegate {
                             return nil
                         }
                     }
-                    for _ in 0..<image!.size.z {
-                        axialImageCache?.append(nil)
-                    }
+                    
+                    axialImageCache = Array<SimpleMaterial?>(repeating: nil, count: Int(image!.size.z))
                     for await result in group {
                         if let result = result {
                             axialImageCache?[result.1] = result.0
@@ -338,7 +346,6 @@ extension ModelData: OpenIGTDelegate {
             }
             Task {
                 await withTaskGroup(of: Optional<(SimpleMaterial,Int)>.self) { group in
-                    coronalImageCache = []
                     for i in 0..<image!.size.y {
                         group.addTask {
                             if let img = self.image!.createCoronalImage(position: Int(i)) {
@@ -351,9 +358,8 @@ extension ModelData: OpenIGTDelegate {
                             return nil
                         }
                     }
-                    for _ in 0..<image!.size.y {
-                        coronalImageCache?.append(nil)
-                    }
+                    
+                    coronalImageCache = Array<SimpleMaterial?>(repeating: nil, count: Int(image!.size.y))
                     for await result in group {
                         if let result = result {
                             coronalImageCache?[result.1] = result.0
@@ -367,7 +373,6 @@ extension ModelData: OpenIGTDelegate {
             }
             Task {
                 await withTaskGroup(of: Optional<(SimpleMaterial,Int)>.self) { group in
-                    sagittalImageCache = []
                     for i in 0..<image!.size.x {
                         group.addTask {
                             if let img = self.image!.createSagittalImage(position: Int(i)) {
@@ -380,9 +385,8 @@ extension ModelData: OpenIGTDelegate {
                             return nil
                         }
                     }
-                    for _ in 0..<image!.size.x {
-                        sagittalImageCache?.append(nil)
-                    }
+                    
+                    sagittalImageCache = Array<SimpleMaterial?>(repeating: nil, count: Int(image!.size.x))
                     for await result in group {
                         if let result = result {
                             sagittalImageCache?[result.1] = result.0
@@ -408,6 +412,10 @@ extension ModelData: OpenIGTDelegate {
     func receivePolyDataMessage(header: IGTHeader, polydata: PolyDataMessage) {
         let model = ModelEntity()
         model.model = ModelComponent(mesh: .generateBox(size: 0), materials: [UnlitMaterial(color: .clear)])
+        
+        //ModelEntity must be created immediately for subsequent messages that set color and opacity
+        //Mesh is separate from the model and can be edited at any time afterwords,
+        //so the relativelty expensive task of generating polygons can be done concurrently to not block main thread
         Task(priority: .high){
             if let mesh = polydata.generateMeshFromPolys() {
                 Task.detached { @MainActor in
@@ -415,14 +423,15 @@ extension ModelData: OpenIGTDelegate {
                 }
             }
         }
-        model.components.set(OpacityComponent(opacity: 0))
+        
         model.name = header.deviceName
-        //expecting a second color message, so temporarily no visibility
+        model.components.set(OpacityComponent(opacity: 0))
         model.components.set(GroundingShadowComponent(castsShadow: true))
         
         models.append(model)
     }
     
+    //any misc information is sent through a string message, attaching metadata directly does not seem to be available on the 3d slicer side.
     func receiveStringMessage(header: IGTHeader, string: StringMessage) {
         switch header.deviceName.trimmingCharacters(in: ["\0"]) {
         case "CLEAR":

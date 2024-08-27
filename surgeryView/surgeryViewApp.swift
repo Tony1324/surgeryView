@@ -22,31 +22,10 @@ struct surgeryViewApp: App {
         WindowGroup {
             ContentView()
                 .environment(modelData)
-                .task {
-                    if(modelData.igtlClient == nil){
-                        modelData.startServer()
-                    }
-//                    await modelData.loadSampleModels()
-                }
-                .ornament(attachmentAnchor: .scene(.bottom)) {
-                    ToolbarView()
-                }
         }
         .windowStyle(.volumetric)
-//        .defaultWorldScaling(.dynamic)
-//        .volumeWorldAlignment(.gravityAligned)
-//        .defaultSize(width: 0.8, height: 0.8, depth: 0.8, in: .meters)
-//        
-
-//        ImmersiveSpace(id: "3d-immersive") {
-//            ContentView()
-//                .environment(modelData)
-//                .task {
-//                    if(modelData.igtlClient == nil){
-//                        modelData.startServer()
-//                    }
-//                }
-//        }
-//        .immersionStyle(selection: $style, in: .mixed)
+        .defaultWorldScaling(.dynamic)
+        .volumeWorldAlignment(.gravityAligned)
+        .defaultSize(width: 0.8, height: 0.8, depth: 0.8, in: .meters)
     }
 }

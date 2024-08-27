@@ -7,6 +7,7 @@
 
 import Foundation
 
+//see https://github.com/openigtlink/OpenIGTLink/blob/master/Documents/Protocol/header.md for protocol
 struct IGTHeader: OpenIGTDecodable, OpenIGTEncodable{
     var v: UInt16
     var messageType: String

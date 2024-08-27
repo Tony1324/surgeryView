@@ -10,6 +10,7 @@ import RealityKit
 import CoreGraphics
 import Metal
 
+//see https://github.com/openigtlink/OpenIGTLink/blob/master/Documents/Protocol/image.md for protocol
 struct ImageMessage: OpenIGTDecodable {
     
     let v: UInt16
@@ -134,14 +135,11 @@ struct ImageMessage: OpenIGTDecodable {
         guard let image = CGImage(width: Int(size.z), height: Int(size.y), bitsPerComponent: 8, bitsPerPixel: 4*Int(num_components) * 8, bytesPerRow: Int(size.z)*4*Int(num_components), space: colorSpace, bitmapInfo: bitmapInfo, provider: providerRef, decode: nil, shouldInterpolate: true, intent: .defaultIntent) else {return nil}
         return image
     }
-//    
-//    mutating func setImageData() async {
-//        let images = await scaleImageData()
-//        axial_transposed_image = images.0
-//        coronal_transposed_image = images.1
-//        sagittal_transposed_image = images.2
-//    }
-//    
+    
+    //Processes the raw image data into the desired format, to prepare for rendering
+    //Largely relies on Apple's Metal framework for efficient processing
+    //No rendering is performed here, Metal only rearranges/processes the Data buffer
+    //Afterwards, the functions above convert Data into CGImages, that can be displayed as a texture.
     mutating func setImageData(){
         let size = SIMD3<Int>(Int(size.x), Int(size.y), Int(size.z))
 
@@ -149,11 +147,11 @@ struct ImageMessage: OpenIGTDecodable {
 
         image_data.withUnsafeBytes { pointer in
             
-            //3 steps: 
+            //3 steps:
             //1) regularize all image scalar types into uint8 with colors 0-255
             //2) convert to rgb data, but still gray (duplicate each value 3 times and add alpha)
-            //3) transpose into axial, coronal, and saggital
-            
+            //   this is necessary since grayscale images render as red
+            //3) transpose into axial, coronal, and saggital slices.
             
             let adjustScale: MTLFunction?
             guard let device = MTLCreateSystemDefaultDevice(),

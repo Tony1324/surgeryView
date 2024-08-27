@@ -8,6 +8,7 @@
 import Foundation
 import RealityKit
 
+//see https://github.com/openigtlink/OpenIGTLink/blob/master/Documents/Protocol/transform.md for protocol
 struct TransformMessage: OpenIGTEncodable{
     var transform: simd_float4x4
     
@@ -50,6 +51,7 @@ struct TransformMessage: OpenIGTEncodable{
         guard let b3 = data.readFloat() else {return nil}
         guard let c3 = data.readFloat() else {return nil}
         
+        //matrix must be transformed first from row-first order to columns, and additionally account for different coordinate systems
         return TransformMessage(transform: simd_float4x4(columns: (
             simd_float4(a0, b0, c0, 0),
             simd_float4(a2, b2, c2, 0),

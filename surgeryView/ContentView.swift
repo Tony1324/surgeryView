@@ -15,11 +15,18 @@ struct ContentView: View {
     @State private var showImmersiveSpace = false
     @State private var immersiveSpaceIsShown = false
 
-    private var sampleObject = ModelEntity(mesh: .generateBox(size: 0.4, cornerRadius: 0.05), materials: [SimpleMaterial(color: .blue, isMetallic: true)])
     @Environment(ModelData.self) var modelData
     @Environment(\.openWindow) private var openWindow
     var body: some View {
         ModelManager()
+            .task {
+                if(modelData.openIGTLinkServer == nil){
+                    modelData.startServer()
+                }
+            }
+            .ornament(attachmentAnchor: .scene(.bottomFront)) {
+                ToolbarView()
+            }
     }
 }
 
