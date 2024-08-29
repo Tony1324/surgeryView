@@ -281,6 +281,10 @@ class ModelData{
             }
         }
     }
+     
+    func sendSlicePosition(name: String, pos: Float){
+        openIGTLinkServer?.sendMessage(header: IGTHeader.create(messageType: "STRING", name: name), content: StringMessage(str: String(describing: pos)))
+    }
 
     func getLocalIPAddress() -> String? {
         var address: String?

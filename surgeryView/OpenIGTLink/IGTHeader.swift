@@ -45,6 +45,10 @@ struct IGTHeader: OpenIGTDecodable, OpenIGTEncodable{
         withUnsafeBytes(of: CRC.bigEndian) { data.append(contentsOf: $0 )}
         return data
     }
+    
+    static func create(messageType: String, name: String) -> IGTHeader {
+        return IGTHeader(v: 1, messageType: messageType, deviceName: name, timeStamp: UInt64(Date.now.timeIntervalSince1970), bodySize: 0, CRC: 0)
+    }
 }
 
 struct IGTExtendedHeader {

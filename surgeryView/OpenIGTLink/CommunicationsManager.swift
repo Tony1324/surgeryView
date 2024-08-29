@@ -40,6 +40,7 @@ class CommunicationsManager{
             listener.newConnectionHandler = { connection in
                 self.connection = connection
                 connection.start(queue: .main)
+                self.sendMessage(header: IGTHeader(v: 1, messageType: "STRING", deviceName: "TEST", timeStamp: UInt64(Date.now.timeIntervalSince1970), bodySize: 0, CRC: 0), content: StringMessage(str: "TESTING SEND"))
                 //after finishing connection to server, immediately begin listening for messages, and recursively calling itself to receive more messages
                 //here data is parsed and the OpenIGTDelegate (ModelData) is called to handle the messages
                 self.receiveMessage(connection: connection)
@@ -138,8 +139,10 @@ class CommunicationsManager{
     
     func sendMessage(header: IGTHeader, content: OpenIGTEncodable) {
         if let connection {
-            let rawHeader = header.encode()
             let rawContent = content.encode()
+            var _header = header
+            _header.bodySize = UInt64(rawContent.count)
+            let rawHeader = _header.encode()
             var data = Data()
             data.append(rawHeader)
             data.append(rawContent)

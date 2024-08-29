@@ -141,14 +141,17 @@ struct ModelManager: View {
                         if entity.name == "axial-image" {
                             entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D([0,translation.y,0])), relativeTo: entity.parent)
                             modelData.updateAxialSlice(position: entity.position.y)
+                            modelData.sendSlicePosition(name: "AXIAL", pos: entity.position.y)
                             return
                         } else if entity.name == "coronal-image"{
                             entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D([0,0,translation.z])), relativeTo: entity.parent)
                             modelData.updateCoronalSlice(position: entity.position.z)
+                            modelData.sendSlicePosition(name: "CORONAL", pos: entity.position.z)
                             return
                         } else if entity.name == "sagittal-image"{
                             entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D([translation.x,0,0])), relativeTo: entity.parent)
                             modelData.updateSagittalSlice(position: entity.position.x)
+                            modelData.sendSlicePosition(name: "SAGITTAL", pos: entity.position.x)
                             return
                         }
                     }

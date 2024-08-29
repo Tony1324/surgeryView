@@ -9,7 +9,7 @@ import Foundation
 import RealityKit
 
 //see https://github.com/openigtlink/OpenIGTLink/blob/master/Documents/Protocol/transform.md for protocol
-struct TransformMessage: OpenIGTEncodable{
+struct TransformMessage: OpenIGTEncodable, OpenIGTDecodable{
     var transform: simd_float4x4
     
     static var messageSize = MemoryLayout<Float32>.size * 4 * 3
