@@ -151,7 +151,7 @@ struct ModelManager: View {
                         } else if entity.name == "sagittal-image"{
                             entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D([translation.x,0,0])), relativeTo: entity.parent)
                             modelData.updateSagittalSlice(position: entity.position.x)
-                            modelData.sendSlicePosition(name: "SAGITTAL", pos: entity.position.x)
+                            modelData.sendSlicePosition(name: "SAGITTAL", pos: -entity.position.x)
                             return
                         }
                     }
