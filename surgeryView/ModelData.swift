@@ -285,6 +285,10 @@ class ModelData{
     func sendSlicePosition(name: String, pos: Float){
         openIGTLinkServer?.sendMessage(header: IGTHeader.create(messageType: "STRING", name: name), content: StringMessage(str: String(describing: pos)))
     }
+    
+    func sendEntity(entity: Entity){
+        openIGTLinkServer?.sendMessage(header: IGTHeader.create(messageType: "STRING", name: "ENTITY"), content: StringMessage(str: entity.name))
+    }
 
     func getLocalIPAddress() -> String? {
         var address: String?
@@ -423,6 +427,7 @@ extension ModelData: OpenIGTDelegate {
             if let mesh = polydata.generateMeshFromPolys() {
                 Task.detached { @MainActor in
                     model.model?.mesh = mesh
+                    model.generateCollisionShapes(recursive: true)
                 }
             }
         }

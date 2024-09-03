@@ -40,7 +40,6 @@ class CommunicationsManager{
             listener.newConnectionHandler = { connection in
                 self.connection = connection
                 connection.start(queue: .main)
-                self.sendMessage(header: IGTHeader(v: 1, messageType: "STRING", deviceName: "TEST", timeStamp: UInt64(Date.now.timeIntervalSince1970), bodySize: 0, CRC: 0), content: StringMessage(str: "TESTING SEND"))
                 //after finishing connection to server, immediately begin listening for messages, and recursively calling itself to receive more messages
                 //here data is parsed and the OpenIGTDelegate (ModelData) is called to handle the messages
                 self.receiveMessage(connection: connection)
@@ -148,6 +147,7 @@ class CommunicationsManager{
             data.append(rawContent)
             print("message sent")
             connection.send(content: data, completion: .contentProcessed({ error in
+                if error == nil {return}
                 print(error)
             }))
         }

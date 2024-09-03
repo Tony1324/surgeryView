@@ -163,15 +163,20 @@ struct ModelManager: View {
                     dragStartLocation3d = nil
                 })
         )
+        .gesture(
+            SpatialTapGesture()
+                .targetedToAnyEntity()
+                .onEnded({ value in
+                    guard modelData.models.contains(value.entity) else {return}
+                    modelData.sendEntity(entity: value.entity)
+                })
+        )
     }
     
     func addEntity(content: RealityViewContent ,entity: Entity){
-        if let originAnchor = content.entities.first?.findEntity(named: "origin") {
-            if !modelData.minimalUI || modelData.imageSlices.contains(entity){
-                entity.components.set(InputTargetComponent())
-                entity.components.set(HoverEffectComponent())
-                entity.generateCollisionShapes(recursive: true)
-            }
+        if let originAnchor = base.findEntity(named: "origin") {
+            entity.components.set(InputTargetComponent())
+            entity.components.set(HoverEffectComponent())
             originAnchor.addChild(entity)
         }
     }
