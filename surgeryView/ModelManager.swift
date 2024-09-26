@@ -128,7 +128,9 @@ struct ModelManager: View {
         }
         .gesture(
             DragGesture()
-                .targetedToAnyEntity()
+                .targetedToEntity(modelData.axialSlice ?? Entity())
+                .targetedToEntity(modelData.coronalSlice ?? Entity())
+                .targetedToEntity(modelData.sagittalSlice ?? Entity())
                 .onChanged({ value in
 
                     let entity = value.entity

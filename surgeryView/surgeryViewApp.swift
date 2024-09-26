@@ -16,12 +16,18 @@ struct surgeryViewApp: App {
     @State private var modelData = ModelData(models: [])
     @State var style: ImmersionStyle = .mixed
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some SwiftUI.Scene {
 
         WindowGroup {
             ContentView()
                 .environment(modelData)
+                .onChange(of: scenePhase) {
+                    if scenePhase == .background {
+                        modelData.clearAll()
+                    }
+                }
         }
         .windowStyle(.volumetric)
         .defaultWorldScaling(.dynamic)
