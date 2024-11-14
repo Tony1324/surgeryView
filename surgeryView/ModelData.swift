@@ -18,8 +18,11 @@ import Network
 class ModelData{
     var image: ImageMessage?
     
+    //A pointer controlled by the cursor on 3d slicer, in the absense of input, fade out the cursor
     var pointerTransform: Transform = Transform.identity
     var pointerIsVisibile = false
+    var pointerFadeDuration = 10
+    var pointerFadeTime = Date.now
     
     var imageSlices: [Entity] {
         [axialSlice, coronalSlice, sagittalSlice].compactMap{$0}
@@ -45,6 +48,7 @@ class ModelData{
     init(models: [Entity] = []) {
         self.models = models
         
+        //continuously update current IP address for network changes, etc.
         localIPAddress = self.getLocalIPAddress()
         Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { _ in
             self.localIPAddress = self.getLocalIPAddress()
@@ -59,7 +63,7 @@ class ModelData{
         openIGTLinkServer = CommunicationsManager(port: 18944, delegate: self)
         if let openIGTLinkServer {
             Task{
-                await openIGTLinkServer.startServer()
+                openIGTLinkServer.startServer()
             }
         }
     }
@@ -102,7 +106,7 @@ class ModelData{
         }
     }
     
-    //clears view, but preserves server connection, etc
+    //Resets view, but preserves server connection
     func clearAll() {
         models = []
         axialSlice = nil
@@ -111,11 +115,11 @@ class ModelData{
         axialImageCache = nil
         coronalImageCache = nil
         sagittalImageCache = nil
+        pointerIsVisibile = false
         image = nil
     }
     
     //only relevant with minimalUI = false, where the user can reposition models
-    
     //otherwise, models are all positioned at the origin,
     //the actual positions of vertices determines where each model appears to be
     func resetPositions() {
@@ -138,7 +142,7 @@ class ModelData{
         }
     }
     
-    //used to display DICOM slices with visibility on both sides
+    //used to display DICOM slices with visibility and correctly mapped textures on both sides
     func generateDoubleSidedPlane(width: Float, height: Float, materials: [SimpleMaterial]) -> ModelEntity {
         let halfWidth = width / 2
         let halfHeight = height / 2
@@ -194,7 +198,6 @@ class ModelData{
     
     //The following functions show DICOM IMAGES in all 3 directions
     //code for processing images is in OpenIGTLink/Image.swift
-
     func generateAxialSlice(position: Float) -> ModelEntity?{
         if let image = image{
             if let imageCache = axialImageCache {
@@ -408,11 +411,20 @@ extension ModelData: OpenIGTDelegate {
     }
     
     func receiveTransformMessage(header: IGTHeader, transform: TransformMessage) {
+        //transform messages either convey orientation information to the camera, or
+        //the position of the pointer
         if header.deviceName.trimmingCharacters(in: ["\0"]) == "CAMERA" {
             originTransform.rotation = transform.realityKitTransform().rotation
         } else {
             pointerIsVisibile = true
             pointerTransform = transform.realityKitTransform()
+            pointerFadeTime = Date.now.addingTimeInterval(TimeInterval(pointerFadeDuration))
+            Task {
+                try await Task.sleep(nanoseconds: UInt64(pointerFadeDuration * 1_000_000_000))
+                if Date.now > pointerFadeTime{
+                    pointerIsVisibile = false
+                }
+            }
         }
     }
     
