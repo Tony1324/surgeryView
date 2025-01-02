@@ -23,12 +23,6 @@ struct surgeryViewApp: App {
         WindowGroup {
             ContentView()
                 .environment(modelData)
-                .onChange(of: scenePhase) {
-                    //if the main volume is closed, the saved models and patient data is reset, but connection is maintained
-                    if scenePhase == .background {
-                        modelData.clearAll()
-                    }
-                }
         }
         .windowStyle(.volumetric)
         //dynamic maintains relative size of models in field of view, so that if the window is moved away, the size is increased as well

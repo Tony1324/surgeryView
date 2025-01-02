@@ -37,6 +37,7 @@ class ModelData{
     
     var models: [Entity]
     var originTransform: Transform = Transform.identity
+    var autoRotation = true
     var openIGTLinkServer: CommunicationsManager?
     var localIPAddress: String? 
     
@@ -52,6 +53,12 @@ class ModelData{
         localIPAddress = self.getLocalIPAddress()
         Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { _ in
             self.localIPAddress = self.getLocalIPAddress()
+        }
+        
+        Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { _ in
+            if self.autoRotation {
+                self.originTransform.rotation = simd_quatf(angle: 0.1, axis: [0,1,0]) * self.originTransform.rotation
+            }
         }
     }
     

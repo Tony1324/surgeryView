@@ -65,7 +65,7 @@ struct ModelManager: View {
                 
                 originAnchor.transform.scale = modelData.originTransform.scale
                 
-                let animationDefinition = FromToByAnimation(from: base.transform, to: Transform(rotation: modelData.originTransform.rotation), duration: 0.3, timing: .easeOut, bindTarget: .transform)
+                let animationDefinition = FromToByAnimation(from: base.transform, to: Transform(rotation: modelData.originTransform.rotation), duration: 0.3, timing: .linear, bindTarget: .transform)
                 if let animationResource = try? AnimationResource.generate(with: animationDefinition) {
                     base.playAnimation(animationResource)
                 }
