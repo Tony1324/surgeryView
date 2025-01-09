@@ -42,48 +42,17 @@ struct ModelManager: View {
             }
 
         } update: { content, attachments in
-            if let originAnchor = base.findEntity(named: "origin"){
                 
-                //add and delete entities in sync with modelData
-                for entity in modelData.models + modelData.imageSlices {
-                    if originAnchor.children.contains(entity) {
-                        continue
-                    }else{
-                        addEntity(content: content, entity: entity)
-                        positionModels(content: content, attachment: attachments)
-                    }
-                }
-                for entity in originAnchor.children.reversed(){
-                    if entity.name == "pointer" {
-                        continue
-                    }
-                    if !(modelData.models + modelData.imageSlices).contains(entity){
-                        originAnchor.removeChild(entity)
-                        positionModels(content: content, attachment: attachments)
-                    }
-                }
-                
-                originAnchor.transform.scale = modelData.originTransform.scale
-                
-                let animationDefinition = FromToByAnimation(from: base.transform, to: Transform(rotation: modelData.originTransform.rotation), duration: 0.3, timing: .linear, bindTarget: .transform)
-                if let animationResource = try? AnimationResource.generate(with: animationDefinition) {
-                    base.playAnimation(animationResource)
-                }
+            syncEntities(content: content)
+            
+            positionModels(content: content, attachment: attachments)
+            
+            positionBase()
 
-                base.findEntity(named: "rotate")?.transform.rotation = .init(angle: baseRotation, axis: [0,1,0]) * .init(angle: Float.pi/2, axis: [1, 0, 0])
-                
-                if let pointer = originAnchor.findEntity(named: "pointer") {
-                    pointer.setScale([1,1,1], relativeTo: nil)
-                    let animationDefinition = FromToByAnimation(from: pointer.transform, to: Transform(scale: pointer.scale, rotation: pointer.transform.rotation, translation: modelData.pointerTransform.translation), duration: 0.1, timing: .linear, bindTarget: .transform)
-                    if let animationResource = try? AnimationResource.generate(with: animationDefinition) {
-                        pointer.playAnimation(animationResource)
-                    }
-                    pointer.isEnabled = modelData.pointerIsVisibile
-                }
-                
-                for slice in modelData.imageSlices {
-                    slice.isEnabled = modelData.slicesIsVisible
-                }
+            positionCursor()
+            
+            for slice in modelData.imageSlices {
+                slice.isEnabled = modelData.slicesIsVisible
             }
             //allows parent views to also respond to updates
             if let update {
@@ -144,6 +113,7 @@ struct ModelManager: View {
                             entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D([0,translation.y,0])), relativeTo: entity.parent)
                             modelData.updateAxialSlice(position: entity.position.y)
                             modelData.sendSlicePosition(name: "AXIAL", pos: entity.position.y)
+                            print("dragging")
                             return
                         } else if entity.name == "coronal-image"{
                             entity.move(to: dragStartLocation3d!.whenTranslatedBy(vector: Vector3D([0,0,translation.z])), relativeTo: entity.parent)
@@ -177,9 +147,59 @@ struct ModelManager: View {
     
     func addEntity(content: RealityViewContent ,entity: Entity){
         if let originAnchor = base.findEntity(named: "origin") {
+            entity.generateCollisionShapes(recursive: true)
             entity.components.set(InputTargetComponent())
             entity.components.set(HoverEffectComponent())
             originAnchor.addChild(entity)
+        }
+    }
+    
+    //read list of models and images from modelData, and update scene accordingly
+    func syncEntities(content: RealityViewContent){
+        //add and delete entities in sync with modelData
+        if let originAnchor = base.findEntity(named: "origin") {
+            for entity in modelData.models + modelData.imageSlices {
+                if originAnchor.children.contains(entity) {
+                    continue
+                }else{
+                    addEntity(content: content, entity: entity)
+                }
+            }
+            for entity in originAnchor.children.reversed(){
+                if entity.name == "pointer" {
+                    continue
+                }
+                if !(modelData.models + modelData.imageSlices).contains(entity){
+                    originAnchor.removeChild(entity)
+                }
+            }
+        }
+    }
+    
+    //update scale, transform of the scene based on modelData
+    func positionBase(){
+        if let originAnchor = base.findEntity(named: "origin") {
+            originAnchor.transform.scale = modelData.originTransform.scale
+            
+            let animationDefinition = FromToByAnimation(from: base.transform, to: Transform(rotation: modelData.originTransform.rotation), duration: 0.3, timing: .linear, bindTarget: .transform)
+            if let animationResource = try? AnimationResource.generate(with: animationDefinition) {
+                base.playAnimation(animationResource)
+            }
+            
+            base.findEntity(named: "rotate")?.transform.rotation = .init(angle: baseRotation, axis: [0,1,0]) * .init(angle: Float.pi/2, axis: [1, 0, 0])
+        }
+    }
+    
+    func positionCursor(){
+        if let originAnchor = base.findEntity(named: "origin"){
+            if let pointer = originAnchor.findEntity(named: "pointer") {
+                pointer.setScale([1,1,1], relativeTo: nil)
+                let animationDefinition = FromToByAnimation(from: pointer.transform, to: Transform(scale: pointer.scale, rotation: pointer.transform.rotation, translation: modelData.pointerTransform.translation), duration: 0.1, timing: .linear, bindTarget: .transform)
+                if let animationResource = try? AnimationResource.generate(with: animationDefinition) {
+                    pointer.playAnimation(animationResource)
+                }
+                pointer.isEnabled = modelData.pointerIsVisibile
+            }
         }
     }
     

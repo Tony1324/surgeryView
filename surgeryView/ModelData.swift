@@ -446,7 +446,6 @@ extension ModelData: OpenIGTDelegate {
             if let mesh = polydata.generateMeshFromPolys() {
                 Task.detached { @MainActor in
                     model.model?.mesh = mesh
-                    model.generateCollisionShapes(recursive: true)
                 }
             }
         }
