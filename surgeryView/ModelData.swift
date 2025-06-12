@@ -37,7 +37,7 @@ class ModelData{
     
     var models: [Entity]
     var originTransform: Transform = Transform.identity
-    var autoRotation = true
+    var autoRotation = false
     var openIGTLinkServer: CommunicationsManager?
     var localIPAddress: String? 
     
