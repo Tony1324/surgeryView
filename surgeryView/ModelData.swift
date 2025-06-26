@@ -330,6 +330,8 @@ class ModelData{
 }
 
 extension ModelData: OpenIGTDelegate {
+    //to achieve fast volume slices rendering and interaction, each slice is generated and cached as a material
+    //this is only part of the processing; ImageMessage already processes data and converts to CGImages
     func receiveImageMessage(header: IGTHeader, image img: ImageMessage) {
         self.image = img
         Task{
