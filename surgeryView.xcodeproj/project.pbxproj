@@ -74,6 +74,7 @@
 		1BF411C92BBCE5330010CD1D /* Model_63_left_hip.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 1BF411952BBCE5330010CD1D /* Model_63_left_hip.usdz */; };
 		B75C70512BEAB3300019A527 /* NoneMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75C70502BEAB3300019A527 /* NoneMessage.swift */; };
 		B75C70542BFFC8710019A527 /* DataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75C70532BFFC8710019A527 /* DataReader.swift */; };
+		B77F19AA2E13274400985809 /* coordinateConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77F19A92E13274400985809 /* coordinateConversion.swift */; };
 		B78206CF2C46FD6900E75B84 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78206CE2C46FD6900E75B84 /* String.swift */; };
 		B7B50D732BD1B0F9006733EF /* ModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B50D722BD1B0F9006733EF /* ModelData.swift */; };
 		B7BE9A502C75168300A02AC4 /* imageprocessing.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1B19AD342C74F2EF00205C8D /* imageprocessing.metal */; };
@@ -177,6 +178,7 @@
 		1BF411952BBCE5330010CD1D /* Model_63_left_hip.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Model_63_left_hip.usdz; sourceTree = "<group>"; };
 		B75C70502BEAB3300019A527 /* NoneMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoneMessage.swift; sourceTree = "<group>"; };
 		B75C70532BFFC8710019A527 /* DataReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataReader.swift; sourceTree = "<group>"; };
+		B77F19A92E13274400985809 /* coordinateConversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = coordinateConversion.swift; sourceTree = "<group>"; };
 		B78206CE2C46FD6900E75B84 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		B7B50D722BD1B0F9006733EF /* ModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelData.swift; sourceTree = "<group>"; };
 		B7D1ED7B2C18DC6C000473E7 /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
@@ -342,6 +344,7 @@
 				B7D1ED7B2C18DC6C000473E7 /* Image.swift */,
 				1B19AD342C74F2EF00205C8D /* imageprocessing.metal */,
 				1BA9652F2BE709BA0019B819 /* Transform.swift */,
+				B77F19A92E13274400985809 /* coordinateConversion.swift */,
 			);
 			path = OpenIGTLink;
 			sourceTree = "<group>";
@@ -506,6 +509,7 @@
 				1B3F57102B957BB700753CBB /* ContentView.swift in Sources */,
 				1B0054522BB07D8F004697EE /* ControlPanel.swift in Sources */,
 				B7BE9A502C75168300A02AC4 /* imageprocessing.metal in Sources */,
+				B77F19AA2E13274400985809 /* coordinateConversion.swift in Sources */,
 				1B0573B92C126C8A003905D4 /* ToolbarView.swift in Sources */,
 				B7B50D732BD1B0F9006733EF /* ModelData.swift in Sources */,
 				B75C70512BEAB3300019A527 /* NoneMessage.swift in Sources */,
@@ -668,7 +672,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"surgeryView/Preview Content\"";
-				DEVELOPMENT_TEAM = 68NKG8SS32;
+				DEVELOPMENT_TEAM = 4JW7JH8SFZ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
@@ -677,7 +681,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "net.tonyzhang.surgeryView-";
+				PRODUCT_BUNDLE_IDENTIFIER = bwh.harvard.edu.jayender.surgeryview;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -697,7 +701,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"surgeryView/Preview Content\"";
-				DEVELOPMENT_TEAM = 68NKG8SS32;
+				DEVELOPMENT_TEAM = 4JW7JH8SFZ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
@@ -706,7 +710,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "net.tonyzhang.surgeryView-";
+				PRODUCT_BUNDLE_IDENTIFIER = bwh.harvard.edu.jayender.surgeryview;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;

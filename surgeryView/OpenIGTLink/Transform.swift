@@ -15,22 +15,24 @@ struct TransformMessage: OpenIGTEncodable, OpenIGTDecodable{
     static var messageSize = MemoryLayout<Float32>.size * 4 * 3
 
     func encode() -> Data{
+        let rasTransform = realityKitToRASTransform(transform)
+        
         var data = Data()
-        withUnsafeBytes(of: transform.columns.0.x) { data.append(contentsOf: $0 )}
-        withUnsafeBytes(of: transform.columns.0.y) { data.append(contentsOf: $0 )}
-        withUnsafeBytes(of: transform.columns.0.z) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: rasTransform.columns.0.x) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: rasTransform.columns.0.y) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: rasTransform.columns.0.z) { data.append(contentsOf: $0 )}
 
-        withUnsafeBytes(of: transform.columns.1.x) { data.append(contentsOf: $0 )}
-        withUnsafeBytes(of: transform.columns.1.y) { data.append(contentsOf: $0 )}
-        withUnsafeBytes(of: transform.columns.1.z) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: rasTransform.columns.1.x) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: rasTransform.columns.1.y) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: rasTransform.columns.1.z) { data.append(contentsOf: $0 )}
 
-        withUnsafeBytes(of: transform.columns.2.x) { data.append(contentsOf: $0 )}
-        withUnsafeBytes(of: transform.columns.2.y) { data.append(contentsOf: $0 )}
-        withUnsafeBytes(of: transform.columns.2.z) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: rasTransform.columns.2.x) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: rasTransform.columns.2.y) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: rasTransform.columns.2.z) { data.append(contentsOf: $0 )}
 
-        withUnsafeBytes(of: transform.columns.3.x) { data.append(contentsOf: $0 )}
-        withUnsafeBytes(of: transform.columns.3.y) { data.append(contentsOf: $0 )}
-        withUnsafeBytes(of: transform.columns.3.z) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: rasTransform.columns.3.x) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: rasTransform.columns.3.y) { data.append(contentsOf: $0 )}
+        withUnsafeBytes(of: rasTransform.columns.3.z) { data.append(contentsOf: $0 )}
         return data
     }
     

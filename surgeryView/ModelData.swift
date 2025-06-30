@@ -213,9 +213,8 @@ class ModelData{
                 //fade near top and bottom
                 let plane = generateDoubleSidedPlane(width: Float(image.size.x)*image.traverse_i.x, height: Float(image.size.y)*image.traverse_j.y, materials: [img])
                 plane.name = "axial-image"
+                plane.position = rasToRealityKit(image.position)
                 plane.position.y = position
-                plane.position.x = image.position.x
-                plane.position.z = -image.position.y
                 axialSlice = plane
                 return plane
             }
@@ -241,9 +240,8 @@ class ModelData{
                 let img = imageCache[min(max(Int(index),0),Int(image.size.y)-1)] ?? SimpleMaterial(color: .black, isMetallic: false)
                 let plane = generateDoubleSidedPlane(width: Float(image.size.x)*image.traverse_i.x, height: Float(image.size.z) * image.normal.z, materials: [img])
                 plane.name = "coronal-image"
+                plane.position = rasToRealityKit(image.position)
                 plane.position.z = position
-                plane.position.x = image.position.x
-                plane.position.y = image.position.z
                 plane.transform.rotation = simd_quatf.init(angle: Float.pi/2, axis: [1,0,0])
                 coronalSlice = plane
                 return plane
@@ -270,9 +268,8 @@ class ModelData{
                 //fade near top and bottom
                 let plane = generateDoubleSidedPlane(width: image.fullHeight, height: image.fullLength, materials: [img])
                 plane.name = "sagittal-image"
+                plane.position = rasToRealityKit(image.position)
                 plane.position.x = (position)
-                plane.position.y = image.position.z
-                plane.position.z = -image.position.y
                 plane.transform.rotation = .init(angle: Float.pi/2, axis: [0,0,1])
                 sagittalSlice = plane
                 return plane

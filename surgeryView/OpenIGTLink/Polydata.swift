@@ -60,7 +60,8 @@ struct PolyDataMessage: OpenIGTDecodable {
 
             guard let z = data.readFloat() else {return nil}
 
-            points.append(SIMD3(x: x as Float, y: z as Float, z: -y as Float))
+//            points.append(SIMD3(x: x as Float, y: z as Float, z: -y as Float))
+            points.append(rasToRealityKit(SIMD3(x: x as Float, y: y as Float, z: z as Float)))
         }
 
         guard let vertices = extractStructArray(nvertices) else {return nil}
