@@ -476,7 +476,11 @@ extension ModelData: OpenIGTDelegate {
                     alpha: CGFloat(1)
                 )
             }
-            (models.filter{_split[0].hasPrefix( $0.name)}.first as? ModelEntity)?.model?.materials = [SimpleMaterial(color: color, isMetallic: false)]
+            var material = PhysicallyBasedMaterial()
+            material.roughness = 0.3
+            material.baseColor = .init(tint: color)
+            
+            (models.filter{_split[0].hasPrefix( $0.name)}.first as? ModelEntity)?.model?.materials = [material]
             
         case "MODELVISIBILITY":
             let str = string.str
@@ -485,14 +489,9 @@ extension ModelData: OpenIGTDelegate {
             
             let model = (models.filter{_split[0].hasPrefix( $0.name)}.first as? ModelEntity)
             model?.isEnabled = opacity != 0
-            let color = (model?.model?.materials.first as? SimpleMaterial)?.color
-            model?.model?.materials = [SimpleMaterial(color: (color?.tint ?? .white).withAlphaComponent(CGFloat(opacity)), isMetallic: false)]
+            model?.components.set(OpacityComponent(opacity: opacity))
             
-            let animationDefinition = FromToByAnimation(from: Float(0.0), to: Float(1.0), duration: 0.2, bindTarget: .opacity)
-            if let animationResource = try? AnimationResource.generate(with: animationDefinition) {
-                model?.playAnimation(animationResource)
-            }
-            
+
             
         case "AXIAL":
             let pos = Float(string.str) ?? 0

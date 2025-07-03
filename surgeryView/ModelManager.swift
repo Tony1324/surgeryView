@@ -179,10 +179,7 @@ struct ModelManager: View {
         if let originAnchor = base.findEntity(named: "origin") {
             originAnchor.transform.scale = modelData.originTransform.scale
             
-            let animationDefinition = FromToByAnimation(from: base.transform, to: Transform(rotation: modelData.originTransform.rotation), duration: 0.3, timing: .linear, bindTarget: .transform)
-            if let animationResource = try? AnimationResource.generate(with: animationDefinition) {
-                base.playAnimation(animationResource)
-            }
+            base.transform.rotation = modelData.originTransform.rotation
             
             base.findEntity(named: "rotate")?.transform.rotation = .init(angle: baseRotation, axis: [0,1,0]) * .init(angle: Float.pi/2, axis: [1, 0, 0])
         }
@@ -192,10 +189,7 @@ struct ModelManager: View {
         if let originAnchor = base.findEntity(named: "origin"){
             if let pointer = originAnchor.findEntity(named: "pointer") {
                 pointer.setScale([1,1,1], relativeTo: nil)
-                let animationDefinition = FromToByAnimation(from: pointer.transform, to: Transform(scale: pointer.scale, rotation: pointer.transform.rotation, translation: modelData.pointerTransform.translation), duration: 0.1, timing: .linear, bindTarget: .transform)
-                if let animationResource = try? AnimationResource.generate(with: animationDefinition) {
-                    pointer.playAnimation(animationResource)
-                }
+                pointer.transform.translation = modelData.pointerTransform.translation
                 pointer.isEnabled = modelData.pointerIsVisibile
             }
         }
@@ -232,11 +226,18 @@ struct ModelManager: View {
         if let originAnchor = base.findEntity(named: "origin"){
             var centers: SIMD3<Float> = [0,0,0]
             
-            centers = originAnchor.visualBounds(relativeTo: base).center - originAnchor.position
-            let animationDefinition = FromToByAnimation(from: originAnchor.transform, to: Transform(scale: originAnchor.scale, rotation: originAnchor.orientation, translation: [0,0,0] - centers), duration: 0.3, timing: .easeOut, bindTarget: .transform)
-            if let animationResource = try? AnimationResource.generate(with: animationDefinition) {
-                originAnchor.playAnimation(animationResource)
+            var count = 0
+            for entity in originAnchor.children{
+                if entity.name != "pointer"{
+                    centers += entity.visualBounds(relativeTo: base).center
+                    count += 1
+                }
             }
+            
+            centers /= Float(count)
+            
+            originAnchor.transform.translation = originAnchor.position - centers
+            
         }
     }
 
