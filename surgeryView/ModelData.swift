@@ -65,7 +65,7 @@ class ModelData{
     func startServer() {
         //The communications manager handles networking and parsing
         //this class, modelData, is used as a delegate to implement receiving messages, see extension below
-        originTransform = Transform(scale: [0.001, 0.001, 0.001], rotation: _igtlRotation)
+        originTransform = Transform(scale: [0.002, 0.002, 0.002], rotation: _igtlRotation)
         openIGTLinkServer?.disconnect()
         openIGTLinkServer = CommunicationsManager(port: 18944, delegate: self)
         if let openIGTLinkServer {

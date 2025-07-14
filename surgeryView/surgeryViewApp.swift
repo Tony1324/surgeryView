@@ -26,9 +26,9 @@ struct surgeryViewApp: App {
         }
         .windowStyle(.volumetric)
         //dynamic maintains relative size of models in field of view, so that if the window is moved away, the size is increased as well
-        .defaultWorldScaling(.dynamic)
+        .defaultWorldScaling(.automatic)
         //gravity aligned maintains that the volume does not tilt, instead keeping its vertical axis
         .volumeWorldAlignment(.gravityAligned)
-        .defaultSize(width: 0.8, height: 0.8, depth: 0.8, in: .meters)
+        .defaultSize(width: 1.6, height: 1.6, depth: 1.6, in: .meters)
     }
 }
